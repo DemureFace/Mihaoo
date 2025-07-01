@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import BasicAuth from '../components/BasicAuth.vue'
 import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
@@ -6,16 +7,21 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'login',
+      component: BasicAuth,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/home',
+      name: 'home',
+      component: HomeView,
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('authToken')
+        if (!token) {
+          next('/')
+        } else {
+          next()
+        }
+      },
     },
   ],
 })
