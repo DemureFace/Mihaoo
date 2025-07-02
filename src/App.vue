@@ -1,4 +1,7 @@
 <template>
+<BasicAuth v-if="!isAuthenticated" @loggedIn="isAuthenticated = true" />
+
+    <div v-else>
   <Preloader />
   <TheHeader />
   <SubHeader :currentTab="currentTab" @change-tab="currentTab = $event" />
@@ -8,13 +11,14 @@
       <component :is="currentComponent" :key="currentTab" />
     </transition>
   </main>
-  <RouterView></RouterView>
+  </div>
 </template>
 
 <script setup>
-  import { ref, computed } from 'vue'
+  import { ref, computed, onMounted } from 'vue'
   import { RouterView } from 'vue-router'
   import Preloader from './components/Preloader.vue'
+  import BasicAuth from './components/BasicAuth.vue'
   import TheHeader from './components/TheHeader.vue'
   import SubHeader from './components/SubHeader.vue'
   import PromoTool from './views/PromoView.vue'
@@ -27,6 +31,13 @@
 }
 
 const currentComponent = computed(() => components[currentTab.value])
+
+const isAuthenticated = ref(false)
+
+onMounted(() => {
+  const token = localStorage.getItem('authToken')
+  isAuthenticated.value = !!token
+})
 
 </script>
 
