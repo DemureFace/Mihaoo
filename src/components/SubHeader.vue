@@ -1,18 +1,21 @@
 <template>
   <div class="sub-header">
-    <button :class="{ active: currentTab === 'promo' }" @click="$emit('change-tab', 'promo')">
+    <BaseButton :class="{ active: currentTab === 'promo' }" @click="$emit('change-tab', 'promo')">
       Promo
-    </button>
-    <button
+    </BaseButton>
+    <BaseButton
       :class="{ active: currentTab === 'tournaments' }"
       @click="$emit('change-tab', 'tournaments')"
     >
       Tournament
-    </button>
+    </BaseButton>
   </div>
 </template>
 
 <script setup>
+ import BaseButton from './base/BaseButton.vue'
+
+
   defineProps({
     currentTab: {
       type: String,

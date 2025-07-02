@@ -3,6 +3,8 @@ import { ref } from 'vue'
 export function useParser() {
 
 const input = ref('')
+const cmsCodeTournCard = ref('')
+const cmsCodePromoCard = ref('')
 const cmsCodeInnerPage = ref('')
 const cmsCodeSr = ref('')
 
@@ -69,6 +71,8 @@ function parse() {
   const startDate = extract(/Start date:\s*(.+?)(?:\n|$)/i, text)
   const endDate = extract(/End date:\s*(.+?)(?:\n|$)/i, text)
   const name = extract(/Name:\s*(.+?)(?:\n|$)/i, text)
+  const bgImageSrc = extract(/Banner:\s*(.+?)(?:\n|$)/i, text)
+  const bgImageSrcMob = extract(/Banner Mobile:\s*(.+?)(?:\n|$)/i, text)
   const prizePool = extract(/Prize pool:\s*(.+?)(?:\n|$)/i, text)
   const gameCategory = extract(/Game Categories id:\s*(.+?)(?:\n|$)/i, text)
   const prizeNumber = prizePool.match(/[\d\s,\.]+/)[0].replace(/\s|,/g, '')
@@ -96,6 +100,23 @@ function parse() {
     default: '${formatPrize(amount, currency, 'en')}'
   }`
 
+  cmsCodePromoCard.value = `
+    "title":"Path to Prestige",
+"promotionLink":"/promotions/path-to-prestige",
+"bonusCode":"TAKE",
+"imgURL":"/cms/rails/active_storage/blobs/redirect/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBeGhPQ2c9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--b40a58f10fed1e1ba631bb7f919b74d38221ba5a/Pre-VIP-Bonus_slider.webp",
+"allowedForGroups":[
+"allowed_for_pre_vip"
+],
+"disallowedForGroups":[
+"forbidden_for_pre_vip",
+"ba"
+],
+"prize":"Get 30% up to<br/>€500 + 20 FS",
+"signInOnly":true,
+"category":"reload"
+  `
+
   cmsCodeInnerPage.value = `
 <Components.Block
   templateName={'cms-page'}
@@ -111,8 +132,8 @@ function parse() {
     params={{
       name: {default: "${name}"},
       showPrizes: false,
-      bgImageSrc: '',
-      bgImageSrcMob: "",
+      bgImageSrc: '${bgImageSrc}',
+      bgImageSrcMob: "${bgImageSrcMob}",
       pool: ${poolObj},
       gameBtn: {default: "Show Games"}
     }}
@@ -147,8 +168,8 @@ cmsCodeSr.value = `
     params={{
       name: {default: "${name}"},
       showPrizes: false,
-      bgImageSrc: '',
-      bgImageSrcMob: "",
+      bgImageSrc: '${bgImageSrc}',
+      bgImageSrcMob: "${bgImageSrcMob}",
       pool: ${poolObj},
       gameBtn: {default: "Show Games"}
     }}
