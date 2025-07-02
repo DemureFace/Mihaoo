@@ -1,8 +1,8 @@
 ``
 <script setup>
-  import { useJcParser } from '@/components/mixins/useJcParser'
+  import { useParser } from '@/components/mixins/useParser.js'
 
-  const { input, cmsCode, cmsCodeSr, parseJC } = useJcParser()
+  const { input, cmsCodeInnerPage, cmsCodeSr, parse } = useParser()
 
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text)
@@ -16,24 +16,24 @@
       class="text-gray-200 w-full border p-2 rounded min-h-[180px] font-mono"
       placeholder="Встав сюди ВСЮ задачу JC"
     ></textarea>
-    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" @click="parseJC">
+    <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" @click="parse">
       Парсити і згенерувати шаблон
     </button>
 
-    <div v-if="cmsCode" class="mt-6">
+    <div v-if="cmsCodeInnerPage" class="mt-6">
       <div class="flex gap-8">
         <div>
           <div class="flex items-center mb-1">
             <span class="font-bold text-lg mr-2">JC</span>
             <button
-              @click="copyToClipboard(cmsCode)"
+              @click="copyToClipboard(cmsCodeInnerPage)"
               class="bg-gray-700 text-white text-xs px-2 py-1 rounded hover:bg-gray-800 transition"
             >
               Копировать
             </button>
           </div>
           <pre class="bg-gray-900 text-green-400 p-3 rounded whitespace-pre-wrap text-xs">{{
-            cmsCode
+            cmsCodeInnerPage
           }}</pre>
         </div>
         <div>

@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 
-export function useJcParser() {
+export function useParser() {
 
 const input = ref('')
-const cmsCode = ref('')
+const cmsCodeInnerPage = ref('')
 const cmsCodeSr = ref('')
 
 function extract(pattern, text, def = '') {
@@ -63,7 +63,7 @@ function formatPrize(value, currency, geo) {
   }
 }
 
-function parseJC() {
+function parse() {
   const text = input.value
   // Основні поля
   const startDate = extract(/Start date:\s*(.+?)(?:\n|$)/i, text)
@@ -96,7 +96,7 @@ function parseJC() {
     default: '${formatPrize(amount, currency, 'en')}'
   }`
 
-  cmsCode.value = `
+  cmsCodeInnerPage.value = `
 <Components.Block
   templateName={'cms-page'}
   mod={'tournament'}
@@ -172,5 +172,5 @@ cmsCodeSr.value = `
     </Components.Block>
 </Components.Block>`
 }
-return { input, cmsCode, cmsCodeSr, parseJC };
+return { input, cmsCodeInnerPage, cmsCodeSr, parse };
 }

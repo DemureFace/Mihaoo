@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './subheader';
 
 body {
   background-color: #444444;
