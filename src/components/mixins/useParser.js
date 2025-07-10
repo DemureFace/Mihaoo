@@ -39,7 +39,7 @@ export function useParser() {
     return rulesBlock
       .split('\n')
       .filter(line => line.trim())
-      .map(line => `<li>${line.replace(/^[-•\*]\s*/, '')}</li>`)
+      .map(line => `<li>${line.replace(/^\s*[\p{Pd}\*•]+\s*/u, '')}</li>`)
       .join('\n')
   }
   function parseDate(str) {
