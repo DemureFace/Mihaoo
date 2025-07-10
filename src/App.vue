@@ -24,7 +24,7 @@
   import PromoTool from './views/PromoView.vue'
   import TournamentsTool from './views/TournamentView.vue'
 
-  const currentTab = ref('promo')
+  const currentTab = ref('tournaments')
   const components = {
   promo: PromoTool,
   tournaments: TournamentsTool

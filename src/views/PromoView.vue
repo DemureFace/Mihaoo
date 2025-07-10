@@ -3,7 +3,7 @@
     <textarea
       v-model="input"
       class="text-gray-200 w-full border p-2 rounded min-h-[180px] font-mono"
-      placeholder="Встав сюди ВСЮ задачу JC"
+      placeholder="Встав сюди ВСЮ задачу"
     ></textarea>
     <BaseButton class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded" @click="parse">
       Парсити і згенерувати шаблон
