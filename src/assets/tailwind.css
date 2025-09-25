@@ -1,8 +1,9 @@
+
 @import 'tailwindcss';
 @import './subheader';
 
 body {
-  background-color: #444444;
+  background-color: #ffffff;
 }
 
 button {
