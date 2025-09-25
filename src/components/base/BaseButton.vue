@@ -1,34 +1,39 @@
 <template>
-  <button
-    :class="[
-      'px-4 py-2 rounded transition font-semibold',
-      variantClass,
-      disabled ? 'opacity-60 cursor-not-allowed' : 'hover:brightness-90',
-      block ? 'w-full' : ''
-    ]"
-    :type="type"
-    :disabled="disabled"
-    @click="$emit('click', $event)"
+  <component
+    :class="{
+      'text-weather-secondary underline hover:no-underline': tag === 'a',
+    }"
+    :is="tag"
+    :to="{ name: path }"
+    @click="$emit('click')"
   >
-    <slot />
-  </button>
+    <span :class="textClasess">
+      <slot name="default"></slot>
+    </span>
+  </component>
 </template>
 
 <script setup>
-import {computed } from 'vue'
+import { defineProps, defineEmits } from "vue";
+
+defineEmits(["click"]);
 
 const props = defineProps({
-  type: { type: String, default: 'button' },
-  variant: { type: String, default: 'primary' }, // primary | secondary | danger
-  block: Boolean,
-  disabled: Boolean,
-});
-
-const variantClass = computed(() => {
-  switch (props.variant) {
-    case 'secondary': return 'bg-gray-200 text-gray-900';
-    case 'danger':    return 'bg-red-600 text-white';
-    default:          return 'bg-blue-600 text-white';
-  }
+  tag: {
+    type: String,
+    default: "button",
+  },
+  path: {
+    type: String,
+    default: "",
+  },
+  click: {
+    type: String,
+    default: "",
+  },
+  textClasess: {
+    type: String,
+    default: "",
+  },
 });
 </script>

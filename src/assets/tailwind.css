@@ -4,8 +4,211 @@
 
 body {
   background-color: #ffffff;
+  overflow-x: hidden;
 }
 
 button {
   cursor: pointer;
 }
+
+@theme {
+  /* surface */
+  --color-surface-primary: #f9f9f9;
+  --color-surface-secondary:  #1C1C1E;
+  --color-surface-card-light: #FFFFFF;
+  --color-surface-card-dark:  #2C2C2E;
+
+  /* текст (ink) */
+  --color-ink-primary: #3A3A3C;
+  --color-ink-inverse: #FFFFFF;
+  --color-ink-secondary-light: #3A3A3C;
+  --color-ink-secondary-dark:  #EBEBF5;
+  --color-ink-disabled-light: #8E8E93;
+  --color-ink-disabled-dark:  #636366;
+
+  /* акценти */
+  --color-brand-blue:   #0A84FF;
+  --color-brand-green:  #30D158;
+  --color-brand-red:    #FF453A;
+  --color-brand-orange: #FF9F0A;
+
+  /* радіуси / тіні (перевизначають стандартні токени) */
+  --radius-xl: 1rem;
+  --shadow-card: 0 4px 20px rgba(0,0,0,.15);
+
+  /* button themes */
+  --color-button-primary: rgba(28, 28, 28, 0.051);
+
+  --font-sans: 'Helvetica Neue';
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  font-size: 1em;
+  background: transparent;
+  font-weight: 500;
+  padding: 10px 35px 5px 5px;
+}
+
+input:focus {
+  border-bottom: 2px solid black;
+  padding-bottom: 4px;
+}
+
+input::placeholder {
+  font-weight: 500;
+  color: white;
+}
+
+#checkbox {
+  cursor: pointer;
+  accent-color: black;
+  margin-right: 3px;
+}
+
+label {
+  font-size: 18px;
+  font-weight: 600;
+  color: black;
+}
+
+.label-anim {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: 0.5s;
+}
+.labelError {
+  top: 35%;
+}
+
+.focused {
+  top: -5px;
+}
+.icon-input {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  color: black;
+}
+
+button {
+  font-weight: 500;
+  border-radius: 8px;
+  border: 1px solid black;
+  color: black;
+  background: white;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  color: white;
+  background-color: black;
+  border-color: black;
+}
+
+a {
+  cursor: pointer;
+}
+.soon {
+  animation: soon 32s linear infinite;
+}
+
+  @keyframes soon {
+  0% {
+    background-color:  gray;
+    color:  white;
+  }
+  25% {
+    background-color:  white;
+    color:  gray;
+  }
+  50% {
+    background-color:  gray;
+    color:  black;
+  }
+  75% {
+    background-color:  black;
+    color:  gray;
+  }
+  100% {
+    background-color:  gray;
+    color:  white;
+  }
+
+}
+
+/* СЦЕНА */
+.scene{
+  position: absolute;
+  top: 60%;
+  left: 45%;
+  transform: translate(-55%, -35%);
+  width: 50%;
+  aspect-ratio: 16/9;
+  margin: 0 auto;
+  background: white;           /* ч/б тема */
+  border: 2px solid black;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* НЕБО (легкий градієнт по вертикалі, ч/б) */
+.sky{
+  position: absolute; inset: 0 0 0 0;
+}
+
+/* СОНЦЕ: білий кружок з чорним контуром, рух по дузі (motion path) */
+.sun{
+  position: absolute;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 0 0 2px black inset;   /* чорний контур */
+  filter: drop-shadow(0 0 6px rgba(0,0,0,.25)); /* трохи об’єму, still b/w */
+
+  /* Траєкторія: півдуга над «горизонтом» сцени */
+  /* координати у відсотках ширини контейнера, висоти — умовні */
+  offset-path: path("M -20 325 C -20 325, 300 -150, 845 325");
+  offset-rotate: 0deg;
+
+  /* безкінечний рівномірний рух */
+  animation: move 16s linear infinite;
+}
+
+/* ПАГОРБИ-КОНТУРИ */
+.hills{
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  width: 100%; height: 42%;
+  pointer-events: none;
+}
+
+/* КАДРИ анімації */
+@keyframes move{
+  0%   { offset-distance: 0%; }
+  100% { offset-distance: 100%; }
+}
+
+.dots::after {
+  content: '';
+  display: inline-block;
+  width: 1ch;
+  text-align: left;
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0%   { content: ''; }
+  25%  { content: '.'; }
+  50%  { content: '..';}
+  75%  { content: '...'; }
+  100% { content: '';}
+}
+
+
+

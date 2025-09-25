@@ -4,6 +4,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)', 'Helvetica', 'Arial', 'ui-sans-serif', 'system-ui'],
+      },
       colors: {
         background: {
           light: '#F2F2F7',
