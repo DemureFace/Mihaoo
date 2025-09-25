@@ -1,7 +1,7 @@
 <template>
-  <BasicAuth v-if="!isAuthenticated" @loggedIn="isAuthenticated = true" />
+  <!-- <BasicAuth v-if="!isAuthenticated" @loggedIn="isAuthenticated = true" /> -->
 
-  <div v-else>
+  <!-- <div v-else> -->
     <Preloader />
     <Transition name="page" mode="out-in">
       <Loader v-if="showLoading" />
@@ -30,7 +30,7 @@
         <component :is="currentComponent" :key="currentTab" />
       </transition>
     </main>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script setup>
