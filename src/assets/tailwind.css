@@ -39,7 +39,7 @@ button {
   /* button themes */
   --color-button-primary: rgba(28, 28, 28, 0.051);
 
-  --font-sans: 'Helvetica Neue';
+  --font-sans: 'Arimo';
 }
 
 input {
