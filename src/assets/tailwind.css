@@ -114,6 +114,18 @@ button:hover {
 a {
   cursor: pointer;
 }
+
+.break-inside-avoid { break-inside: avoid; }
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 24px;
+  grid-auto-rows: 8px;         /* базова висота рядка */
+}
+@media (min-width: 768px) {
+  .masonry { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.masonry-card { grid-row-end: span var(--rows, 1); }
 .soon {
   animation: soon 32s linear infinite;
 }

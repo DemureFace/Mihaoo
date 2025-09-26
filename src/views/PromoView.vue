@@ -8,7 +8,7 @@
     <BaseButton class="px-6 py-2" @click="parseNow">Parse and generate template</BaseButton>
     <transition name="fade">
       <div v-if="Object.keys(allBrandMarkup).length" class="mt-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" style="grid-auto-rows: 1fr">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start" >
           <div
             v-for="(markup, brand) in allBrandMarkup"
             :key="brand"
@@ -67,7 +67,7 @@
 
   // 2) Приймаємо табу від батька
   const props = defineProps({
-    currentTab: { type: String, default: 'tournaments' }, // 'tournaments' | 'promo'
+    currentTab: { type: String, default: 'promo' }, // 'tournaments' | 'promo'
   })
 
   // 3) Нормалізуємо назву таби в режим
@@ -81,8 +81,8 @@
     parse(toMode(props.currentTab))
   }
   const TEMPLATE_LABELS = {
-    tournamentInner: 'Internal promo page',
-    tournamentCard: 'Promo card',
+    promoInner: 'Internal promo page',
+    promoCard: 'Promo card',
   }
   function copyToClipboard(text) {
     navigator.clipboard.writeText(text)
