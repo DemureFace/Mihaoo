@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', 'Arimo', 'Arial', 'ui-sans-serif', 'system-ui'],
+        sans: ['var(--font-sans)', 'Open Sans', 'Arial', 'ui-sans-serif', 'system-ui'],
       },
       colors: {
         background: {

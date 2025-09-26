@@ -2,34 +2,34 @@
   <!-- <BasicAuth v-if="!isAuthenticated" @loggedIn="isAuthenticated = true" /> -->
 
   <!-- <div v-else> -->
-    <Preloader />
-    <Transition name="page" mode="out-in">
-      <Loader v-if="showLoading" />
-    </Transition>
-    <!-- Header фіксований -->
-    <TheHeader
+  <Preloader />
+  <Transition name="page" mode="out-in">
+    <Loader v-if="showLoading" />
+  </Transition>
+  <!-- Header фіксований -->
+  <TheHeader
+    :collapsed="isCollapsed"
+    @toggle-sidebar="isCollapsed = !isCollapsed"
+    class="fixed top-0 left-0 right-0 z-50 bg-background-cardLight h-14"
+  />
+
+  <!-- Контейнер сторінки -->
+  <!-- Сайдбар 25% -->
+  <aside class="fixed top-14 left-0 w-56 h-[calc(100vh-3.5rem)]">
+    <SideBar
+      :currentTab="currentTab"
+      @change-tab="currentTab = $event"
       :collapsed="isCollapsed"
-      @toggle-sidebar="isCollapsed = !isCollapsed"
-      class="fixed top-0 left-0 right-0 z-50 bg-background-cardLight h-14"
+      class="transition-all duration-300 ease-in-out"
     />
+  </aside>
 
-    <!-- Контейнер сторінки -->
-    <!-- Сайдбар 25% -->
-    <aside class="fixed top-14 left-0 w-56 h-[calc(100vh-3.5rem)]">
-      <SideBar
-        :currentTab="currentTab"
-        @change-tab="currentTab = $event"
-        :collapsed="isCollapsed"
-        class="transition-all duration-300 ease-in-out"
-      />
-    </aside>
-
-    <!-- Основний контент 75% -->
-    <main :class="mainClasses">
-      <transition name="fade" mode="out-in">
-        <component :is="currentComponent" :key="currentTab" />
-      </transition>
-    </main>
+  <!-- Основний контент 75% -->
+  <main :class="mainClasses">
+    <transition name="fade" mode="out-in">
+      <component :is="currentComponent" :key="currentTab" :current-tab="currentTab" />
+    </transition>
+  </main>
   <!-- </div> -->
 </template>
 
@@ -70,7 +70,7 @@
 
   const mainClasses = computed(() => [
     isCollapsed.value ? 'ml-16' : 'ml-56',
-    isSpecial.value ? 'p-0 w-full h-screen soon' : 'ml-56 pt-14 p-6 rounded-3xl',
+    isSpecial.value ? 'p-0 w-full h-screen soon' : 'pt-14 p-6 rounded-3xl',
   ])
 </script>
 

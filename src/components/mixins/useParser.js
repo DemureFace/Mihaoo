@@ -5,6 +5,7 @@ import countries from 'i18n-iso-countries'
 import enLocale from 'i18n-iso-countries/langs/en.json'
 countries.registerLocale(enLocale)
 
+
 function parseRestrictedCountries(text) {
   const match = text.match(/Restricted Countries:\s*(.+?)(?:\n|$)/i)
   if (!match) return ''
@@ -80,7 +81,7 @@ export function useParser() {
   }
 
   // ---------------- PARSE MAIN ----------------
-  function parse() {
+  function parse(activeTab) {
     const text = input.value
     const restrictedCountries = parseRestrictedCountries(text)
 
@@ -141,17 +142,38 @@ export function useParser() {
 
     // --- Генеруєш для всіх брендів:
     const result = {}
-
     for (const { key } of BRANDS) {
-      const tpl = BRAND_TEMPLATES[key]
-    console.log('brand', key, tpl)
+      const tpl = BRAND_TEMPLATES[key] || {}
 
-      result[key] = {
-        tournamentCard: tpl.tournamentCard(data),
-
-        tournamentInner: tpl.tournamentInner(data),
+      if (activeTab === 'tournaments') {
+        // віддаємо турнірні ключі
+        result[key] = {
+          tournamentCard:
+            typeof tpl.tournamentCard === 'function' ? tpl.tournamentCard(data) : '',
+          tournamentInner:
+            typeof tpl.tournamentInner === 'function' ? tpl.tournamentInner(data) : '',
+        }
+      } else if (activeTab === 'promo') {
+        // віддаємо промо-ключі; якщо немає — фолбек на турнірні
+        result[key] = {
+          promoCard:
+            typeof tpl.promoCard === 'function' ? tpl.promoCard(data)
+            : (typeof tpl.tournamentCard === 'function' ? tpl.tournamentCard(data) : ''),
+          promoInner:
+            typeof tpl.promoInner === 'function' ? tpl.promoInner(data)
+            : (typeof tpl.tournamentInner === 'function' ? tpl.tournamentInner(data) : ''),
+        }
+      } else {
+        // дефолт на випадок іншого значення таби
+        result[key] = {
+          tournamentCard:
+            typeof tpl.tournamentCard === 'function' ? tpl.tournamentCard(data) : '',
+          tournamentInner:
+            typeof tpl.tournamentInner === 'function' ? tpl.tournamentInner(data) : '',
+        }
       }
     }
+
     allBrandMarkup.value = result
   }
 
