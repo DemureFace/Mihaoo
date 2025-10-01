@@ -5,6 +5,35 @@ import countries from 'i18n-iso-countries'
 import enLocale from 'i18n-iso-countries/langs/en.json'
 countries.registerLocale(enLocale)
 
+const pad2 = (n) => String(n).padStart(2, '0')
+
+function parseDateLoose(s) {
+  if (!s) return null
+  // 1) YYYY-MM-DD[ ...]
+  const m1 = s.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (m1) return new Date(+m1[1], +m1[2] - 1, +m1[3])
+  // 2) DD.MM.YYYY[ ...]
+  const m2 = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/)
+  if (m2) return new Date(+m2[3], +m2[2] - 1, +m2[1])
+  // 3) fallback
+  const d = new Date(s)
+  return isNaN(d) ? null : d
+}
+
+function formatDdMm(d) {
+  return `${pad2(d.getDate())}.${pad2(d.getMonth() + 1)}`
+}
+
+/** Повертає 'DD.MM-DD.MM'. Якщо `subtractEndDay=true`, відніме 1 день від кінця. */
+function shortRange(startStr, endStr, subtractEndDay = true) {
+  const s = parseDateLoose(startStr)
+  const e0 = parseDateLoose(endStr)
+  if (!s || !e0) return ''
+  const e = new Date(e0)
+  if (subtractEndDay) e.setDate(e.getDate() - 1)
+  if (e < s) return formatDdMm(s)
+  return `${formatDdMm(s)}-${formatDdMm(e)}`
+}
 
 function parseRestrictedCountries(text) {
   const match = text.match(/Restricted Countries:\s*(.+?)(?:\n|$)/i)
@@ -79,6 +108,14 @@ export function useParser() {
         return `€${value.toLocaleString('en-US')}`
     }
   }
+  function toKebab(str) {
+    return String(str || '')
+      .normalize('NFKD')                 // розкладемо на базові символи
+      .replace(/[\u0300-\u036f]/g, '')   // приберемо діакритику
+      .replace(/[^a-zA-Z0-9]+/g, '-')    // усе, що не літера/цифра → "-"
+      .replace(/^-+|-+$/g, '')           // зріжемо дефіси з країв
+      .toLowerCase()
+  }
 
   // ---------------- PARSE MAIN ----------------
   function parse(activeTab) {
@@ -88,15 +125,27 @@ export function useParser() {
     // ---- Парсиш як завжди:
     const startDate = extract(/Start date:\s*(.+?)(?:\n|$)/i, text)
     const endDate = extract(/End date:\s*(.+?)(?:\n|$)/i, text)
+    const promoStartDate = extract(/Start date:\s*(.+?)(?:\n|$)/i, text)
+    const promoEndDate = extract(/End date:\s*(.+?)(?:\n|$)/i, text)
+    const promoRangeShort = shortRange(promoStartDate, promoEndDate)
     const name = extract(/Name:\s*(.+?)(?:\n|$)/i, text)
+    const promoTitle = extract(/Title:\s*(.+?)(?:\n|$)/i, text)
+    const prize = extract(/Prize:\s*(.+?)(?:\n|$)/i, text)
     const cardBgImageSrc = extract(/Card Banner:\s*(.+?)(?:\n|$)/i, text)
+    const cardDescription = extract(/Card Banner:\s*(.+?)(?:\n|$)/i, text)
     const description = extract(/Description:\s*(.+?)(?:\n|$)/i, text)
+    const underDescription = extract(/Under Description:\s*(.+?)(?:\n|$)/i, text)
     const bgImageSrc = extract(/Banner:\s*(.+?)(?:\n|$)/i, text)
     const bgImageSrcMob = extract(/Banner Mobile:\s*(.+?)(?:\n|$)/i, text)
-    const gameCategory = extract(/Game Categories id:\s*(.+?)(?:\n|$)/i, text)
+    const bonusCode = extract(/Bonus Code:\s*(.+?)(?:\n|$)/i, text)
     const prizePool = extract(/Prize pool:\s*(.+?)(?:\n|$)/i, text)
     const prizePoolMatch = prizePool ? prizePool.match(/[\d\s,\.]+/) : null
     const prizeNumber = prizePoolMatch ? prizePoolMatch[0].replace(/\s|,/g, '') : ''
+    const minBet = extract(/Min(?:imum)?\s*bet:\s*(.+?)(?:\n|$)/i, text)
+    const minBetMatch = minBet ? minBet.match(/[\d\s,\.]+/) : null
+    const minBetNumber = minBetMatch ? minBetMatch[0].replace(/\s|,/g, '') : ''
+    const restrictedCountriesList = extract(/Restricted Countries:\s*(.+?)(?:\n|$)/i, text)
+    const gamesProvider = extract(/Games Provider:\s*(.+?)(?:\n|$)/i, text)
 
     // --- Правила турніру
     const rulesBlock = extractTournamentRules(text)
@@ -121,23 +170,52 @@ export function useParser() {
       default: '${formatPrize(amount, currency, 'en')}'
     }`
 
+    const { amount: minAmount, currency: minCurrency } = parsePrizePool(minBet)
+const minBetObj = `{
+  au: '${formatPrize(minAmount, minCurrency, 'au')}',
+  nz: '${formatPrize(minAmount, minCurrency, 'nz')}',
+  ca: '${formatPrize(minAmount, minCurrency, 'ca')}',
+  en: '${formatPrize(minAmount, minCurrency, 'en')}',
+  de: '${formatPrize(minAmount, minCurrency, 'de')}',
+  ee: '${formatPrize(minAmount, minCurrency, 'ee')}',
+  it: '${formatPrize(minAmount, minCurrency, 'it')}',
+  no: '${formatPrize(minAmount, minCurrency, 'no')}',
+  fr: '${formatPrize(minAmount, minCurrency, 'fr')}',
+  default: '${formatPrize(minAmount, minCurrency, 'en')}'
+}`
+
+    const slug = toKebab(name)
+
     // --- Передаєш у шаблони всі дані:
     const data = {
       startDate,
       endDate,
+      promoStartDate,
+      promoEndDate,
+      promoRangeShort,
       name,
+      promoTitle,
+      prize,
       cardBgImageSrc,
+      cardDescription,
       restrictedCountries,
+      restrictedCountriesList,
       description,
+      underDescription,
       bgImageSrc,
       bgImageSrcMob,
       prizePool,
       prizeNumber,
-      gameCategory,
+      poolObj,
+      minBet,
+      minBetNumber,
+      minBetObj,
+      slug,
+      bonusCode,
       rulesHtml,
       startTimeISO,
       endTimeISO,
-      poolObj,
+      gamesProvider
     }
 
     // --- Генеруєш для всіх брендів:

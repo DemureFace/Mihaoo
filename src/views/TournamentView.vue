@@ -15,9 +15,9 @@
             class="break-inside-avoid border-1 border-dashed mb-8 p-4 rounded-lg"
           >
             <h2 class="text-center font-bold text-black text-xl mb-4 uppercase">{{ brandLabel(brand) }}</h2>
-            <div v-for="(value, type) in markup" :key="type" class="mb-6 capitalize">
+            <div v-for="(value, type) in markup" :key="type" class="mb-6">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-black font-bold text-lg mr-2">
+                <span class="text-black font-bold text-lg mr-2 ">
                   {{ TEMPLATE_LABELS[type] || type }}
                 </span>
                 <BaseButton @click="copyToClipboard(value)" class="px-2 py-1">Copy</BaseButton>

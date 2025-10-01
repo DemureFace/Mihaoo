@@ -9,21 +9,27 @@
       <li
         v-for="tab in tabs"
         :key="tab.value"
-        :class="[ {active: currentTab === tab.value}, collapsed ? 'p-1' : 'px-3 py-1.5' ]"
         class="cursor-pointer bg-button-primary rounded-lg font-sans font-bold"
       >
         <!-- Клік обробляємо тут -->
-        <BaseButton class="flex items-center gap-2" @click="handleClick(tab.value)">
-          <component
-            :is="tab.icon"
+
+        <BaseButton
+          class="flex items-center gap-2 rounded-lg"
+          :class="[{ active: currentTab === tab.value }, collapsed ? 'p-1' : 'px-3 py-1.5']"
+          @click="handleClick(tab.value)"
+        >
+          <span
+            class="relative grid place-items-center w-6 h-6 transition-all duration-500 ease-linear"
             :class="[
-              'w-6 h-6 transition-all duration-500 ease-linear',
               currentTab === tab.value ? 'text-white' : 'text-black',
               bouncingTab === tab.value ? 'animate-bounce' : '',
             ]"
-          />
+          >
+            <!-- іконка — один раз і назавжди -->
+            <component :is="tab.icon" class="w-6 h-6" />
+          </span>
           <span
-            v-if="!collapsed"
+            v-show="!collapsed"
             :class="currentTab === tab.value ? 'text-white' : 'text-black'"
             class="transition-all duration-200 ease-linear whitespace-nowrap"
           >

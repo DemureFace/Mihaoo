@@ -1,21 +1,24 @@
 <template>
   <div class="max-w-7xl mx-auto p-4 space-y-4">
-    <textarea
-      v-model="input"
-      class="text-black w-full border p-2 rounded min-h-[180px] font-mono"
-      placeholder="Insert the ENTIRE task here"
-    ></textarea>
+    <BaseRichText
+    v-model="html"
+    v-model:plain="input"
+    placeholder="Insert the ENTIRE task here"
+    class="mb-4"
+  />
     <BaseButton class="px-6 py-2" @click="parseNow">Parse and generate template</BaseButton>
     <transition name="fade">
       <div v-if="Object.keys(allBrandMarkup).length" class="mt-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start" >
+        <div class="columns-1 md:columns-3 gap-6">
           <div
             v-for="(markup, brand) in allBrandMarkup"
             :key="brand"
-            class="border-1 border-dashed mb-8 p-4 rounded-lg"
+            class="break-inside-avoid border-1 border-dashed mb-8 p-4 rounded-lg"
           >
-            <h2 class="text-center font-bold text-black text-xl mb-4 uppercase">{{ brand }}</h2>
-            <div v-for="(value, type) in markup" :key="type" class="mb-6 capitalize">
+            <h2 class="text-center font-bold text-black text-xl mb-4 uppercase">
+              {{ brandLabel(brand) }}
+            </h2>
+            <div v-for="(value, type) in markup" :key="type" class="mb-6">
               <div class="flex items-center justify-between mb-1">
                 <span class="text-black font-bold text-lg mr-2">
                   {{ TEMPLATE_LABELS[type] || type }}
@@ -53,7 +56,19 @@
   import { ref } from 'vue'
   import { useParser } from '@/components/mixins/useParser.js'
   import BaseButton from '@/components/base/BaseButton.vue'
+  import BaseRichText from '@/components/base/BaseRichText.vue'
   import { ArrowsPointingOutIcon, ArrowsPointingInIcon } from '@heroicons/vue/24/solid'
+  import { BRANDS } from '@/components/templates/brandsList'
+
+  const html = ref('') // якщо треба зберігати HTML окремо
+
+  // key -> label
+  const BRAND_LABELS = Object.freeze(
+    BRANDS.reduce((acc, { key, label }) => ((acc[key] = label || key), acc), {}),
+  )
+
+  // хелпер (із фолбеком)
+  const brandLabel = (key) => BRAND_LABELS[key] || key
 
   const expanded = ref({}) // { 'brand::type': true/false }
 
@@ -69,7 +84,6 @@
   const props = defineProps({
     currentTab: { type: String, default: 'promo' }, // 'tournaments' | 'promo'
   })
-
   // 3) Нормалізуємо назву таби в режим
   function toMode(tab) {
     const t = String(tab || '').toLowerCase()

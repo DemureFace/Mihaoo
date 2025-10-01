@@ -1,19 +1,19 @@
 export default {
   tournamentCard: (data) => `
 {
-"endTime": "${data.endTimeISO}",
-"startTime": "${data.startTimeISO}",
-"params": {
-"notShowForGeoIps": [
-${data.restrictedCountries}
-],
-"name": "${data.name}",
-"description": "${data.description}",
-"ipPool": ${data.poolObj},
-"link": "tournaments/${data.gameCategory}",
-"bgImageSrc": "${data.cardBgImageSrc}"
-},
-"category": "network"
+  "endTime": "${data.endTimeISO}",
+  "startTime": "${data.startTimeISO}",
+  "params": {
+    "notShowForGeoIps": [
+      ${data.restrictedCountries}
+    ],
+    "name": "${data.name}",
+    "description": "${data.cardDescription}",
+    "ipPool": ${data.poolObj},
+    "link": "tournaments/${data.gameCategory}",
+    "bgImageSrc": "${data.cardBgImageSrc}"
+  },
+  "category": "network"
 },
 `,
   tournamentInner: (data) => `
@@ -32,6 +32,7 @@ ${data.restrictedCountries}
       name: {default: "${data.name}"},
       showPrizes: false,
       bgImageSrc: '${data.bgImageSrc}',
+      bgImageSrcMob: '${data.bgImageSrcMob}',
       pool: ${data.poolObj},
       gameBtn: {default: "Show Games"}
     }}
@@ -54,4 +55,53 @@ ${data.restrictedCountries}
   </Components.Block>
 </Components.Block>`,
 
+promoCard: (data) => `
+{
+  "title":"${data.name}",
+  "promotionLink":"/promotions/${data.slug}",
+  "bonusCode":"${data.bonusCode}",
+  "imgURL":"${data.cardBgImageSrc}",
+	"snippetPrizeName":"${data.slug}",
+  "allowedForGroups":[
+    "all_except_vip"
+  ],
+  "disallowedForGroups":[
+    "all_vip",
+    "ba"
+  ],
+  "dateRange":{
+    "start":"${data.promoStartDate}",
+    "end":"${data.promoEndDate}"
+  },
+  "condition":"Runs ${data.promoRangeShort}"
+},
+`,
+
+promoInner: (data) => `
+<Components.Block
+  templateName={'cms-page'}
+  mod={'promotion'}
+  typePage={'promotion'}
+  containerMod={'small'}
+>
+  <Components.Block
+    templateName="promotion-page"
+    title="${data.promoTitle}"
+    imgUrl="${data.bgImageSrc}"
+  >
+    ${data.description}
+    <Components.Block templateName="bonus-code-field" code={"${data.bonusCode}"}>
+  </Components.Block>
+    ${data.underDescription}
+  <Components.Block
+    templateName={'collapse-block'}
+    title={'Bonus Rules'}
+    className="promotion-page__collapse"
+  >
+    <ol className="styled-list">
+      ${data.rulesHtml}
+    </ol>
+  </Components.Block>
+  </Components.Block>
+</Components.Block>`,
 }

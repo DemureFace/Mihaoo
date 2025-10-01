@@ -26,15 +26,24 @@
 
   <!-- Основний контент 75% -->
   <main :class="mainClasses">
-    <transition name="fade" mode="out-in">
-      <component :is="currentComponent" :key="currentTab" :current-tab="currentTab" />
+    <transition name="fade">
+      <Suspense>
+        <template #default>
+          <KeepAlive>
+            <component :is="currentComponent" :current-tab="currentTab" />
+          </KeepAlive>
+        </template>
+        <template #fallback>
+          <TabSkeleton />
+        </template>
+      </Suspense>
     </transition>
   </main>
   <!-- </div> -->
 </template>
 
 <script setup>
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed, onMounted, defineAsyncComponent } from 'vue'
   import { useStore } from 'vuex'
 
   import Preloader from './components/Preloader.vue'
@@ -47,6 +56,24 @@
   import Dashboard from './views/DashboardView.vue'
   import News from './views/NewsView.vue'
   import SideBar from './components/SideBar.vue'
+
+  const DashboardAsync = defineAsyncComponent(() => import('./views/DashboardView.vue'))
+  const PromoAsync = defineAsyncComponent(() => import('./views/PromoView.vue'))
+  const TournamentsAsync = defineAsyncComponent(() => import('./views/TournamentView.vue'))
+  const NewsAsync = defineAsyncComponent(() => import('./views/NewsView.vue'))
+
+  const TabSkeleton = {
+    name: 'TabSkeleton',
+    template: `
+    <div class="p-6 space-y-4">
+      <div class="h-8 bg-gray-200 rounded animate-pulse"></div>
+      <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+      <div class="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
+      <div class="h-64 bg-gray-200 rounded animate-pulse"></div>
+    </div>
+  `,
+  }
+
   const store = useStore()
   const showLoading = computed(() => store.state.showLoading)
 
