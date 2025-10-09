@@ -2,6 +2,7 @@
   <section>
     <div class="mb-4 flex items-center justify-between gap-3">
       <h2 class="text-xl font-semibold">Мої чеклісти</h2>
+
       <div class="flex items-center gap-2 text-sm">
         <button class="btn" @click="toggleSort">
           {{ sortBy === 'recent' ? 'Сортувати за створенням' : 'Сортувати за активністю' }}
@@ -9,30 +10,74 @@
         <input
           v-model="q"
           type="search"
-          placeholder="Пошук за назвою/описом…"
+          placeholder="Пошук…"
           class="border rounded-xl px-3 py-2 text-sm outline-none"
         />
+        <button class="btn bg-gray-900 text-white" @click="openCreate">+ Новий</button>
       </div>
     </div>
 
     <div class="grid">
-      <ChecklistCard v-for="cl in filtered" :key="cl.slug" :checklist="cl" />
+      <div v-for="cl in filtered" :key="cl.slug" class="relative">
+        <ChecklistCard :checklist="cl" />
+        <div class="absolute top-2 right-2 flex gap-1">
+          <button class="px-2 py-1 text-xs border rounded bg-white" @click.stop="openEdit(cl)">
+            Редагувати
+          </button>
+          <button class="px-2 py-1 text-xs border rounded bg-white" @click.stop="onDelete(cl)">
+            Видалити
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Модалка -->
+    <BaseModal :modal-active="showEditor" @close-modal="showEditor = false">
+      <ChecklistEditor :value="editing" @save="onSave" />
+    </BaseModal>
   </section>
 </template>
 
 <script setup>
   import { ref, computed } from 'vue'
+  import BaseModal from '@/components/base/BaseModal.vue'
   import ChecklistCard from '@/components/ChecklistCard.vue'
-  import { CHECKLISTS } from '@/data/checklists'
+  import ChecklistEditor from '@/components/ChecklistEditor.vue'
   import { getLastFilledAt } from '@/lib/storage'
-  console.log('ChecklistCard import =', ChecklistCard)
+  import { useChecklists } from '@/composables/useChecklists'
 
   const q = ref('')
-  const sortBy = ref('recent') // 'recent' | 'created'
+  const sortBy = ref('recent')
+  const showEditor = ref(false)
+  const editing = ref(null)
+
+  const { all, create, update, remove } = useChecklists()
+
+  function openCreate() {
+    editing.value = null
+    showEditor.value = true
+  }
+  function openEdit(cl) {
+    editing.value = cl
+    showEditor.value = true
+  }
+
+  function onSave(payload) {
+    if (editing.value) {
+      update(editing.value.slug, payload)
+    } else {
+      create(payload)
+    }
+  }
+
+  function onDelete(cl) {
+    if (confirm(`Видалити "${cl.title}"?`)) {
+      remove(cl.slug)
+    }
+  }
 
   const withDerived = computed(() =>
-    CHECKLISTS.map((c) => ({ ...c, lastFilledAt: getLastFilledAt(c.slug) })),
+    all.value.map((c) => ({ ...c, lastFilledAt: getLastFilledAt(c.slug) })),
   )
 
   const filtered = computed(() => {
@@ -45,9 +90,9 @@
     }
     list = [...list].sort((a, b) => {
       if (sortBy.value === 'recent') {
-        const aT = a.lastFilledAt ? +new Date(a.lastFilledAt) : 0
-        const bT = b.lastFilledAt ? +new Date(b.lastFilledAt) : 0
-        return bT - aT
+        const at = a.lastFilledAt ? +new Date(a.lastFilledAt) : 0
+        const bt = b.lastFilledAt ? +new Date(b.lastFilledAt) : 0
+        return bt - at
       }
       return +new Date(b.createdAt) - +new Date(a.createdAt)
     })

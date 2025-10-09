@@ -1,22 +1,28 @@
 <template>
   <section v-if="hasChecklist">
     <header class="mb-4">
-      <div class="mb-4">
+      <div class="mb-4 flex justify-between items-center">
         <button
           type="button"
           @click="goBack"
           class="inline-flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:bg-gray-50"
         >
-          <ArrowLeftIcon class="w-5 h-5" />
-          Назад до всіх чеклістів
+          ← Назад до всіх чеклістів
         </button>
+        <div class="flex gap-2">
+          <button class="border rounded px-3 py-1" @click="openEdit">Редагувати</button>
+          <button class="border rounded px-3 py-1" @click="onDelete">Видалити</button>
+        </div>
       </div>
+
       <h2 class="text-2xl font-semibold">{{ checklist.title }}</h2>
       <p class="text-gray-600">{{ checklist.description }}</p>
       <p class="text-xs text-gray-500 mt-1">
         Створено: {{ fmt(checklist.createdAt) }} · Останнє заповнення: {{ lastFilledLabel }}
       </p>
     </header>
+
+    <ChecklistEditor v-model="showEditor" :value="checklist" @save="onSave" />
 
     <ul class="space-y-2">
       <li v-for="item in checklist.items" :key="item.id" class="border rounded p-3">
@@ -41,6 +47,8 @@
   import { useRouter, useRoute } from 'vue-router'
   import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
   import { CHECKLISTS } from '@/data/checklists'
+  import ChecklistEditor from '@/components/ChecklistEditor.vue'
+  import { useChecklists } from '@/composables/useChecklists'
   import {
     getProgress,
     setProgress,
@@ -49,6 +57,7 @@
     resetAll,
   } from '@/lib/storage'
 
+  const { update, remove, findBySlug } = useChecklists()
   const router = useRouter()
   function goBack() {
     // якщо прийшли напряму по URL, гарантовано ведемо в список
@@ -67,6 +76,23 @@
   onBeforeUnmount(() => {
     window.removeEventListener('keydown', handleKey)
   })
+  const showEditor = ref(false)
+
+  function openEdit() {
+    showEditor.value = true
+  }
+  function onSave(payload) {
+    // якщо у редагуванні змінять title/items/description
+    const updated = update(checklist.value.slug, payload)
+    checklist.value = findBySlug(updated.slug) // на випадок, якщо був змінений slug у майбутньому
+  }
+
+  function onDelete() {
+    if (confirm(`Видалити "${checklist.value.title}"?`)) {
+      remove(checklist.value.slug)
+      router.push({ name: 'checklists' })
+    }
+  }
 
   const route = useRoute()
   const checklist = ref(null)

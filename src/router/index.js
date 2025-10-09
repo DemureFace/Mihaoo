@@ -5,11 +5,11 @@ import CheckListsView from '@/views/CheckListsView.vue';
 import ChecklistDetailView from '@/views/ChecklistDetailView.vue';
 
 const routes = [
-  {
-    path: '/login',
-    name: 'login',
-    component: BasicAuth,
-  },
+  // {
+  //   path: '/login',
+  //   name: 'login',
+  //   component: BasicAuth,
+  // },
   {
     path: '/home',
     name: 'home',
@@ -31,18 +31,18 @@ const router = createRouter({
 })
 
 // Глобальный Guard
-router.beforeEach((to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('authToken')
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+// router.beforeEach((to, from, next) => {
+//   const isAuthenticated = !!localStorage.getItem('authToken')
+//   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
-  if (requiresAuth && !isAuthenticated) {
-    next('/login')
-  } else if (to.path === '/login' && isAuthenticated) {
-    // Если уже вошёл и зашёл на /login, редирект на /home
-    next('/home')
-  } else {
-    next()
-  }
-})
+//   if (requiresAuth && !isAuthenticated) {
+//     next('/login')
+//   } else if (to.path === '/login' && isAuthenticated) {
+//     // Если уже вошёл и зашёл на /login, редирект на /home
+//     next('/home')
+//   } else {
+//     next()
+//   }
+// })
 
 export default router
