@@ -52,13 +52,16 @@
   import TheHeader from './components/TheHeader.vue'
   import SubHeader from './components/SubHeader.vue'
   import PromoTool from './views/PromoView.vue'
+  import ChecklistsTool from './views/CheckListsView.vue'
   import TournamentsTool from './views/TournamentView.vue'
   import Dashboard from './views/DashboardView.vue'
   import News from './views/NewsView.vue'
   import SideBar from './components/SideBar.vue'
+  import { RouterView } from 'vue-router'
 
   const DashboardAsync = defineAsyncComponent(() => import('./views/DashboardView.vue'))
   const PromoAsync = defineAsyncComponent(() => import('./views/PromoView.vue'))
+  const ChecklistAsync = defineAsyncComponent(() => import('./views/CheckListsView.vue'))
   const TournamentsAsync = defineAsyncComponent(() => import('./views/TournamentView.vue'))
   const NewsAsync = defineAsyncComponent(() => import('./views/NewsView.vue'))
 
@@ -82,6 +85,7 @@
   const components = {
     dashboard: Dashboard,
     promo: PromoTool,
+    checklists: RouterView,
     tournaments: TournamentsTool,
     news: News,
   }

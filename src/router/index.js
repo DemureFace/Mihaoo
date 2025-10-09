@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BasicAuth from '../components/BasicAuth.vue'
-import HomeView from '../views/PromoView.vue' // Или твой главный компонент
+import HomeView from '../views/PromoView.vue'
+import CheckListsView from '@/views/CheckListsView.vue';
+import ChecklistDetailView from '@/views/ChecklistDetailView.vue';
 
 const routes = [
   {
@@ -18,11 +20,14 @@ const routes = [
     path: '/',
     redirect: '/home', // Корень будет редиректить в /home
   },
+  { path: '/checklists', name: 'checklists', component: CheckListsView },
+  { path: '/checklists/:slug', name: 'checklist', component: ChecklistDetailView, props: true }
 ]
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior() { return { top: 0 }; }
 })
 
 // Глобальный Guard

@@ -132,7 +132,7 @@ export function useParser() {
     const promoTitle = extract(/Title:\s*(.+?)(?:\n|$)/i, text)
     const prize = extract(/Prize:\s*(.+?)(?:\n|$)/i, text)
     const cardBgImageSrc = extract(/Card Banner:\s*(.+?)(?:\n|$)/i, text)
-    const cardDescription = extract(/Card Banner:\s*(.+?)(?:\n|$)/i, text)
+    const cardDescription = extract(/Card Description:\s*(.+?)(?:\n|$)/i, text)
     const description = extract(/Description:\s*(.+?)(?:\n|$)/i, text)
     const underDescription = extract(/Under Description:\s*(.+?)(?:\n|$)/i, text)
     const bgImageSrc = extract(/Banner:\s*(.+?)(?:\n|$)/i, text)

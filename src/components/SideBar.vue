@@ -48,6 +48,7 @@
     TrophyIcon, // Tournament
     TagIcon, // Promo
     NewspaperIcon, // News
+    ClipboardDocumentCheckIcon, // ClipboardDocumentCheckIcon
   } from '@heroicons/vue/24/outline'
 
   const props = defineProps({
@@ -62,6 +63,7 @@
     { label: 'Dashboard', value: 'dashboard', icon: Squares2X2Icon },
     { label: 'Tournament', value: 'tournaments', icon: TrophyIcon },
     { label: 'Promo', value: 'promo', icon: TagIcon },
+    { label: 'Checklists', value: 'checklists', icon: ClipboardDocumentCheckIcon },
     { label: 'News', value: 'news', icon: NewspaperIcon },
   ]
 
