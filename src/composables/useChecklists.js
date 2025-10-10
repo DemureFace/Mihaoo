@@ -9,10 +9,9 @@ export function useChecklists() {
   function create({ title, description, items }) {
     const now = new Date().toISOString()
     let slug = generateSlug(title)
-    // ensure unique slug
     let i = 1
-    const exists = s => state.value.some(c => c.slug === s)
-    while (exists(slug)) slug = `${slug}-${i++}`
+    while (state.value.some(c => c.slug === slug)) slug = `${slug}-${i++}`
+
     const entry = { slug, title, description, items, createdAt: now, updatedAt: now }
     state.value = [entry, ...state.value]
     saveChecklists(state.value)
@@ -23,15 +22,10 @@ export function useChecklists() {
     const idx = state.value.findIndex(c => c.slug === slug)
     if (idx === -1) return null
     const prev = state.value[idx]
-    const updated = {
-      ...prev,
-      ...patch,
-      // якщо змінили title і хочемо оновити slug — дозволимо через patch.slug
-      updatedAt: new Date().toISOString(),
-    }
-    state.value.splice(idx, 1, updated)
+    const next = { ...prev, ...patch, updatedAt: new Date().toISOString() }
+    state.value.splice(idx, 1, next)
     saveChecklists(state.value)
-    return updated
+    return next
   }
 
   function remove(slug) {

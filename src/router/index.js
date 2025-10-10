@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BasicAuth from '../components/BasicAuth.vue'
-import HomeView from '../views/PromoView.vue'
+import HomeView from '@/views/DashboardView.vue';
+import TournametView from '@/views/DashboardView.vue';
+import PromoView from '@/views/DashboardView.vue';
+import NewsView from '@/views/DashboardView.vue';
 import CheckListsView from '@/views/CheckListsView.vue';
 import ChecklistDetailView from '@/views/ChecklistDetailView.vue';
 
@@ -20,6 +23,9 @@ const routes = [
     path: '/',
     redirect: '/home', // Корень будет редиректить в /home
   },
+  { path: '/tournamet', name: 'tournamet', component: TournametView },
+  { path: '/promo', name: 'promo', component: PromoView },
+  { path: '/news', name: 'news', component: NewsView },
   { path: '/checklists', name: 'checklists', component: CheckListsView },
   { path: '/checklists/:slug', name: 'checklist', component: ChecklistDetailView, props: true }
 ]

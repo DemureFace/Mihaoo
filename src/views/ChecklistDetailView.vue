@@ -22,7 +22,9 @@
       </p>
     </header>
 
-    <ChecklistEditor v-model="showEditor" :value="checklist" @save="onSave" />
+    <BaseModal v-model="showEditor">
+      <ChecklistEditor :value="checklist" @save="onSave" />
+    </BaseModal>
 
     <ul class="space-y-2">
       <li v-for="item in checklist.items" :key="item.id" class="border rounded p-3">
@@ -45,10 +47,12 @@
 <script setup>
   import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
+  import BaseModal from '@/components/base/BaseModal.vue'
   import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
-  import { CHECKLISTS } from '@/data/checklists'
   import ChecklistEditor from '@/components/ChecklistEditor.vue'
   import { useChecklists } from '@/composables/useChecklists'
+
+  const { findBySlug } = useChecklists()
   import {
     getProgress,
     setProgress,
@@ -56,8 +60,11 @@
     getLastFilledAt,
     resetAll,
   } from '@/lib/storage'
-
-  const { update, remove, findBySlug } = useChecklists()
+  function openEdit() {
+  showEditor.value = true
+  console.log('🔵 openEdit -> showEditor =', showEditor.value)
+}
+  const { update, remove } = useChecklists()
   const router = useRouter()
   function goBack() {
     // якщо прийшли напряму по URL, гарантовано ведемо в список
@@ -65,6 +72,7 @@
   }
 
   function handleKey(e) {
+    if (showEditor.value) return
     if (e.key === 'Escape') goBack()
   }
 
@@ -78,13 +86,13 @@
   })
   const showEditor = ref(false)
 
-  function openEdit() {
-    showEditor.value = true
-  }
   function onSave(payload) {
-    // якщо у редагуванні змінять title/items/description
-    const updated = update(checklist.value.slug, payload)
-    checklist.value = findBySlug(updated.slug) // на випадок, якщо був змінений slug у майбутньому
+    const prevSlug = checklist.value?.slug
+    const updated = update(prevSlug, payload)
+    if (updated) {
+      checklist.value = findBySlug(updated.slug)
+      showEditor.value = false
+    }
   }
 
   function onDelete() {
@@ -103,7 +111,7 @@
 
   function load() {
     const s = slug.value
-    const found = CHECKLISTS.find((c) => c.slug === s) || null
+    const found = findBySlug(s)
     checklist.value = found
     progress.value = found ? getProgress(s) : []
     lastFilled.value = getLastFilledAt(s)

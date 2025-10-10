@@ -45,13 +45,18 @@
   import ChecklistEditor from '@/components/ChecklistEditor.vue'
   import { getLastFilledAt } from '@/lib/storage'
   import { useChecklists } from '@/composables/useChecklists'
+  const { all } = useChecklists()
+
+  const withDerived = computed(() =>
+    all.value.map((c) => ({ ...c, lastFilledAt: getLastFilledAt(c.slug) })),
+  )
 
   const q = ref('')
   const sortBy = ref('recent')
   const showEditor = ref(false)
   const editing = ref(null)
 
-  const { all, create, update, remove } = useChecklists()
+  const { create, update, remove } = useChecklists()
 
   function openCreate() {
     editing.value = null
@@ -75,10 +80,6 @@
       remove(cl.slug)
     }
   }
-
-  const withDerived = computed(() =>
-    all.value.map((c) => ({ ...c, lastFilledAt: getLastFilledAt(c.slug) })),
-  )
 
   const filtered = computed(() => {
     const term = q.value.trim().toLowerCase()

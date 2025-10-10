@@ -43,6 +43,7 @@
 
 <script setup>
   import { ref } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import {
     Squares2X2Icon, // Dashboard
     TrophyIcon, // Tournament
@@ -58,6 +59,15 @@
   const emit = defineEmits(['change-tab'])
 
   const bouncingTab = ref(null)
+  const router = useRouter()
+  const route = useRoute()
+  const tabPath = {
+    dashboard: '/dashboard',
+    tournaments: '/tournaments',
+    promo: '/promo',
+    checklists: '/checklists',
+    news: '/news',
+  }
 
   const tabs = [
     { label: 'Dashboard', value: 'dashboard', icon: Squares2X2Icon },
@@ -75,6 +85,13 @@
     setTimeout(() => {
       if (bouncingTab.value === value) bouncingTab.value = null
     }, 1500)
+    if (value in tabPath) {
+      // для чеклістів — реальний роут, щоб відкривався RouterView
+      router.push({ path: tabPath[value] })
+    } else {
+      // для інших табів — лишаємося на поточному шляху, але виставляємо ?tab=...
+      router.push({ path: route.path || '/', query: { ...route.query, tab: value } })
+    }
   }
 </script>
 
