@@ -1,7 +1,7 @@
 export const CHECKLISTS = [
   {
     slug: 'promo-page',
-    title: 'Promotions',
+    title: '[SS]Promotions',
     description: 'Чек перед релізом промо-сторінки.',
     createdAt: '2025-09-25T09:00:00+03:00',
     sections: [
@@ -114,7 +114,7 @@ export const CHECKLISTS = [
   },
   {
     slug: 'tourn-page',
-    title: 'Страница Tournaments',
+    title: '[SS]Страница Tournaments',
     description: 'Чек перед релізом турнірної сторінки',
     createdAt: '2025-09-25T09:00:00+03:00',
     sections: [
@@ -251,7 +251,7 @@ export const CHECKLISTS = [
   },
   {
     slug: 'promo-landing',
-    title: 'Promo Landing',
+    title: '[SS]Promo Landing',
     description: 'Чек перед релізом Promo Landing і повʼязаних елементів.',
     createdAt: '2025-09-25T09:00:00+03:00',
     sections: [
@@ -412,7 +412,7 @@ export const CHECKLISTS = [
   },
   {
     slug: 'promo-calendar',
-    title: 'Promo Calendar',
+    title: '[SS]Promo Calendar',
     description: 'Чек перед релізом Promo Calendar і повʼязаних елементів.',
     createdAt: '2025-09-25T09:00:00+03:00',
     sections: [
@@ -655,7 +655,163 @@ export const CHECKLISTS = [
         ],
       },
     ],
+  },
+  {
+    slug: 'event-promotions-and-detail',
+    title: '[TL]Event (Promotions + Event page)',
+    description: 'Перевірка картки івенту на Promotions та внутрішньої сторінки івенту.',
+    createdAt: '2025-09-25T09:00:00+03:00',
+    sections: [
+      {
+        id: 'sec-1',
+        title: '1. Картка івенту на сторінці Promotions',
+        items: [
+          {
+            id: 'event-type',
+            type: 'group',
+            text: 'Коректно обрано тип івента відповідно до механіки',
+            children: [
+              { id: 'type-tournament', type: 'check', text: 'Tournament' },
+              { id: 'type-promo-event', type: 'check', text: 'Promo event' },
+              { id: 'type-bonus', type: 'check', text: 'Bonus' },
+            ],
+          },
+          {
+            id: 'title-slogan',
+            type: 'group',
+            text: 'Назва та слоган івенту',
+            children: [
+              { id: 'no-art-overlap', type: 'check', text: 'Не перекривають арт на прев’ю банері' },
+              { id: 'max-lines', type: 'check', text: 'Не виходять за допустиму кількість рядків' },
+              { id: 'title-responsive', type: 'check', text: 'Коректно відображаються на desktop та mobile' },
+            ],
+          },
+          {
+            id: 'translations-preview',
+            type: 'group',
+            text: 'Переклади для інших локалей',
+            children: [
+              { id: 'translations-all', type: 'check', text: 'Присутні для всіх доступних мов' },
+              {
+                id: 'translations-length',
+                type: 'check',
+                text: 'Відповідають вимогам до довжини та верстки як вище',
+              },
+            ],
+          },
+          {
+            id: 'preview-banner',
+            type: 'group',
+            text: 'Прев’ю банер',
+            children: [
+              { id: 'banner-loaded', type: 'check', text: 'Завантажений' },
+              { id: 'banner-ratio', type: 'check', text: 'Має коректне співвідношення сторін' },
+              {
+                id: 'banner-quality',
+                type: 'check',
+                text: 'Без артефактів, розмиття або обрізаного контенту',
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        id: 'sec-2',
+        title: '2. Внутрішня сторінка івенту',
+        items: [
+          {
+            id: 'main-banner',
+            type: 'group',
+            text: 'Основний банер',
+            children: [
+              { id: 'main-banner-format', type: 'check', text: 'Завантажений у правильному форматі' },
+              { id: 'main-banner-responsive', type: 'check', text: 'Коректно відображається на desktop та mobile' },
+            ],
+          },
+          {
+            id: 'event-dates',
+            type: 'group',
+            text: 'Дати проведення івенту',
+            children: [
+              { id: 'dates-correct', type: 'check', text: 'Вказані коректно' },
+              { id: 'dates-match-task', type: 'check', text: 'Відповідають умовам івенту та поставленій задачі' },
+            ],
+          },
+          {
+            id: 'rewards-sums',
+            type: 'group',
+            text: 'Суми винагород',
+            children: [
+              { id: 'rewards-correct', type: 'check', text: 'Вказані коректно' },
+              { id: 'rewards-match-task', type: 'check', text: 'Відповідають умовам івенту та поставленій задачі' },
+            ],
+          },
+          {
+            id: 'text-terms',
+            type: 'group',
+            text: 'Текст опису і термзи',
+            children: [
+              {
+                id: 'no-bad-linebreaks',
+                type: 'check',
+                text: 'Немає некоректних переносів і неестетичних розривів тексту',
+              },
+              {
+                id: 'no-split-currency-percent',
+                type: 'check',
+                text: 'Немає розривів між числом і валютою або % (з урахуванням правил локалі)',
+              },
+              { id: 'text-responsive', type: 'check', text: 'Перевірено на desktop та mobile' },
+            ],
+          },
+          {
+            id: 'translations-detail',
+            type: 'group',
+            text: 'Переклади для інших локалей',
+            children: [
+              { id: 'detail-locale-all', type: 'check', text: 'Наявні для всіх доступних локалей' },
+              { id: 'detail-locale-no-gaps', type: 'check', text: 'Без пропусків або некоректних символів' },
+              { id: 'currency-conversion', type: 'check', text: 'Конвертація валют коректна (якщо необхідна)' },
+              {
+                id: 'currency-format',
+                type: 'check',
+                text: 'Форматування валют відповідає правилам локалі (позиція символу, роздільники, формат чисел)',
+              },
+              { id: 'values-consistent', type: 'check', text: 'Значення узгоджені між собою' },
+            ],
+          },
+          {
+            id: 'games-list',
+            type: 'group',
+            text: 'Список ігор',
+            children: [
+              { id: 'games-present', type: 'check', text: 'Присутній (якщо передбачено в івенті)' },
+              { id: 'games-count', type: 'check', text: 'Відображена необхідна кількість ігор' },
+            ],
+          },
+          {
+            id: 'data-consistency',
+            type: 'group',
+            text: 'Узгодженість даних',
+            children: [
+              {
+                id: 'params-same-everywhere',
+                type: 'check',
+                text: 'Дати, суми нагород та ключові параметри однакові у всіх блоках сторінки',
+              },
+              {
+                id: 'no-contradictions',
+                type: 'check',
+                text: 'Немає розбіжностей між банерами, текстами та умовами',
+              },
+            ],
+          },
+        ],
+      },
+    ],
   }
+
 
 ]
 
