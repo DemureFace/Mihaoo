@@ -35,7 +35,11 @@
       </li>
     </ul>
     <div class="space-y-6">
-      <div v-for="sec in checklist.sections" :key="sec.id" class="space-y-2">
+      <div
+        v-for="sec in checklist.sections"
+        :key="sec.id"
+        class="space-y-2 border-dashed rounded border p-2"
+      >
         <h3 v-if="sec.title" class="text-lg font-semibold">{{ sec.title }}</h3>
         <ul class="space-y-1">
           <ChecklistNode
