@@ -11,13 +11,13 @@
           v-model="q"
           type="search"
           placeholder="Пошук…"
-          class="border rounded-xl px-3 py-2 text-sm outline-none"
+          class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none transition placeholder:text-gray-400"
         />
         <button class="btn bg-gray-900 text-white" @click="openCreate">+ Новий</button>
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
       <div v-for="cl in filtered" :key="cl.slug" class="relative">
         <ChecklistCard :checklist="cl" />
         <div class="absolute top-2 right-2 flex gap-1">
@@ -108,7 +108,6 @@
 <style scoped>
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
   }
   .btn {
@@ -120,6 +119,6 @@
     background: #fff;
   }
   .btn:hover {
-    background: #f3f4f6;
+    background: black;
   }
 </style>

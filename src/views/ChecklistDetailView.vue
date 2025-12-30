@@ -28,12 +28,26 @@
 
     <ul class="space-y-2">
       <li v-for="item in checklist.items" :key="item.id" class="border rounded p-3">
-        <label class="flex gap-3 items-start cursor-pointer">
+        <label class="flex gap-3 items-center cursor-pointer">
           <input type="checkbox" :checked="isChecked(item.id)" @change="toggle(item.id)" />
           <span>{{ item.text }}</span>
         </label>
       </li>
     </ul>
+    <div class="space-y-6">
+      <div v-for="sec in checklist.sections" :key="sec.id" class="space-y-2">
+        <h3 v-if="sec.title" class="text-lg font-semibold">{{ sec.title }}</h3>
+        <ul class="space-y-1">
+          <ChecklistNode
+            v-for="n in sec.items"
+            :key="n.id"
+            :node="n"
+            :isChecked="isChecked"
+            :toggle="toggle"
+          />
+        </ul>
+      </div>
+    </div>
 
     <div class="mt-5 flex gap-2">
       <button class="border rounded px-3 py-1" @click="markAll">Позначити все</button>
@@ -51,6 +65,7 @@
   import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
   import ChecklistEditor from '@/components/ChecklistEditor.vue'
   import { useChecklists } from '@/composables/useChecklists'
+  import ChecklistNode from '@/components/ChecklistNode.vue'
 
   const { findBySlug } = useChecklists()
   import {
@@ -61,9 +76,9 @@
     resetAll,
   } from '@/lib/storage'
   function openEdit() {
-  showEditor.value = true
-  console.log('🔵 openEdit -> showEditor =', showEditor.value)
-}
+    showEditor.value = true
+    console.log('🔵 openEdit -> showEditor =', showEditor.value)
+  }
   const { update, remove } = useChecklists()
   const router = useRouter()
   function goBack() {
@@ -138,7 +153,10 @@
   }
   function markAll() {
     if (checklist.value) {
-      progress.value = checklist.value.items.map((i) => i.id)
+      const ids = checklist.value.sections
+        ? checklist.value.sections.flatMap((sec) => collectLeafIds(sec.items))
+        : collectLeafIds(checklist.value.items) // на випадок старої схеми
+      progress.value = ids
       setProgress(slug.value, progress.value)
       touchLastFilledAt(slug.value)
       lastFilled.value = getLastFilledAt(slug.value)
@@ -151,5 +169,13 @@
   }
   function fmt(iso) {
     return new Date(iso).toLocaleString()
+  }
+
+  function collectLeafIds(items, out = []) {
+    for (const it of items || []) {
+      if (it.type === 'check') out.push(it.id)
+      if (it.type === 'group') collectLeafIds(it.children, out)
+    }
+    return out
   }
 </script>

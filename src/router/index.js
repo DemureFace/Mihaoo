@@ -27,7 +27,7 @@ const routes = [
   { path: '/promo', name: 'promo', component: PromoView },
   { path: '/news', name: 'news', component: NewsView },
   { path: '/checklists', name: 'checklists', component: CheckListsView },
-  { path: '/checklists/:slug', name: 'checklist', component: ChecklistDetailView, props: true }
+  { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true }
 ]
 
 const router = createRouter({

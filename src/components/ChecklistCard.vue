@@ -1,35 +1,19 @@
 <template>
-  <article
-    class="card group relative hover:shadow-md transition cursor-pointer overflow-hidden"
-    role="button"
-    :aria-label="`Open checklist ${checklist.title}`"
-    @click="go"
-  >
-    <div class="p-4 flex flex-col gap-3">
-      <div class="flex items-start justify-between gap-3">
-        <h3 class="text-lg font-semibold leading-tight group-hover:underline">
-          {{ checklist.title }}
-        </h3>
-        <span class="badge">{{ completed }}/{{ total }}</span>
-      </div>
-      <p class="text-sm text-gray-600">{{ checklist.description }}</p>
-      <dl class="text-xs text-gray-500 grid grid-cols-2 gap-x-6 gap-y-1">
-        <div>
-          <dd>Створено: {{ formatDate(checklist.createdAt) }}</dd>
-        </div>
-        <div>
-          <dd>Останнє заповнення: {{ lastFilledLabel }}</dd>
-        </div>
-      </dl>
-      <div class="mt-2">
-        <router-link
-          class="btn text-sm"
-          :to="{ name: 'checklist', params: { slug: checklist.slug } }"
-          @click.stop
-        >
-          Відкрити
-        </router-link>
-      </div>
+  <article class="border rounded-2xl p-4 flex flex-col gap-2">
+    <h3 class="text-lg font-semibold">{{ checklist.title }}</h3>
+    <p class="text-sm text-gray-600">{{ checklist.description }}</p>
+
+    <p class="text-xs text-gray-500">
+      Створено: {{ fmt(checklist.createdAt) }}
+      <span v-if="lastFilledLabel">· Останнє заповнення: {{ lastFilledLabel }}</span>
+    </p>
+
+    <p class="text-xs text-gray-500">Усього пунктів: {{ totalItems }}</p>
+
+    <div class="mt-3 flex gap-2">
+      <button class="border rounded px-3 py-1" @click="open">Відкрити</button>
+      <button class="border rounded px-3 py-1" @click="edit">Редагувати</button>
+      <button class="border rounded px-3 py-1" @click="remove">Видалити</button>
     </div>
   </article>
 </template>
@@ -37,45 +21,52 @@
 <script setup>
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
-  import { getProgress, getLastFilledAt } from '@/lib/storage'
+  import { getLastFilledAt } from '@/lib/storage'
 
-  const props = defineProps({ checklist: { type: Object, required: true } })
+  const props = defineProps({
+    checklist: { type: Object, required: true },
+  })
+
   const router = useRouter()
 
-  const progress = computed(() => getProgress(props.checklist.slug))
-  const completed = computed(() => progress.value.length)
-  const total = computed(() => props.checklist.items.length)
+  // 👉 Нормалізація: перетворюємо і старі .items, і нові .sections у плоский список leaf-пунктів
+  function collectLeafItems(ch) {
+    const out = []
+    const walk = (items) => {
+      for (const it of items || []) {
+        if (!it) continue
+        if (!it.type || it.type === 'check') out.push(it)
+        if (it.type === 'group') walk(it.children)
+      }
+    }
 
-  const lastFilled = computed(() => getLastFilledAt(props.checklist.slug))
-  const lastFilledLabel = computed(() => (lastFilled.value ? formatDate(lastFilled.value) : '—'))
-
-  function go() {
-    router.push({ name: 'checklist', params: { slug: props.checklist.slug } })
+    if (Array.isArray(ch.items)) {
+      walk(ch.items)
+    } else if (Array.isArray(ch.sections)) {
+      ch.sections.forEach((sec) => walk(sec.items))
+    }
+    return out
   }
-  function formatDate(iso) {
+
+  const flatItems = computed(() => collectLeafItems(props.checklist))
+  const totalItems = computed(() => flatItems.value.length)
+
+  const lastFilledLabel = computed(() => {
+    const ts = getLastFilledAt(props.checklist.slug)
+    return ts ? new Date(ts).toLocaleString() : ''
+  })
+
+  function open() {
+    router.push({ name: 'checklist-detail', params: { slug: props.checklist.slug } })
+  }
+  function edit() {
+    // якийсь твій emit / навігація в редактор
+  }
+  function remove() {
+    // emit('remove', props.checklist.slug) або твоя логіка
+  }
+
+  function fmt(iso) {
     return new Date(iso).toLocaleString()
   }
 </script>
-
-<style scoped>
-  .card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 0.5rem 0.75rem;
-    text-decoration: none;
-  }
-  .btn:hover {
-    background: #f3f4f6;
-  }
-  .badge {
-    font-size: 0.75rem;
-    color: #6b7280;
-  }
-</style>

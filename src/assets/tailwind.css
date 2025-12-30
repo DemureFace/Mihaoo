@@ -43,18 +43,13 @@ button {
 }
 
 input {
-  border: none;
-  border-bottom: 1px solid black;
   outline: none;
   font-size: 1em;
   background: transparent;
   font-weight: 500;
-  padding: 10px 35px 5px 5px;
 }
 
 input:focus {
-  border-bottom: 2px solid black;
-  padding-bottom: 4px;
 }
 
 input::placeholder {
@@ -118,7 +113,6 @@ a {
 .break-inside-avoid { break-inside: avoid; }
 .masonry {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 24px;
   grid-auto-rows: 8px;         /* базова висота рядка */
 }
