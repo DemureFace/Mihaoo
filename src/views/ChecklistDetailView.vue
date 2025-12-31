@@ -29,7 +29,7 @@
     <ul class="space-y-2">
       <li v-for="item in checklist.items" :key="item.id" class="border rounded p-3">
         <label class="flex gap-3 items-center cursor-pointer">
-          <input type="checkbox" :checked="isChecked(item.id)" @change="toggle(item.id)" />
+          <input type="checkbox" :checked="isChecked(item.id)" @change="toggle(item.id)" class="accent-green-600 focus:ring-2 focus:ring-green-400" />
           <span>{{ item.text }}</span>
         </label>
       </li>
