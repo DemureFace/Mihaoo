@@ -148,16 +148,23 @@
       return sign + int
     }
 
-    // 2 decimals, але прибираємо зайві нулі
-    const fixed = Number(n).toFixed(2) // "10.00", "10.50", "10.10"
+    const fixed = Number(n).toFixed(2)
     const [intRaw, fracRaw = '00'] = fixed.split('.')
 
     const sign = intRaw.startsWith('-') ? '-' : ''
     const int = intRaw.replace('-', '').replace(/\B(?=(\d{3})+(?!\d))/g, r.separator)
 
-    // якщо .00 — не додаємо дробову частину
-    if (fracRaw === '00') return sign + int
+    // 10.00 → 10
+    if (fracRaw === '00') {
+      return sign + int
+    }
 
+    // 0.10 → 0.1
+    if (fracRaw[1] === '0') {
+      return sign + int + r.decimal + fracRaw[0]
+    }
+
+    // 10.50 → 10.50
     return sign + int + r.decimal + fracRaw
   }
 
@@ -275,6 +282,14 @@
     })
   }
 
+  function applyLocaleWordRules(text, locale) {
+    if (locale !== 'au') return text
+
+    return String(text)
+      .replace(/(^|[^A-Za-z])slots(?=([^A-Za-z]|$))/gi, (m, p) => p + 'pokies')
+      .replace(/(^|[^A-Za-z])slot(?=([^A-Za-z]|$))/gi, (m, p) => p + 'pokie')
+  }
+
   /* ---------- UI state ---------- */
   const sites = computed(() => Object.keys(siteModes))
   const site = useLocalStorageRef('cc.site', 'Moonwin')
@@ -292,19 +307,26 @@
 
       let converted
       if (tab.value === 'snippet') {
+        // 1) робимо snippet (валюта -> Components.Snippet)
         converted = processTextForSnippets(String(input.value || ''))
+
+        // 2) застосовуємо AU-правило тільки для au
+        converted = applyLocaleWordRules(converted, fmtLoc)
+
+        // 3) як раніше — загортаємо в span
         map[loc] = `<span>${converted}</span>`
       } else {
+        // content/data як було
         converted = processText(String(input.value || ''), fmtLoc)
         map[loc] = converted
       }
     }
 
-    // Output formatting: keep same “map-like” view (readable for copy)
     output.value = Object.entries(map)
       .map(([k, v]) => (tab.value === 'snippet' ? `${k}: "${v}"` : `"${k}": "${v}"`))
       .join(',\n')
   }
+
   watch(
     [tab, site],
     () => {
