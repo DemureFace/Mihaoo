@@ -9,30 +9,30 @@ export const CHECKLISTS = [
         id: 'first-sec',
         title: '1. Страница Promotions', // якщо не треба заголовок секції — став null
         items: [
-          { id: 'title-descr', type: 'check', text: 'Тайтл і коротке описание соответствует задаче' },
-          { id: 'short-descr', type: 'check', text: 'Краткое описание с условиями и датами присутствует' },
-          { id: 'bonus-code-propisan', type: 'check', text: 'Прописан корректный Bonus Code' },
-          { id: 'all-bonuses-listed', type: 'check', text: 'Приведены все доступные бонусы и их условия (сумма депозита, % кешбэка, вейджер, FS)' },
-          { id: 'all-links-clickable', type: 'check', text: 'Все ссылки (Bonus Rules, Terms & Conditions) кликабельны и ведут на правильные страницы' },
+          { id: 'page-title-descr', type: 'check', text: 'Тайтл і коротке описание соответствует задаче' },
+          { id: 'page-short-descr', type: 'check', text: 'Краткое описание с условиями и датами присутствует' },
+          { id: 'page-bonus-code-propisan', type: 'check', text: 'Прописан корректный Bonus Code' },
+          { id: 'page-all-bonuses-listed', type: 'check', text: 'Приведены все доступные бонусы и их условия (сумма депозита, % кешбэка, вейджер, FS)' },
+          { id: 'page-all-links-clickable', type: 'check', text: 'Все ссылки (Bonus Rules, Terms & Conditions) кликабельны и ведут на правильные страницы' },
           {
             id: 'bonus-rules-block',
             type: 'group',
             text: 'Блок «Bonus Rules» содержит:',
             children: [
-              { id: 'period', type: 'check', text: 'период проведения промо' },
-              { id: 'code-deposit-cashback-fs', type: 'check', text: 'бонускод, сумма депозита, % кешбэка, FS совпадают с описанием' },
-              { id: 'each-bonus-conditions', type: 'check', text: 'условия получения каждого бонуса' },
-              { id: 'wager-per-level', type: 'check', text: 'вейджер для каждого уровня' },
-              { id: 'bonus-expiry', type: 'check', text: 'срок действия бонуса' },
-              { id: 'limits', type: 'check', text: 'ограничения по ставкам и выигрышам' },
-              { id: 'tech-conditions', type: 'check', text: 'технические условия (активация, поддержка, ручная выдача)' },
+              { id: 'page-period', type: 'check', text: 'период проведения промо' },
+              { id: 'page-code-deposit-cashback-fs', type: 'check', text: 'бонускод, сумма депозита, % кешбэка, FS совпадают с описанием' },
+              { id: 'page-each-bonus-conditions', type: 'check', text: 'условия получения каждого бонуса' },
+              { id: 'page-wager-per-level', type: 'check', text: 'вейджер для каждого уровня' },
+              { id: 'page-bonus-expiry', type: 'check', text: 'срок действия бонуса' },
+              { id: 'page-limits', type: 'check', text: 'ограничения по ставкам и выигрышам' },
+              { id: 'page-tech-conditions', type: 'check', text: 'технические условия (активация, поддержка, ручная выдача)' },
             ],
           },
-          { id: 'code-matches', type: 'check', text: 'Bonus Code совпадает с условием в задаче' },
-          { id: 'get-bonus-btn', type: 'check', text: 'Кнопка Get Bonus работает и ведет на корректное действие' },
-          { id: 'currency-snippets', type: 'check', text: 'Добавлены валютные сниппеты' },
-          { id: 'pokies-au', type: 'check', text: 'Slots для AU гео отображается как Pokies' },
-          { id: 'responsive-check', type: 'check', text: 'Проверка отображения на мобильной и десктопной версии' },
+          { id: 'page-code-matches', type: 'check', text: 'Bonus Code совпадает с условием в задаче' },
+          { id: 'page-get-bonus-btn', type: 'check', text: 'Кнопка Get Bonus работает и ведет на корректное действие' },
+          { id: 'page-currency-snippets', type: 'check', text: 'Добавлены валютные сниппеты' },
+          { id: 'page-pokies-au', type: 'check', text: 'Slots для AU гео отображается как Pokies' },
+          { id: 'page-responsive-check', type: 'check', text: 'Проверка отображения на мобильной и десктопной версии' },
         ],
       },
       {
@@ -40,11 +40,11 @@ export const CHECKLISTS = [
         title: '2. Карточка на странице всех Promotions', // якщо не треба заголовок секції — став null
         items: [
           { id: 'card-added', type: 'check', text: 'Карточка добавлена в общий список Promotions' },
-          { id: 'show-title', type: 'check', text: 'Отображается название промо' },
-          { id: 'short-descr', type: 'check', text: 'Есть краткое описание' },
-          { id: 'link', type: 'check', text: 'Ссылка с карточки ведет на страницу промо' },
-          { id: 'responsive-check', type: 'check', text: 'Проверена адаптивность отображения карточки' },
-          { id: 'group-check', type: 'check', text: 'Проверено отображение по группам' },
+          { id: 'card-show-title', type: 'check', text: 'Отображается название промо' },
+          { id: 'card-short-descr', type: 'check', text: 'Есть краткое описание' },
+          { id: 'card-link', type: 'check', text: 'Ссылка с карточки ведет на страницу промо' },
+          { id: 'card-responsive-check', type: 'check', text: 'Проверена адаптивность отображения карточки' },
+          { id: 'card-group-check', type: 'check', text: 'Проверено отображение по группам' },
         ],
       },
       {
@@ -53,37 +53,37 @@ export const CHECKLISTS = [
         items: [
 
             {
-              id: 'card-added',
+              id: 'main-card-added',
               type: 'check',
               text: 'Добавлен баннер или слайд промо',
             },
             {
-              id: 'show-title',
+              id: 'main-show-title',
               type: 'check',
               text: 'Указано название промо',
             },
             {
-              id: 'short-descr',
+              id: 'main-short-descr',
               type: 'check',
               text: 'Присутствует краткое описание',
             },
             {
-              id: 'link',
+              id: 'main-link',
               type: 'check',
               text: 'Баннер кликабелен и ведет на страницу промо',
             },
             {
-              id: 'responsive-check',
+              id: 'main-responsive-check',
               type: 'check',
               text: 'Проверено отображение на всех устройствах desktop и mobile',
             },
             {
-              id: 'slider-rotation',
+              id: 'main-slider-rotation',
               type: 'check',
               text: 'Слайдер работает корректно и промо появляется в ротации',
             },
             {
-              id: 'group-check',
+              id: 'main-group-check',
               type: 'check',
               text: 'Проверено отображение по группам',
             },
@@ -99,7 +99,7 @@ export const CHECKLISTS = [
               text: 'Все элементы синхронизированы (названия, даты, проценты кешбэка везде одинаковые)',
             },
             {
-              id: 'show-title',
+              id: 'check-duplicated',
               type: 'check',
               text: 'Ничего не дублируется и не противоречит условиям',
             },
@@ -122,11 +122,11 @@ export const CHECKLISTS = [
         id: 'sec-tournament-page',
         title: '1. Страница Турнира',
         items: [
-          { id: 'tourn-title', type: 'check', text: 'Заголовок турнира соответствует задаче' },
-          { id: 'prize-pool', type: 'check', text: 'Указан общий призовой фонд турнира' },
-          { id: 'tourn-timer', type: 'check', text: 'Добавлен таймер до конца турнира' },
-          { id: 'currency-geo', type: 'check', text: 'Валюта корректно отображается в зависимости от GEO или IP' },
-          { id: 'responsive', type: 'check', text: 'Проверено отображение на desktop и mobile' },
+          { id: 'page-tourn-title', type: 'check', text: 'Заголовок турнира соответствует задаче' },
+          { id: 'page-prize-pool', type: 'check', text: 'Указан общий призовой фонд турнира' },
+          { id: 'page-tourn-timer', type: 'check', text: 'Добавлен таймер до конца турнира' },
+          { id: 'page-currency-geo', type: 'check', text: 'Валюта корректно отображается в зависимости от GEO или IP' },
+          { id: 'page-responsive', type: 'check', text: 'Проверено отображение на desktop и mobile' },
         ],
       },
 
@@ -142,12 +142,12 @@ export const CHECKLISTS = [
             text: 'Указаны условия участия (минимальная ставка, количество спинов, механика)',
           },
           {
-            id: 'unique-mechanics',
+            id: 'terms-unique-mechanics',
             type: 'check',
             text: 'Описана уникальная механика турнира, если предусмотрена',
           },
           {
-            id: 'win-rules',
+            id: 'terms-win-rules',
             type: 'check',
             text: 'Прописаны правила распределения выигрышей',
           },
@@ -194,22 +194,22 @@ export const CHECKLISTS = [
         id: 'sec-card-main',
         title: '4. Главная страница',
         items: [
-          { id: 'card-added-main', type: 'check', text: 'Карточка турнира добавлена в общий список' },
-          { id: 'card-title-main', type: 'check', text: 'Указано название турнира' },
-          { id: 'card-prize-main', type: 'check', text: 'Прописан общий призовой фонд' },
-          { id: 'card-timer-main', type: 'check', text: 'Добавлен таймер с обратным отсчетом' },
+          { id: 'main-added-main', type: 'check', text: 'Карточка турнира добавлена в общий список' },
+          { id: 'main-title-main', type: 'check', text: 'Указано название турнира' },
+          { id: 'main-prize-main', type: 'check', text: 'Прописан общий призовой фонд' },
+          { id: 'main-timer-main', type: 'check', text: 'Добавлен таймер с обратным отсчетом' },
           {
-            id: 'card-link-main',
+            id: 'main-link-main',
             type: 'check',
             text: 'Ссылка с карточки ведет на страницу турнира',
           },
           {
-            id: 'card-responsive-main',
+            id: 'main-responsive-main',
             type: 'check',
             text: 'Проверено адаптивное отображение карточки',
           },
           {
-            id: 'card-geo-main',
+            id: 'main-geo-main',
             type: 'check',
             text: 'Карточка турнира отображается для всех доступных стран провайдера',
           },
@@ -279,9 +279,9 @@ export const CHECKLISTS = [
             type: 'group',
             text: 'Разделы для обычных пользователей',
             children: [
-              { id: 'reg-tournament', type: 'check', text: 'Отображается турнир для обычных пользователей' },
-              { id: 'reg-promos', type: 'check', text: 'Отображаются 4 промо доступные обычным пользователям' },
-              { id: 'reg-game-block', type: 'check', text: 'Отображается игровой блок' },
+              { id: 'pl-reg-tournament', type: 'check', text: 'Отображается турнир для обычных пользователей' },
+              { id: 'pl-reg-promos', type: 'check', text: 'Отображаются 4 промо доступные обычным пользователям' },
+              { id: 'pl-reg-game-block', type: 'check', text: 'Отображается игровой блок' },
             ],
           },
 
@@ -290,8 +290,8 @@ export const CHECKLISTS = [
             type: 'group',
             text: 'Разделы для VIP пользователей',
             children: [
-              { id: 'vip-tournament', type: 'check', text: 'Отображается 1 турнир только для VIP' },
-              { id: 'vip-promos', type: 'check', text: 'Отображаются 3 промо только для VIP' },
+              { id: 'pl-vip-tournament', type: 'check', text: 'Отображается 1 турнир только для VIP' },
+              { id: 'pl-vip-promos', type: 'check', text: 'Отображаются 3 промо только для VIP' },
             ],
           },
 
@@ -301,12 +301,12 @@ export const CHECKLISTS = [
             text: 'Логика отображения работает корректно',
             children: [
               {
-                id: 'logic-regular',
+                id: 'pl-logic-regular',
                 type: 'check',
                 text: 'Обычный пользователь видит только обычные промо и турниры',
               },
               {
-                id: 'logic-vip',
+                id: 'pl-logic-vip',
                 type: 'check',
                 text: 'VIP пользователь видит только VIP блоки',
               },
@@ -321,27 +321,27 @@ export const CHECKLISTS = [
         title: '2. Дополнительные элементы вне Promo Landing',
         items: [
           {
-            id: 'home-page-block',
+            id: 'pl-home-page-block',
             type: 'group',
             text: 'Главная страница',
             children: [
-              { id: 'home-category', type: 'check', text: 'Добавлена игровая категория для Promo Landing' },
+              { id: 'pl-home-category', type: 'check', text: 'Добавлена игровая категория для Promo Landing' },
               {
-                id: 'home-slider',
+                id: 'pl-home-slider',
                 type: 'group',
                 text: 'В слайдер добавлен баннер или слайд Promo Landing',
                 children: [
-                  { id: 'home-banner-title', type: 'check', text: 'Отображается название' },
-                  { id: 'home-banner-descr', type: 'check', text: 'Присутствует краткое описание' },
+                  { id: 'pl-home-banner-title', type: 'check', text: 'Отображается название' },
+                  { id: 'pl-home-banner-descr', type: 'check', text: 'Присутствует краткое описание' },
                   {
-                    id: 'home-banner-link',
+                    id: 'pl-home-banner-link',
                     type: 'check',
                     text: 'Ссылка с баннера ведет на Promo Landing',
                   },
                 ],
               },
               {
-                id: 'home-all-added',
+                id: 'pl-home-all-added',
                 type: 'check',
                 text: 'Все промо и турниры Promo Landing добавлены на главную страницу с логикой обычный и VIP',
               },
@@ -355,17 +355,17 @@ export const CHECKLISTS = [
         title: '3. Разделы Tournaments и Promotions',
         items: [
           {
-            id: 'sections-block',
+            id: 'pl-sections-block',
             type: 'group',
             text: 'Отображение в разделах',
             children: [
               {
-                id: 'tourn-added',
+                id: 'pl-tourn-added',
                 type: 'check',
                 text: 'Турниры Promo Landing добавлены в Tournaments с логикой обычный и VIP',
               },
               {
-                id: 'promo-added',
+                id: 'pl-promo-added',
                 type: 'check',
                 text: 'Промо Promo Landing добавлены в Promotions с логикой обычный и VIP',
               },
@@ -378,9 +378,9 @@ export const CHECKLISTS = [
         id: 'sec-4',
         title: '4. Header и Pop-ups',
         items: [
-          { id: 'header-btn', type: 'check', text: 'В хедер добавлена кнопка ведущая на Promo Landing' },
+          { id: 'pl-header-btn', type: 'check', text: 'В хедер добавлена кнопка ведущая на Promo Landing' },
           {
-            id: 'popups-updated',
+            id: 'pl-popups-updated',
             type: 'check',
             text: 'Поп апы обновлены с учетом информации о Promo Landing',
           },
@@ -810,8 +810,244 @@ export const CHECKLISTS = [
         ],
       },
     ],
-  }
+  },
+  {
+    slug: 'cashback-event-checklist',
+    title: '[TL]Cashback Event (Promotions + Pages)',
+    description: 'Перевірка Cashback-івенту: Promotions, внутрішня сторінка, головна сторінка, Bonus Policy та VIP.',
+    createdAt: '2025-09-25T10:30:00+03:00',
+    sections: [
+      {
+        id: 'sec-promotions-cashback-card',
+        title: 'Картка на сторінці Promotions замість Bonus-картки Cashback',
+        items: [
+          {
+            id: 'grp-promotions-event-type',
+            type: 'group',
+            text: 'Коректно обрано тип івента відповідно до механіки',
+            children: [
+              { id: 'chk-promotions-type-tournament', type: 'check', text: 'Tournament' },
+              { id: 'chk-promotions-type-promo-event', type: 'check', text: 'Promo-event' },
+              { id: 'chk-promotions-type-bonus', type: 'check', text: 'Bonus' },
+            ],
+          },
+          {
+            id: 'grp-promotions-title-and-slogan',
+            type: 'group',
+            text: 'Назва та слоган івенту',
+            children: [
+              { id: 'chk-promotions-copywriter-text-provided', type: 'check', text: 'Вказано наданий копірайтерами текст' },
+              { id: 'chk-promotions-no-art-overlap-on-preview-banner', type: 'check', text: 'Не перекривають арт на прев’ю-банері' },
+              { id: 'chk-promotions-within-max-lines', type: 'check', text: 'Не виходять за допустиму кількість рядків' },
+              { id: 'chk-promotions-title-responsive-desktop-mobile', type: 'check', text: 'Коректно відображаються на desktop та mobile версіях сайту' },
+            ],
+          },
+          {
+            id: 'grp-promotions-locales-translations',
+            type: 'group',
+            text: 'Переклади для інших локалей',
+            children: [
+              { id: 'chk-promotions-translations-present-for-all-languages', type: 'check', text: 'Присутні для всіх доступних мов' },
+              { id: 'chk-promotions-translations-match-length-and-layout-rules', type: 'check', text: 'Відповідають вимогам до довжини та верстки, зазначеним вище.' },
+            ],
+          },
+          {
+            id: 'grp-promotions-preview-banner',
+            type: 'group',
+            text: 'Прев’ю-банер',
+            children: [
+              { id: 'chk-promotions-preview-banner-uploaded', type: 'check', text: 'завантажений;' },
+              { id: 'chk-promotions-preview-banner-correct-aspect-ratio', type: 'check', text: 'має коректне співвідношення сторін;' },
+              { id: 'chk-promotions-preview-banner-no-artifacts', type: 'check', text: 'не містить артефактів, розмиття або обрізаного контенту.' },
+            ],
+          },
+          {
+            id: 'grp-promotions-terms',
+            type: 'group',
+            text: 'Термзи',
+            children: [
+              { id: 'chk-promotions-terms-loaded-from-bonus-policy', type: 'check', text: 'завантажено термзи які взято з Bonus policy;' },
+            ],
+          },
+        ],
+      },
+  {
+        id: 'sec-event-page',
+        title: 'Внутрішня сторінка івенту',
+        items: [
+          {
+            id: 'grp-event-page-main-banner',
+            type: 'group',
+            text: 'Основний банер',
+            children: [
+              { id: 'chk-event-page-banner-correct-format', type: 'check', text: 'завантажений у правильному форматі;' },
+              { id: 'chk-event-page-banner-responsive', type: 'check', text: 'коректно відображається на desktop та mobile.' },
+            ],
+          },
+          {
+            id: 'grp-event-page-event-dates',
+            type: 'group',
+            text: 'Дати проведення івенту',
+            children: [
+              { id: 'chk-event-page-dates-correct', type: 'check', text: 'вказані коректно;' },
+              { id: 'chk-event-page-dates-match-event-and-task', type: 'check', text: 'відповідають умовам івенту та поставленій задачі.' },
+            ],
+          },
+          {
+            id: 'grp-event-page-reward-sums',
+            type: 'group',
+            text: 'Суми винагород',
+            children: [
+              { id: 'chk-event-page-rewards-correct', type: 'check', text: 'вказані коректно;' },
+              { id: 'chk-event-page-rewards-match-event-and-task', type: 'check', text: 'відповідають умовам івенту та поставленій задачі.' },
+            ],
+          },
+          {
+            id: 'grp-event-page-description-and-terms',
+            type: 'group',
+            text: 'Текст опису і термзи:',
+            children: [
+              { id: 'chk-event-page-no-bad-line-breaks', type: 'check', text: 'не містить некоректних переносів рядків, не естетичних розривів тексту;' },
+              { id: 'chk-event-page-no-split-between-number-and-currency-or-percent', type: 'check', text: 'відсутні розриви між числом і символом валюти(якщо вказана через пробіл по правилам локалі) або “%”;' },
+              { id: 'chk-event-page-checked-desktop-and-mobile', type: 'check', text: 'перевірено на desktop та mobile.' },
+            ],
+          },
+          {
+            id: 'grp-event-page-locales-translations',
+            type: 'group',
+            text: 'Переклади для інших локалей:',
+            children: [
+              { id: 'chk-event-page-translations-present-for-all-locales', type: 'check', text: 'наявні для всіх доступних локалей;' },
+              { id: 'chk-event-page-translations-no-gaps-or-invalid-symbols', type: 'check', text: 'не містять пропусків або некоректних символів;' },
+              { id: 'chk-event-page-currency-conversion-correct-if-needed', type: 'check', text: 'Конвертація валют коректна (якщо необхідна);' },
+              { id: 'chk-event-page-currency-format-matches-locale-rules', type: 'check', text: 'форматування валют відповідає правилам обраної локалі (позиція символу, роздільники, формат чисел);' },
+              { id: 'chk-event-page-values-consistent', type: 'check', text: 'значення узгоджені між собою.' },
+            ],
+          },
+          {
+            id: 'grp-event-page-games-list',
+            type: 'group',
+            text: 'Список ігор:',
+            children: [
+              { id: 'chk-event-page-games-present-if-required', type: 'check', text: 'присутній (якщо передбачено в івенті);' },
+              { id: 'chk-event-page-games-required-count-shown', type: 'check', text: 'відображена необхідна кількість ігор.' },
+            ],
+          },
+          {
+            id: 'grp-event-page-data-consistency',
+            type: 'group',
+            text: 'Узгодженість даних:',
+            children: [
+              { id: 'chk-event-page-dates-rewards-and-params-same-everywhere', type: 'check', text: 'дати, суми нагород та інші ключові параметри однакові у всіх блоках сторінки;' },
+              { id: 'chk-event-page-no-mismatches-between-banners-text-and-terms', type: 'check', text: 'відсутні розбіжності між банерами, текстами та умовами.' },
+            ],
+          },
+        ],
+      },
+  {
+        id: 'sec-homepage-slider',
+        title: 'Слайдер на головній сторінці',
+        items: [
+          {
+            id: 'grp-homepage-cashback-card',
+            type: 'group',
+            text: 'Картка Cashback:',
+            children: [
+              { id: 'chk-homepage-card-renamed-by-copywriter-title', type: 'check', text: 'перейменована відповідно до назви, наданої копірайтерами;' },
+              { id: 'chk-homepage-card-title-does-not-break-layout', type: 'check', text: 'назва коректно відображається та не порушує верстку;' },
+            ],
+          },
+          {
+            id: 'grp-homepage-cashback-value',
+            type: 'group',
+            text: 'Значення кешбеку:',
+            children: [
+              { id: 'chk-homepage-holiday-cashback-up-to-twenty', type: 'check', text: 'вказано святковий кешбек до 20%;' },
+              { id: 'chk-homepage-percent-matches-event-conditions', type: 'check', text: 'відсоток відповідає фактичним умовам івенту;' },
+              { id: 'chk-homepage-percent-format-correct-for-all-locales', type: 'check', text: 'форматування відсотків коректне для всіх локалей.' },
+            ],
+          },
+        ],
+      },
 
+      {
+        id: 'sec-bonus-policy-terms',
+        title: 'Термзи в Bonus Policy сайту',
+        items: [
+          {
+            id: 'grp-bonus-policy-cashback-dropdown',
+            type: 'group',
+            text: 'Випадаючий список Cashback:',
+            children: [
+              { id: 'chk-bonus-policy-dropdown-renamed-by-copywriter-title', type: 'check', text: 'перейменований відповідно до назви, наданої копірайтерами;' },
+              { id: 'chk-bonus-policy-dropdown-synced-with-site-sections', type: 'check', text: 'назва синхронізована з іншими розділами сайту.' },
+            ],
+          },
+          {
+            id: 'grp-bonus-policy-event-description',
+            type: 'group',
+            text: 'Опис івенту:',
+            children: [
+              { id: 'chk-bonus-policy-first-point-has-event-duration', type: 'check', text: 'додано перший пункт із чітко зазначеною тривалістю святкового івенту;' },
+              { id: 'chk-bonus-policy-dates-and-wording-match-active-period', type: 'check', text: 'дати та формулювання відповідають фактичному періоду дії' },
+            ],
+          },
+          {
+            id: 'grp-bonus-policy-vip-levels-table',
+            type: 'group',
+            text: 'Таблиця VIP-рівнів:',
+            children: [
+              { id: 'chk-bonus-policy-added-seeker-levels-one-to-five-ten-percent', type: 'check', text: 'додано рівні 1–5 Seeker з кешбеком 10%;' },
+              { id: 'chk-bonus-policy-levels-one-to-nineteen-ten-percent', type: 'check', text: 'для рівнів 1–19 встановлено кешбек 10%;' },
+              { id: 'chk-bonus-policy-levels-twenty-to-twenty-five-twenty-percent', type: 'check', text: 'для рівнів 20–25 встановлено кешбек 20%.' },
+            ],
+          },
+          {
+            id: 'grp-bonus-policy-table-consistency',
+            type: 'group',
+            text: 'Узгодженість таблиці:',
+            children: [
+              { id: 'chk-bonus-policy-table-percentages-display-correctly', type: 'check', text: 'відсотки кешбеку відображаються коректно;' },
+              { id: 'chk-bonus-policy-no-mismatches-between-levels-and-values', type: 'check', text: 'відсутні розбіжності між рівнями та значеннями.' },
+            ],
+          },
+        ],
+      },
+  {
+        id: 'sec-vip-section',
+        title: 'VIP розділ',
+        items: [
+          {
+            id: 'grp-vip-general-bonus-lists',
+            type: 'group',
+            text: 'Загальні списки бонусів:',
+            children: [
+              { id: 'chk-vip-general-levels-one-to-nineteen-ten-percent', type: 'check', text: 'для рівнів 1–19 вказано кешбек 10%;' },
+              { id: 'chk-vip-general-levels-twenty-to-twenty-five-twenty-percent', type: 'check', text: 'для рівнів 20–25 вказано кешбек 20%.' },
+            ],
+          },
+          {
+            id: 'grp-vip-detailed-bonus-lists',
+            type: 'group',
+            text: 'Внутрішні списки бонусів для окремих рівнів:',
+            children: [
+              { id: 'chk-vip-detailed-lists-match-general-cashback-values', type: 'check', text: 'відповідають загальним значенням кешбеку;' },
+              { id: 'chk-vip-no-mismatches-between-general-and-detailed-description', type: 'check', text: 'відсутні розбіжності між загальним та детальним описом.' },
+            ],
+          },
+          {
+            id: 'grp-vip-data-synchronization',
+            type: 'group',
+            text: 'Синхронізація даних:',
+            children: [
+              { id: 'chk-vip-cashback-values-identical-across-sections', type: 'check', text: 'значення кешбеку ідентичні у VIP-розділі, Bonus Policy та на головній сторінці;' },
+              { id: 'chk-vip-no-conflicts-between-text-tables-and-ui', type: 'check', text: 'відсутні конфлікти між текстами, таблицями та UI-елементами.' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 
 ]
 
