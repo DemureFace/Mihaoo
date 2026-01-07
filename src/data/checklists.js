@@ -1048,6 +1048,703 @@ export const CHECKLISTS = [
       },
     ],
   },
+  {
+    slug: 'general-translation-and-formatting-check',
+    title: '[TL]General Translation & Readability Check',
+    description: 'Загальна перевірка перекладу, форматування та читабельності контенту.',
+    createdAt: '2025-09-25T11:00:00+03:00',
+    sections: [
+      {
+        id: 'sec-general-translation-check',
+        title: 'Загальна перевірка перекладу',
+        items: [
+          {
+            id: 'grp-translation-availability',
+            type: 'group',
+            text: 'Переклад присутній для всіх ключів локалізації:',
+            children: [
+              {
+                id: 'chk-no-fallbacks-to-other-languages',
+                type: 'check',
+                text: 'відсутні fallback-и на інші мови;',
+              },
+              {
+                id: 'chk-no-cropping-or-layout-breaks',
+                type: 'check',
+                text: 'відсутні обрізання, перекриття або злам верстки.',
+              },
+            ],
+          },
+          {
+            id: 'grp-translation-applied-to-promotions',
+            type: 'group',
+            text: 'Переклад застосовано до всіх Promotions:',
+            children: [
+              {
+                id: 'chk-translation-applied-to-cards',
+                type: 'check',
+                text: 'картки;',
+              },
+              {
+                id: 'chk-translation-applied-to-internal-pages',
+                type: 'check',
+                text: 'внутрішні сторінки;',
+              },
+            ],
+          },
+          {
+            id: 'grp-buttons-and-cta',
+            type: 'group',
+            text: 'Кнопки та CTA:',
+            children: [
+              {
+                id: 'chk-cta-text-fits-area',
+                type: 'check',
+                text: 'весь текст вміщується у відведену область;',
+              },
+              {
+                id: 'chk-cta-no-cropping-or-overlap',
+                type: 'check',
+                text: 'відсутні обрізання, перекриття або злам верстки;',
+              },
+              {
+                id: 'chk-cta-looks-correct',
+                type: 'check',
+                text: 'візуально виглядають коректно.',
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        id: 'sec-formatting-and-readability',
+        title: 'Форматування та читабельність',
+        items: [
+          {
+            id: 'grp-currency-format',
+            type: 'group',
+            text: 'Формат валют:',
+            children: [
+              {
+                id: 'chk-currency-symbol-position',
+                type: 'check',
+                text: 'коректне розташування символу валюти;',
+              },
+              {
+                id: 'chk-currency-thousands-and-decimals',
+                type: 'check',
+                text: 'правильні роздільники тисяч та дробової частини.',
+              },
+            ],
+          },
+          {
+            id: 'grp-text-content',
+            type: 'group',
+            text: 'Текстовий контент:',
+            children: [
+              {
+                id: 'chk-no-ugly-line-breaks',
+                type: 'check',
+                text: 'відсутні неестетичні розриви рядків;',
+              },
+              {
+                id: 'chk-no-break-between-number-and-currency',
+                type: 'check',
+                text: 'немає переносів між числом і символом валюти;',
+              },
+              {
+                id: 'chk-no-invalid-percent-or-unit-breaks',
+                type: 'check',
+                text: 'відсутні некоректні переноси відсотків та одиниць виміру.',
+              },
+            ],
+          },
+          {
+            id: 'grp-links-inside-text',
+            type: 'group',
+            text: 'Посилання, вшиті в текст:',
+            children: [
+              {
+                id: 'chk-links-clickable',
+                type: 'check',
+                text: 'клікабельні;',
+              },
+              {
+                id: 'chk-links-lead-to-correct-pages',
+                type: 'check',
+                text: 'ведуть на коректні сторінки;',
+              },
+              {
+                id: 'chk-links-do-not-break-layout',
+                type: 'check',
+                text: 'не порушують верстку тексту.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'promo-card-and-page-checklist',
+    title: '[8tech]Promo (Promotions Card + Promo Page + Homepage Slider)',
+    description: 'Перевірка промо-картки на Promotions, внутрішньої сторінки промо та слайдера на головній сторінці.',
+    createdAt: '2025-09-25T11:30:00+03:00',
+    sections: [
+      {
+        id: 'sec-promotions-promo-card',
+        title: 'Картка промо на сторінці Promotions',
+        items: [
+          {
+            id: 'grp-promo-title-and-slogan',
+            type: 'group',
+            text: 'Назва та слоган івенту:',
+            children: [
+              {
+                id: 'chk-promo-title-no-art-overlap',
+                type: 'check',
+                text: 'не перекривають арт на прев’ю-банері;',
+              },
+              {
+                id: 'chk-promo-title-within-max-lines',
+                type: 'check',
+                text: 'не виходять за допустиму кількість рядків;',
+              },
+              {
+                id: 'chk-promo-title-responsive',
+                type: 'check',
+                text: 'коректно відображаються на desktop та mobile версіях сайту.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-card-locales',
+            type: 'group',
+            text: 'Переклади для інших локалей:',
+            children: [
+              {
+                id: 'chk-promo-card-locales-present',
+                type: 'check',
+                text: 'присутні для всіх доступних мов;',
+              },
+              {
+                id: 'chk-promo-card-locales-match-rules',
+                type: 'check',
+                text: 'відповідають вимогам до довжини та верстки, зазначеним вище.',
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        id: 'sec-promo-internal-page',
+        title: 'Внутрішня сторінка промо',
+        items: [
+          {
+            id: 'grp-promo-main-banner',
+            type: 'group',
+            text: 'Основний банер:',
+            children: [
+              {
+                id: 'chk-promo-banner-correct-format',
+                type: 'check',
+                text: 'завантажений у правильному форматі;',
+              },
+              {
+                id: 'chk-promo-banner-responsive',
+                type: 'check',
+                text: 'коректно відображається на desktop та mobile.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-dates',
+            type: 'group',
+            text: 'Дати проведення промо:',
+            children: [
+              {
+                id: 'chk-promo-dates-correct',
+                type: 'check',
+                text: 'вказані коректно;',
+              },
+              {
+                id: 'chk-promo-dates-match-conditions',
+                type: 'check',
+                text: 'відповідають умовам івенту та поставленій задачі.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-reward-sums',
+            type: 'group',
+            text: 'Суми винагород:',
+            children: [
+              {
+                id: 'chk-promo-rewards-correct',
+                type: 'check',
+                text: 'вказані коректно;',
+              },
+              {
+                id: 'chk-promo-rewards-match-conditions',
+                type: 'check',
+                text: 'відповідають умовам івенту та поставленій задачі.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-description-and-terms',
+            type: 'group',
+            text: 'Текст опису івенту та термзи:',
+            children: [
+              {
+                id: 'chk-promo-no-bad-line-breaks',
+                type: 'check',
+                text: 'не містить некоректних переносів рядків, не естетичних розривів тексту;',
+              },
+              {
+                id: 'chk-promo-no-split-number-currency-or-percent',
+                type: 'check',
+                text: 'відсутні розриви між числом і символом валюти(якщо вказана через пробіл по правилам локалі) або “%”;',
+              },
+              {
+                id: 'chk-promo-text-checked-desktop-mobile',
+                type: 'check',
+                text: 'перевірено на desktop та mobile.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-page-locales',
+  type: 'group',
+            text: 'Переклади для інших локалей:',
+            children: [
+              {
+                id: 'chk-promo-page-locales-present',
+                type: 'check',
+                text: 'наявні для всіх доступних локалей;',
+              },
+              {
+                id: 'chk-promo-page-no-gaps-or-invalid-symbols',
+                type: 'check',
+                text: 'не містять пропусків або некоректних символів;',
+              },
+              {
+                id: 'chk-promo-page-currency-conversion-correct',
+                type: 'check',
+                text: 'Конвертація валют коректна (якщо необхідна);',
+              },
+              {
+                id: 'chk-promo-page-currency-format-locale-rules',
+                type: 'check',
+                text: 'форматування валют відповідає правилам обраної локалі (позиція символу, роздільники, формат чисел);',
+              },
+              {
+                id: 'chk-promo-page-values-consistent',
+                type: 'check',
+                text: 'значення узгоджені між собою.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-data-consistency',
+            type: 'group',
+            text: 'Узгодженість даних:',
+            children: [
+              {
+                id: 'chk-promo-data-same-across-blocks',
+                type: 'check',
+                text: 'дати, суми нагород та інші ключові параметри однакові у всіх блоках сторінки;',
+              },
+              {
+                id: 'chk-promo-no-mismatches-banners-text-terms',
+                type: 'check',
+                text: 'відсутні розбіжності між банерами, текстами та умовами.',
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        id: 'sec-homepage-slider-promo',
+        title: 'Слайдер на головній сторінці',
+        items: [
+          {
+            id: 'grp-homepage-slider-general',
+            type: 'group',
+            text: 'Загальний вигляд та контент',
+            children: [
+              {
+                id: 'chk-homepage-slider-cta-text-fits',
+                type: 'check',
+                text: 'текст для CTA кнопки коректно вмістився;',
+              },
+              {
+                id: 'chk-homepage-slider-title-and-slogan-fit',
+                type: 'check',
+                text: 'текст з назвою івенту та слоган на банері коректно вмістився;',
+              },
+              {
+                id: 'chk-homepage-slider-cta-link-correct',
+                type: 'check',
+                text: 'CTA кнопка має коректне посилання;',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'promo-card-and-page-checklist',
+    title: '[8tech]Promo (Promotions Card + Promo Page + Homepage Slider)',
+    description: 'Перевірка промо-картки на Promotions, внутрішньої сторінки промо та слайдера на головній сторінці.',
+    createdAt: '2025-09-25T11:30:00+03:00',
+    sections: [
+      {
+        id: 'sec-promotions-promo-card',
+        title: 'Картка промо на сторінці Promotions',
+        items: [
+          {
+            id: 'grp-promo-title-and-slogan',
+            type: 'group',
+            text: 'Назва та слоган івенту:',
+            children: [
+              {
+                id: 'chk-promo-title-no-art-overlap',
+                type: 'check',
+                text: 'не перекривають арт на прев’ю-банері;',
+              },
+              {
+                id: 'chk-promo-title-within-max-lines',
+                type: 'check',
+                text: 'не виходять за допустиму кількість рядків;',
+              },
+              {
+                id: 'chk-promo-title-responsive',
+                type: 'check',
+                text: 'коректно відображаються на desktop та mobile версіях сайту.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-card-locales',
+            type: 'group',
+            text: 'Переклади для інших локалей:',
+            children: [
+              {
+                id: 'chk-promo-card-locales-present',
+                type: 'check',
+                text: 'присутні для всіх доступних мов;',
+              },
+              {
+                id: 'chk-promo-card-locales-match-rules',
+                type: 'check',
+                text: 'відповідають вимогам до довжини та верстки, зазначеним вище.',
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        id: 'sec-promo-internal-page',
+        title: 'Внутрішня сторінка промо',
+        items: [
+          {
+            id: 'grp-promo-main-banner',
+            type: 'group',
+            text: 'Основний банер:',
+            children: [
+              {
+                id: 'chk-promo-banner-correct-format',
+                type: 'check',
+                text: 'завантажений у правильному форматі;',
+              },
+              {
+                id: 'chk-promo-banner-responsive',
+                type: 'check',
+                text: 'коректно відображається на desktop та mobile.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-dates',
+            type: 'group',
+            text: 'Дати проведення промо:',
+            children: [
+              {
+                id: 'chk-promo-dates-correct',
+                type: 'check',
+                text: 'вказані коректно;',
+              },
+              {
+                id: 'chk-promo-dates-match-conditions',
+                type: 'check',
+                text: 'відповідають умовам івенту та поставленій задачі.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-reward-sums',
+            type: 'group',
+            text: 'Суми винагород:',
+            children: [
+              {
+                id: 'chk-promo-rewards-correct',
+                type: 'check',
+                text: 'вказані коректно;',
+              },
+              {
+                id: 'chk-promo-rewards-match-conditions',
+                type: 'check',
+                text: 'відповідають умовам івенту та поставленій задачі.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-description-and-terms',
+            type: 'group',
+            text: 'Текст опису івенту та термзи:',
+            children: [
+              {
+                id: 'chk-promo-no-bad-line-breaks',
+                type: 'check',
+                text: 'не містить некоректних переносів рядків, не естетичних розривів тексту;',
+              },
+              {
+                id: 'chk-promo-no-split-number-currency-or-percent',
+                type: 'check',
+                text: 'відсутні розриви між числом і символом валюти(якщо вказана через пробіл по правилам локалі) або “%”;',
+              },
+              {
+                id: 'chk-promo-text-checked-desktop-mobile',
+                type: 'check',
+                text: 'перевірено на desktop та mobile.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-page-locales',
+  type: 'group',
+            text: 'Переклади для інших локалей:',
+            children: [
+              {
+                id: 'chk-promo-page-locales-present',
+                type: 'check',
+                text: 'наявні для всіх доступних локалей;',
+              },
+              {
+                id: 'chk-promo-page-no-gaps-or-invalid-symbols',
+                type: 'check',
+                text: 'не містять пропусків або некоректних символів;',
+              },
+              {
+                id: 'chk-promo-page-currency-conversion-correct',
+                type: 'check',
+                text: 'Конвертація валют коректна (якщо необхідна);',
+              },
+              {
+                id: 'chk-promo-page-currency-format-locale-rules',
+                type: 'check',
+                text: 'форматування валют відповідає правилам обраної локалі (позиція символу, роздільники, формат чисел);',
+              },
+              {
+                id: 'chk-promo-page-values-consistent',
+                type: 'check',
+                text: 'значення узгоджені між собою.',
+              },
+            ],
+          },
+          {
+            id: 'grp-promo-data-consistency',
+            type: 'group',
+            text: 'Узгодженість даних:',
+            children: [
+              {
+                id: 'chk-promo-data-same-across-blocks',
+                type: 'check',
+                text: 'дати, суми нагород та інші ключові параметри однакові у всіх блоках сторінки;',
+              },
+              {
+                id: 'chk-promo-no-mismatches-banners-text-terms',
+                type: 'check',
+                text: 'відсутні розбіжності між банерами, текстами та умовами.',
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        id: 'sec-homepage-slider-promo',
+        title: 'Слайдер на головній сторінці',
+        items: [
+          {
+            id: 'grp-homepage-slider-general',
+            type: 'group',
+            text: 'Загальний вигляд та контент',
+            children: [
+              {
+                id: 'chk-homepage-slider-cta-text-fits',
+                type: 'check',
+                text: 'текст для CTA кнопки коректно вмістився;',
+              },
+              {
+                id: 'chk-homepage-slider-title-and-slogan-fit',
+                type: 'check',
+                text: 'текст з назвою івенту та слоган на банері коректно вмістився;',
+              },
+              {
+                id: 'chk-homepage-slider-cta-link-correct',
+                type: 'check',
+                text: 'CTA кнопка має коректне посилання;',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: '8tech-general-translation-checklist',
+    title: '[8tech] General Translation & Readability',
+    description: 'Загальна перевірка перекладу, форматування та читабельності для бренду 8tech.',
+    createdAt: '2025-09-25T12:00:00+03:00',
+    sections: [
+      {
+        id: 'sec-8tech-general-translation',
+        title: 'Загальна перевірка перекладу',
+        items: [
+          {
+            id: 'grp-8tech-translation-for-all-keys',
+            type: 'group',
+            text: 'Переклад присутній для всіх ключів локалізації:',
+            children: [
+              {
+                id: 'chk-8tech-no-language-fallbacks',
+                type: 'check',
+                text: 'відсутні fallback-и на інші мови;',
+              },
+              {
+                id: 'chk-8tech-no-cropping-or-layout-breaks',
+                type: 'check',
+                text: 'відсутні обрізання, перекриття або злам верстки.',
+              },
+            ],
+          },
+          {
+            id: 'grp-8tech-translation-applied-to-all-promotions',
+            type: 'group',
+            text: 'Переклад застосовано до всіх Promotions:',
+            children: [
+              {
+                id: 'chk-8tech-translation-applied-to-cards',
+                type: 'check',
+                text: 'картки;',
+              },
+              {
+                id: 'chk-8tech-translation-applied-to-internal-pages',
+                type: 'check',
+                text: 'внутрішні сторінки;',
+              },
+            ],
+          },
+          {
+            id: 'grp-8tech-buttons-and-cta',
+            type: 'group',
+            text: 'Кнопки та CTA:',
+            children: [
+              {
+                id: 'chk-8tech-cta-text-fits-container',
+                type: 'check',
+                text: 'весь текст вміщується у відведену область;',
+              },
+              {
+                id: 'chk-8tech-cta-no-layout-issues',
+                type: 'check',
+                text: 'відсутні обрізання, перекриття або злам верстки;',
+              },
+              {
+                id: 'chk-8tech-cta-visual-correctness',
+                type: 'check',
+                text: 'візуально виглядають коректно.',
+              },
+            ],
+          },
+        ],
+      },
+  {
+        id: 'sec-8tech-formatting-and-readability',
+        title: 'Форматування та читабельність',
+        items: [
+          {
+            id: 'grp-8tech-currency-format',
+            type: 'group',
+            text: 'Формат валют:',
+            children: [
+              {
+                id: 'chk-8tech-currency-symbol-position-correct',
+                type: 'check',
+                text: 'коректне розташування символу валюти;',
+              },
+              {
+                id: 'chk-8tech-currency-thousand-and-decimal-separators',
+                type: 'check',
+                text: 'правильні роздільники тисяч та дробової частини.',
+              },
+            ],
+          },
+          {
+            id: 'grp-8tech-text-content',
+            type: 'group',
+            text: 'Текстовий контент:',
+            children: [
+              {
+                id: 'chk-8tech-no-ugly-line-breaks',
+                type: 'check',
+                text: 'відсутні неестетичні розриви рядків;',
+              },
+              {
+                id: 'chk-8tech-no-break-between-number-and-currency',
+                type: 'check',
+                text: 'немає переносів між числом і символом валюти;',
+              },
+              {
+                id: 'chk-8tech-no-invalid-percent-or-unit-breaks',
+                type: 'check',
+                text: 'відсутні некоректні переноси відсотків та одиниць виміру.',
+              },
+            ],
+          },
+          {
+            id: 'grp-8tech-links-in-text',
+            type: 'group',
+            text: 'Посилання, вшиті в текст:',
+            children: [
+              {
+                id: 'chk-8tech-links-clickable',
+                type: 'check',
+                text: 'клікабельні;',
+              },
+              {
+                id: 'chk-8tech-links-lead-to-correct-pages',
+                type: 'check',
+                text: 'ведуть на коректні сторінки;',
+              },
+              {
+                id: 'chk-8tech-links-do-not-break-text-layout',
+                type: 'check',
+                text: 'не порушують верстку тексту.',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }
 
 ]
 
