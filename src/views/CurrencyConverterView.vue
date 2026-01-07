@@ -305,6 +305,17 @@
       .map(([k, v]) => (tab.value === 'snippet' ? `${k}: "${v}"` : `"${k}": "${v}"`))
       .join(',\n')
   }
+  watch(
+    [tab, site],
+    () => {
+      convert()
+    },
+    { immediate: true },
+  )
+
+  watch(input, () => {
+    convert()
+  })
 </script>
 
 <style scoped>
