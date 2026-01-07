@@ -137,15 +137,28 @@
   /* ---------- core helpers (improved but same logic) ---------- */
   function formatNumber(val, locale) {
     const r = conversionRules[locale] || conversionRules.en
-    const isNo = locale === 'no' // your convertAmount rounds for 'no':contentReference[oaicite:5]{index=5}
+    const isNo = locale === 'no'
     const n = isNo ? Math.round(val) : val
 
-    // format: thousands + decimal using rule
-    const fixed = locale === 'no' ? String(n) : Number(n).toFixed(2)
+    if (isNo) {
+      // no = integer only
+      const intRaw = String(n)
+      const sign = intRaw.startsWith('-') ? '-' : ''
+      const int = intRaw.replace('-', '').replace(/\B(?=(\d{3})+(?!\d))/g, r.separator)
+      return sign + int
+    }
+
+    // 2 decimals, але прибираємо зайві нулі
+    const fixed = Number(n).toFixed(2) // "10.00", "10.50", "10.10"
     const [intRaw, fracRaw = '00'] = fixed.split('.')
+
     const sign = intRaw.startsWith('-') ? '-' : ''
     const int = intRaw.replace('-', '').replace(/\B(?=(\d{3})+(?!\d))/g, r.separator)
-    return locale === 'no' ? sign + int : sign + int + r.decimal + fracRaw
+
+    // якщо .00 — не додаємо дробову частину
+    if (fracRaw === '00') return sign + int
+
+    return sign + int + r.decimal + fracRaw
   }
 
   function convertAmount(val, locale) {
