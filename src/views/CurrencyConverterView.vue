@@ -221,6 +221,8 @@
       .replace(/([€$£]\s?\d[\d.,]*)(?=\p{L})/gu, '$1 ')
       .replace(/(\d[\d.,]*\s?(?:€|\$|£|kr))(?=\p{L})/gu, '$1 ')
 
+    spaced = spaced.replace(/(\p{Sc}\s?\d[\d.,]*|\d[\d.,]*\s?(?:€|\$|£|kr))(?=[+\-\/×:])/gu, '$1 ')
+
     // AU pokies transform:contentReference[oaicite:10]{index=10}
     if (locale === 'au') {
       spaced = spaced
