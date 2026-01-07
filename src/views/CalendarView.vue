@@ -85,7 +85,7 @@
     await navigator.clipboard.writeText(text || '')
   }
 
-  /* ---------- from your calendar template (sites & translation buttons):contentReference[oaicite:15]{index=15} ---------- */
+  /* ---------- data ---------- */
   const siteModes = {
     Winorio: ['nz', 'pt', 'fr', 'gb', 'gr', 'de', 'default'],
     Spinrise: ['au', 'nz', 'ca', 'de', 'at', 'ch', 'fr', 'it', 'no', 'default'],
@@ -114,7 +114,6 @@
     pt: 'pt',
   }
 
-  /* ---------- same currency rules:contentReference[oaicite:16]{index=16} ---------- */
   const conversionRules = {
     en: { rate: 1, symbol: '€', position: 'before', separator: ',', decimal: '.' },
     au: { rate: 1.5, symbol: '$', position: 'before', separator: ',', decimal: '.' },
@@ -149,16 +148,16 @@
   }
   const localesWithSpaceAfter = ['de', 'at', 'ch', 'no', 'et', 'fi']
 
-  /* ---------- currency processor (same regex logic as your converter):contentReference[oaicite:17]{index=17} ---------- */
+  /* ---------- currency processor ---------- */
   function parseNumberLoose(amountStr) {
     const s = String(amountStr || '').replace(/\s+/g, '')
-    const ld = s.lastIndexOf('.'),
-      lc = s.lastIndexOf(',')
+    const ld = s.lastIndexOf('.')
+    const lc = s.lastIndexOf(',')
     const li = Math.max(ld, lc)
 
     let normalized
     if (li >= 0 && s.length - li <= 3) {
-      normalized = parseFloat(s.replace(/[.,]/g, (ch, idx) => (idx === li ? '.' : '')))
+      normalized = parseFloat(s.replace(/[.,]/g, (_ch, idx) => (idx === li ? '.' : '')))
     } else {
       normalized = parseFloat(s.replace(/[.,]/g, ''))
     }
@@ -203,21 +202,19 @@
       return placeCurrency(formatted, locale)
     })
 
-    // spacing fix + AU pokies:contentReference[oaicite:18]{index=18}
     out = out
       .replace(/([€$£]\s?\d[\d.,]*)(?=\p{L})/gu, '$1 ')
       .replace(/(\d[\d.,]*\s?(?:€|\$|£|kr))(?=\p{L})/gu, '$1 ')
 
     if (locale === 'au') {
       out = out
-        .replace(/(^|[^A-Za-z])slots(?=([^A-Za-z]|$))/gi, (m, p) => p + 'pokies')
-        .replace(/(^|[^A-Za-z])slot(?=([^A-Za-z]|$))/gi, (m, p) => p + 'pokie')
+        .replace(/(^|[^A-Za-z])slots(?=([^A-Za-z]|$))/gi, (_m, p) => p + 'pokies')
+        .replace(/(^|[^A-Za-z])slot(?=([^A-Za-z]|$))/gi, (_m, p) => p + 'pokie')
     }
     return out
   }
 
-  /* ---------- translation stub (plug your real one or I can port the original) ---------- */
-  // ---- Lightweight internal translator just for calendar (1-v-1 from CMS Tools.html) ----
+  /* ---------- translator (fixed: declared once, works, caches) ---------- */
   const CAL_GT_ENDPOINT = 'https://translation.googleapis.com/language/translate/v2'
   const CAL_GT_KEY = 'AIzaSyCkYo31T4oaHz0itTvwZRCcJ31wATJy9yI'
   const calTranslateCache = new Map()
@@ -226,20 +223,17 @@
     if (!text) return { masked: '', map: [] }
     let idx = 0
     const map = []
-    const masked = String(text).replace(
-      /(\d[\d\s.,]*\d|\d+|%|€|\$|£|A\$|CA\$|NZ\$|kr)/g,
-      function (m) {
-        const token = '[[T' + idx++ + ']]'
-        map.push(m)
-        return token
-      },
-    )
+    const masked = String(text).replace(/(\d[\d\s.,]*\d|\d+|%|€|\$|£|A\$|CA\$|NZ\$|kr)/g, (m) => {
+      const token = `[[T${idx++}]]`
+      map.push(m)
+      return token
+    })
     return { masked, map }
   }
 
   function calRestoreTokens(text, map) {
     if (!text || !map || !map.length) return text
-    return String(text).replace(/\[\[\s*[TΤτ]\s*(\d+)\s*\]\]/g, function (_m, i) {
+    return String(text).replace(/\[\[\s*[TΤτ]\s*(\d+)\s*\]\]/g, (_m, i) => {
       const v = map[+i]
       return v == null ? '' : v
     })
@@ -263,37 +257,25 @@
   async function calTranslateRaw(text, target) {
     if (!text || !String(text).trim()) return text
     let t = String(target || '').toLowerCase()
-    const cacheKey = t + '\u0000' + text
+    const cacheKey = `${t}\u0000${text}`
     if (calTranslateCache.has(cacheKey)) return calTranslateCache.get(cacheKey)
 
-    // Map UI target codes to Google language codes
     if (t === 'en-au') t = 'en'
     if (t === 'gr') t = 'el'
 
-    const body = JSON.stringify({
-      q: text,
-      target: t.replace(/-.+$/, ''),
-    })
+    const body = JSON.stringify({ q: text, target: t.replace(/-.+$/, '') })
 
     try {
-      const resp = await fetch(CAL_GT_ENDPOINT + '?key=' + CAL_GT_KEY, {
+      const resp = await fetch(`${CAL_GT_ENDPOINT}?key=${CAL_GT_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body,
       })
-
       const data = await resp.json()
-      const out =
-        (data &&
-          data.data &&
-          data.data.translations &&
-          data.data.translations[0] &&
-          data.data.translations[0].translatedText) ||
-        text
-
+      const out = data?.data?.translations?.[0]?.translatedText ?? text
       calTranslateCache.set(cacheKey, out)
       return out
-    } catch (e) {
+    } catch {
       return text
     }
   }
@@ -306,25 +288,18 @@
     let translated = await calTranslateRaw(tokens.masked, target)
     translated = calRestoreTokens(translated, tokens.map)
     translated = calDecodeBasicEntities(translated)
-
-    // Cleanup: drop any unreplaced token artifacts like [[T2]]
     translated = translated.replace(/\s*\[\[\s*[TΤτ]\s*\d+\s*\]\]\s*/g, '')
-
     return calNormalizeBr(translated)
   }
-
-  return text
 
   /* ---------- state ---------- */
   const sites = computed(() => Object.keys(siteModes))
   const site = useLocalStorageRef('cal.site', 'Moonwin')
-
   const days = useLocalStorageRef('cal.days', [{ id: crypto.randomUUID(), reward: '', rules: '' }])
-
   const selectedLang = useLocalStorageRef('cal.lang', 'de')
-
   const outEN = ref('')
   const outTR = ref('')
+  const isTranslating = ref(false)
 
   function presetDays(n) {
     const arr = []
@@ -349,8 +324,6 @@
   }
 
   function buildOutputForLocales(dayList, locales) {
-    // Вихід у вигляді JSON, де кожен день має reward/rules (як типова CMS структура).
-    // У тебе в оригіналі далі це йде в блоки + переклади; тут формат зручний для копі-пасту.
     const out = dayList.map((d) => ({
       reward: Object.fromEntries(locales.map((loc) => [loc, d.reward])),
       rules: Object.fromEntries(locales.map((loc) => [loc, d.rules])),
@@ -360,44 +333,48 @@
 
   function generateMain() {
     const locales = siteModes[site.value] || ['default']
-    const list = collectDays()
-    outEN.value = buildOutputForLocales(list, locales)
+    outEN.value = buildOutputForLocales(collectDays(), locales)
   }
 
   async function generateTranslation(target) {
+    if (isTranslating.value) return
+    isTranslating.value = true
     selectedLang.value = target
 
-    const locales = siteModes[site.value] || ['default']
-    const list = collectDays()
+    try {
+      const locales = siteModes[site.value] || ['default']
+      const list = collectDays()
 
-    // translate each day reward+rules, then reformat currency per locale, like your generateTranslation() flow:contentReference[oaicite:19]{index=19}
-    const translatedDays = []
-    for (const d of list) {
-      const trReward = await translatePreserve(d.reward, target)
-      const trRules = await translatePreserve(d.rules, target)
+      const translatedDays = await Promise.all(
+        list.map(async (d) => {
+          const [trReward, trRules] = await Promise.all([
+            translatePreserve(d.reward, target),
+            translatePreserve(d.rules, target),
+          ])
 
-      const rewardObj = {}
-      const rulesObj = {}
+          const rewardObj = {}
+          const rulesObj = {}
 
-      for (const loc of locales) {
-        let fmtLoc = loc === 'default' ? mapDefaultByTarget[target] || 'en' : loc
-        if (fmtLoc === 'default') fmtLoc = 'en'
+          for (const loc of locales) {
+            let fmtLoc = loc === 'default' ? mapDefaultByTarget[target] || 'en' : loc
+            if (fmtLoc === 'default') fmtLoc = 'en'
+            rewardObj[loc] = processText(trReward, fmtLoc)
+            rulesObj[loc] = processText(trRules, fmtLoc)
+          }
 
-        rewardObj[loc] = processText(trReward, fmtLoc)
-        rulesObj[loc] = processText(trRules, fmtLoc)
-      }
+          return { reward: rewardObj, rules: rulesObj }
+        }),
+      )
 
-      translatedDays.push({ reward: rewardObj, rules: rulesObj })
+      outTR.value = JSON.stringify(translatedDays, null, 2)
+    } finally {
+      isTranslating.value = false
     }
-
-    outTR.value = JSON.stringify(translatedDays, null, 2)
   }
 
-  /* init */
   watch(
     site,
     () => {
-      // ensure selected language exists for that site
       const available = translationButtons[site.value] || []
       if (!available.includes(selectedLang.value)) selectedLang.value = available[0] || 'de'
     },

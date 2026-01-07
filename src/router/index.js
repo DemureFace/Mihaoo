@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import BasicAuth from '../components/BasicAuth.vue'
 import HomeView from '@/views/DashboardView.vue';
-import TournametView from '@/views/DashboardView.vue';
-import PromoView from '@/views/DashboardView.vue';
-import NewsView from '@/views/DashboardView.vue';
+import TournametView from '@/views/TournamentView.vue';
+import PromoView from '@/views/PromoView.vue';
+import CalendarView from '@/views/CalendarView.vue';
+import CurrencyConverterView from '@/views/CurrencyConverterView.vue';
+import NewsView from '@/views/NewsView.vue';
 import CheckListsView from '@/views/CheckListsView.vue';
 import ChecklistDetailView from '@/views/ChecklistDetailView.vue';
 
@@ -23,9 +25,11 @@ const routes = [
     path: '/',
     redirect: '/home', // Корень будет редиректить в /home
   },
-  { path: '/tournamet', name: 'tournamet', component: TournametView },
+  { path: '/tournament', name: 'tournament', component: TournametView },
   { path: '/promo', name: 'promo', component: PromoView },
   { path: '/news', name: 'news', component: NewsView },
+  { path: '/currency-converter', name: 'currency-converter', component: CurrencyConverterView },
+  { path: '/calendar', name: 'calendar', component: CalendarView },
   { path: '/checklists', name: 'checklists', component: CheckListsView },
   { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true }
 ]
