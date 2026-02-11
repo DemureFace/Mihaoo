@@ -126,6 +126,7 @@ export const CHECKLISTS = [
           { id: 'page-prize-pool', type: 'check', text: 'Указан общий призовой фонд турнира' },
           { id: 'page-tourn-timer', type: 'check', text: 'Добавлен таймер до конца турнира' },
           { id: 'page-currency-geo', type: 'check', text: 'Валюта корректно отображается в зависимости от GEO или IP' },
+          { id: 'page-game-category', type: 'check', text: 'Впевнитись що ігрова категорія додана згідно турнірній таблиці' },
           { id: 'page-responsive', type: 'check', text: 'Проверено отображение на desktop и mobile' },
         ],
       },
