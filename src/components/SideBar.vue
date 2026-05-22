@@ -50,7 +50,7 @@
                 { active: route.name === child.name },
                 route.name === child.name ? 'text-white' : 'text-black',
               ]"
-              @click="handleChildClick(child)"
+              @click="handleChildClick(tab, child)"
             >
               {{ child.label }}
             </li>
@@ -62,90 +62,102 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch } from 'vue'
-  import { useRouter, useRoute } from 'vue-router'
-  import {
-    Squares2X2Icon,
-    TrophyIcon,
-    TagIcon,
-    NewspaperIcon,
-    ClipboardDocumentCheckIcon,
-    WrenchScrewdriverIcon,
-  } from '@heroicons/vue/24/outline'
+    import { ref, computed, watch } from 'vue'
+    import { useRouter, useRoute } from 'vue-router'
+    import {
+      Squares2X2Icon,
+      TrophyIcon,
+      TagIcon,
+      NewspaperIcon,
+      ClipboardDocumentCheckIcon,
+      WrenchScrewdriverIcon,
+    } from '@heroicons/vue/24/outline'
 
-  const props = defineProps({
-    collapsed: { type: Boolean, default: false },
-  })
+    const props = defineProps({
+      collapsed: { type: Boolean, default: false },
+    })
 
-  const router = useRouter()
-  const route = useRoute()
+    const router = useRouter()
+    const route = useRoute()
 
-  const bouncingTab = ref(null)
-  const openDropdown = ref(null)
+    const bouncingTab = ref(null)
+    const openDropdown = ref(null)
 
-  // 1) Меню (залишив твої label/icon 1-в-1)
-  const tabs = [
-    { label: 'Dashboard', name: 'home', icon: Squares2X2Icon },
-    { label: 'Tournament', name: 'tournament', icon: TrophyIcon }, // <-- як у твоєму router зараз
-    { label: 'Promo', name: 'promo', icon: TagIcon },
-    {
-      label: 'Tools',
-      name: 'tools',
-      icon: WrenchScrewdriverIcon,
-      children: [
-        { label: 'Currency', name: 'currency-converter' },
-        { label: 'Calendar', name: 'calendar' },
-      ],
-    },
-    { label: 'Checklists', name: 'checklists', icon: ClipboardDocumentCheckIcon },
-    { label: 'News', name: 'news', icon: NewspaperIcon },
-  ]
+    // 1) Меню (залишив твої label/icon 1-в-1)
+    const tabs = [
+      { label: 'Dashboard', name: 'home', icon: Squares2X2Icon },
+      { label: 'Tournament', name: 'tournament', icon: TrophyIcon }, // <-- як у твоєму router зараз
+      { label: 'Promo', name: 'promo', icon: TagIcon },
+      {
+        label: 'Tools',
+        name: 'tools',
+        icon: WrenchScrewdriverIcon,
+        children: [
+          { label: 'Currency', name: 'currency-converter' },
+          { label: 'Calendar', name: 'calendar' },
+        ],
+      },
+      {
+        label: 'Checklists',
+        name: 'checklists',
+        icon: ClipboardDocumentCheckIcon,
+        children: [
+          { label: 'Content', name: 'checklists-content' },
+          { label: 'Quality control', name: 'checklists-qc' },
+        ],
+      },
+      { label: 'News', name: 'news', icon: NewspaperIcon },
+    ]
 
-  // 2) Визначаємо "поточну вкладку" з URL (для active стилів)
-  const currentTab = computed(() => {
-    // коли ми на tools children — вважаємо активним tools
-    if (route.name === 'currency-converter' || route.name === 'calendar') return 'tools'
-    return route.name || null
-  })
+    // 2) Визначаємо "поточну вкладку" з URL (для active стилів)
+    const currentTab = computed(() => {
+      if (route.name === 'currency-converter' || route.name === 'calendar') return 'tools'
+      if (route.name === 'checklists-content' || route.name === 'checklists-qc') return 'checklists'
+      return route.name || null
+    })
 
-  // 3) Автовідкриття dropdown коли ми на Currency/Calendar
-  watch(
-    () => route.name,
-    (name) => {
-      if (name === 'currency-converter' || name === 'calendar') {
-        openDropdown.value = 'tools'
-      }
-    },
-    { immediate: true },
-  )
+    // 3) Автовідкриття dropdown коли ми на Currency/Calendar
+    watch(
+      () => route.name,
+      (name) => {
+        if (name === 'currency-converter' || name === 'calendar') {
+          openDropdown.value = 'tools'
+        }
+        if (name === 'checklists-content' || name === 'checklists-qc') {
+          openDropdown.value = 'checklists'
+        }
+      },
+      { immediate: true },
+    )
 
-  function bounce(name) {
-    bouncingTab.value = name
-    setTimeout(() => {
-      if (bouncingTab.value === name) bouncingTab.value = null
-    }, 500)
-  }
-
-  function handleClick(tab) {
-    // якщо Tools (dropdown)
-    if (tab.children) {
-      openDropdown.value = openDropdown.value === tab.name ? null : tab.name
-      return
+    function bounce(name) {
+      bouncingTab.value = name
+      setTimeout(() => {
+        if (bouncingTab.value === name) bouncingTab.value = null
+      }, 500)
     }
-
-    if (route.name === tab.name) return
-
-    bounce(tab.name)
-    router.push({ name: tab.name })
-  }
 
   function handleChildClick(child) {
     if (route.name === child.name) return
 
-    // bounce можна зробити або на tools, або на конкретний child
-    bounce('tools')
+    // підсвітити батьківський dropdown
+    bounce(openDropdown.value || child.parent || 'checklists')
     router.push({ name: child.name })
   }
+
+      if (route.name === tab.name) return
+
+      bounce(tab.name)
+      router.push({ name: tab.name })
+    }
+
+    function handleChildClick(child) {
+      if (route.name === child.name) return
+
+      // bounce можна зробити або на tools, або на конкретний child
+      bounce('tools')
+      router.push({ name: child.name })
+    }
 </script>
 
 <style scoped>
