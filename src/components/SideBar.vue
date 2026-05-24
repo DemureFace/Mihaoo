@@ -8,51 +8,64 @@
     <ul class="flex flex-col gap-2 list-none m-0 p-0">
       <li
         v-for="tab in tabs"
-        :key="tab.name"
-        class="push-button cursor-pointer bg-button-primary rounded-lg font-sans font-bold"
+        :key="tab.value"
+        class="cursor-pointer bg-button-primary rounded-lg font-sans font-bold"
       >
-        <!-- Клік обробляємо тут -->
-
+        <!-- Основна таба -->
         <BaseButton
-          class="flex items-center gap-2 rounded-lg"
-          :class="[{ active: currentTab === tab.name }, collapsed ? 'p-1' : 'px-3 py-1.5']"
+          class="flex items-center gap-2 rounded-lg w-full transition-all duration-300 ease-in-out"
+          :class="[
+            isTabActive(tab) ? 'active' : '',
+            collapsed ? 'p-1 justify-center' : 'px-3 py-1.5',
+          ]"
           @click="handleClick(tab)"
         >
+          <!-- Іконка -->
           <span
-            class="relative grid place-items-center w-6 h-6 transition-all duration-500 ease-linear"
+            class="relative grid place-items-center w-6 h-6 shrink-0 transition-all duration-300 ease-linear"
             :class="[
-              currentTab === tab.name ? 'text-white' : 'text-black',
-              bouncingTab === tab.name ? 'animate-bounce' : '',
+              isTabActive(tab) ? 'text-white' : 'text-black',
+              bouncingTab === tab.value ? 'animate-bounce' : '',
             ]"
           >
-            <!-- іконка — один раз і назавжди -->
             <component :is="tab.icon" class="w-6 h-6" />
           </span>
+
+          <!-- Назва таби -->
           <span
             v-show="!collapsed"
-            :class="currentTab === tab.name ? 'text-white' : 'text-black'"
-            class="transition-all duration-200 ease-linear whitespace-nowrap"
+            class="transition-all duration-200 ease-linear whitespace-nowrap flex-1 text-left"
+            :class="isTabActive(tab) ? 'text-white' : 'text-black'"
           >
             {{ tab.label }}
           </span>
+
+          <!-- Стрілка для dropdown -->
+          <ChevronDownIcon
+            v-if="tab.children && !collapsed"
+            class="w-4 h-4 shrink-0 transition-transform duration-300"
+            :class="[
+              openDropdown === tab.value ? 'rotate-180' : '',
+              isTabActive(tab) ? 'text-white' : 'text-black',
+            ]"
+          />
         </BaseButton>
-        <!-- DROPDOWN -->
+
+        <!-- Dropdown -->
         <transition name="dropdown">
           <ul
-            v-show="openDropdown === tab.name && !collapsed"
-            class="px-4 py-2 flex flex-col gap-1"
+            v-show="tab.children && openDropdown === tab.value && !collapsed"
+            class="ml-8 mt-1 flex flex-col gap-1"
           >
-            <li
-              v-for="child in tab.children || []"
-              :key="child.name"
-              class="text-sm rounded-md px-3 py-1 cursor-pointer hover:bg-black/5"
-              :class="[
-                { active: route.name === child.name },
-                route.name === child.name ? 'text-white' : 'text-black',
-              ]"
-              @click="handleChildClick(tab, child)"
-            >
-              {{ child.label }}
+            <li v-for="child in tab.children" :key="child.value">
+              <button
+                type="button"
+                class="w-full text-left text-sm rounded-md px-3 py-1.5 transition-all duration-200 hover:bg-black/5"
+                :class="isChildActive(child) ? 'text-brand-blue font-bold' : 'text-black'"
+                @click.stop="handleChildClick(child, tab)"
+              >
+                {{ child.label }}
+              </button>
             </li>
           </ul>
         </transition>
@@ -62,112 +75,148 @@
 </template>
 
 <script setup>
-    import { ref, computed, watch } from 'vue'
-    import { useRouter, useRoute } from 'vue-router'
-    import {
-      Squares2X2Icon,
-      TrophyIcon,
-      TagIcon,
-      NewspaperIcon,
-      ClipboardDocumentCheckIcon,
-      WrenchScrewdriverIcon,
-    } from '@heroicons/vue/24/outline'
+  import { ref } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
+  import {
+    Squares2X2Icon,
+    TrophyIcon,
+    TagIcon,
+    NewspaperIcon,
+    ClipboardDocumentCheckIcon,
+    ChevronDownIcon,
+  } from '@heroicons/vue/24/outline'
 
-    const props = defineProps({
-      collapsed: { type: Boolean, default: false },
-    })
+  const props = defineProps({
+    collapsed: { type: Boolean, default: false },
+    currentTab: { type: String, required: true },
+  })
 
-    const router = useRouter()
-    const route = useRoute()
+  const emit = defineEmits(['change-tab'])
 
-    const bouncingTab = ref(null)
-    const openDropdown = ref(null)
+  const router = useRouter()
+  const route = useRoute()
 
-    // 1) Меню (залишив твої label/icon 1-в-1)
-    const tabs = [
-      { label: 'Dashboard', name: 'home', icon: Squares2X2Icon },
-      { label: 'Tournament', name: 'tournament', icon: TrophyIcon }, // <-- як у твоєму router зараз
-      { label: 'Promo', name: 'promo', icon: TagIcon },
-      {
-        label: 'Tools',
-        name: 'tools',
-        icon: WrenchScrewdriverIcon,
-        children: [
-          { label: 'Currency', name: 'currency-converter' },
-          { label: 'Calendar', name: 'calendar' },
-        ],
-      },
-      {
-        label: 'Checklists',
-        name: 'checklists',
-        icon: ClipboardDocumentCheckIcon,
-        children: [
-          { label: 'Content', name: 'checklists-content' },
-          { label: 'Quality control', name: 'checklists-qc' },
-        ],
-      },
-      { label: 'News', name: 'news', icon: NewspaperIcon },
-    ]
+  const bouncingTab = ref(null)
+  const openDropdown = ref(null)
 
-    // 2) Визначаємо "поточну вкладку" з URL (для active стилів)
-    const currentTab = computed(() => {
-      if (route.name === 'currency-converter' || route.name === 'calendar') return 'tools'
-      if (route.name === 'checklists-content' || route.name === 'checklists-qc') return 'checklists'
-      return route.name || null
-    })
+  const tabs = [
+    {
+      label: 'Dashboard',
+      value: 'dashboard',
+      icon: Squares2X2Icon,
+      path: '/dashboard',
+    },
+    {
+      label: 'Tournament',
+      value: 'tournaments',
+      icon: TrophyIcon,
+      path: '/tournaments',
+    },
+    {
+      label: 'Promo',
+      value: 'promo',
+      icon: TagIcon,
+      path: '/promo',
+    },
+    {
+      label: 'Checklists',
+      value: 'checklists',
+      icon: ClipboardDocumentCheckIcon,
+      children: [
+        {
+          label: 'All Checklists',
+          value: 'checklists',
+          path: '/checklists',
+        },
+        {
+          label: 'Daily Checklist',
+          value: 'checklists-daily',
+          path: '/checklists/daily',
+        },
+        {
+          label: 'QA Checklist',
+          value: 'checklists-qa',
+          path: '/checklists/qa',
+        },
+      ],
+    },
+    {
+      label: 'News',
+      value: 'news',
+      icon: NewspaperIcon,
+      path: '/news',
+    },
+  ]
 
-    // 3) Автовідкриття dropdown коли ми на Currency/Calendar
-    watch(
-      () => route.name,
-      (name) => {
-        if (name === 'currency-converter' || name === 'calendar') {
-          openDropdown.value = 'tools'
-        }
-        if (name === 'checklists-content' || name === 'checklists-qc') {
-          openDropdown.value = 'checklists'
-        }
-      },
-      { immediate: true },
-    )
+  function bounce(value) {
+    bouncingTab.value = value
 
-    function bounce(name) {
-      bouncingTab.value = name
-      setTimeout(() => {
-        if (bouncingTab.value === name) bouncingTab.value = null
-      }, 500)
-    }
-
-  function handleChildClick(child) {
-    if (route.name === child.name) return
-
-    // підсвітити батьківський dropdown
-    bounce(openDropdown.value || child.parent || 'checklists')
-    router.push({ name: child.name })
+    setTimeout(() => {
+      if (bouncingTab.value === value) {
+        bouncingTab.value = null
+      }
+    }, 700)
   }
 
-      if (route.name === tab.name) return
-
-      bounce(tab.name)
-      router.push({ name: tab.name })
+  function handleClick(tab) {
+    // Якщо у таби є dropdown — тільки відкриваємо/закриваємо меню
+    if (tab.children && tab.children.length) {
+      openDropdown.value = openDropdown.value === tab.value ? null : tab.value
+      return
     }
 
-    function handleChildClick(child) {
-      if (route.name === child.name) return
+    // Якщо клікнули по вже активній табі — нічого не робимо
+    if (tab.value === props.currentTab) return
 
-      // bounce можна зробити або на tools, або на конкретний child
-      bounce('tools')
-      router.push({ name: child.name })
+    emit('change-tab', tab.value)
+    bounce(tab.value)
+
+    if (tab.path) {
+      router.push(tab.path)
     }
+  }
+
+  function handleChildClick(child, parentTab) {
+    // Якщо цей child вже відкритий — нічого не робимо
+    if (route.path === child.path) return
+
+    // Якщо у App.vue немає компонента для child.value,
+    // краще залишати активною батьківську табу
+    emit('change-tab', parentTab.value)
+
+    bounce(parentTab.value)
+
+    if (child.path) {
+      router.push(child.path)
+    }
+  }
+
+  function isChildActive(child) {
+    return route.path === child.path
+  }
+
+  function isTabActive(tab) {
+    if (props.currentTab === tab.value) return true
+    if (tab.path && route.path === tab.path) return true
+
+    if (tab.children) {
+      return tab.children.some((child) => isChildActive(child))
+    }
+
+    return false
+  }
 </script>
 
 <style scoped>
   .active {
     background: black;
   }
-  .push-button {
+
+  li {
     transition: all 0.3s ease;
   }
-  .push-button:hover {
+
+  li:hover {
     animation: push-button 2s linear infinite;
   }
 
@@ -176,6 +225,7 @@
     100% {
       box-shadow: 0px 0px 0px 0px black;
     }
+
     50% {
       box-shadow: 0px 2px 0px 0px black;
     }

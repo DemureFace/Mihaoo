@@ -1,4 +1,8 @@
-export const SIGNUP_ACTION = '[actions] signup user';
-export const LOGIN_ACTION = '[actions] login user';
-export const SET_USER_TOKEN_DATA_MUTATION = '[mutations] set user token data';
-export const LOADING_SPINNER_SHOW_MUTATION = '[mutations] show loading spinner';
+export const LOGIN_ACTION = "login";
+export const SIGNUP_ACTION = "signup";
+export const LOGOUT_ACTION = "logout";
+
+export const SET_USER_MUTATION = "setUser";
+export const CLEAR_AUTH_MUTATION = "clearAuth";
+
+export const LOADING_SPINNER_SHOW_MUTATION = "showLoading";

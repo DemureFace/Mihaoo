@@ -1,78 +1,56 @@
-import Axios from "axios";
+import { authService } from "@/services/auth.service";
 import {
-  LOADING_SPINNER_SHOW_MUTATION,
   LOGIN_ACTION,
   SIGNUP_ACTION,
-} from "../../storeconstants";
-import SignupValidations from "../../../services/SignupValidations.js";
+  LOGOUT_ACTION,
+  SET_USER_MUTATION,
+  CLEAR_AUTH_MUTATION,
+} from "@/store/storeconstants";
 
 export default {
-  async [LOGIN_ACTION](context, payload) {
-    let postData = {
-      email: payload.email,
-      password: payload.password,
-      returnSecureToken: true,
-    };
+  async [LOGIN_ACTION]({ commit }, payload) {
+    const data = await authService.login(payload);
 
-    let response = "";
-    try {
-      response = await Axios.post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBh0Rs7cwpYWZi8Ur2ZdrZ8_Erf6WCFBoU",
-        postData
-      );
-    } catch (err) {
-      context.commit(LOADING_SPINNER_SHOW_MUTATION, false, { root: true });
-      let errorMessage = SignupValidations.getErrorMessageFromCode(
-        err.response.data.error.message
-      );
-      throw errorMessage;
-    }
+    localStorage.setItem("accessToken", data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
+    localStorage.setItem("user", JSON.stringify(data.user));
 
-    if (response.status === 200) {
-      context.commit(SET_USER_TOKEN_DATA_MUTATION, {
-        email: response.data.email,
-        token: response.data.idToken,
-        expiresIn: response.data.expiresIn,
-        refreshToken: response.data.resfreshToken,
-        userId: response.data.localId,
-      });
-    }
+    commit(SET_USER_MUTATION, {
+      user: data.user,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+    });
+
+    return data;
   },
 
-  async [SIGNUP_ACTION](context, payload) {
-    let postData = {
-      email: payload.email,
-      password: payload.password,
-      returnSecureToken: true,
-    };
+  async [SIGNUP_ACTION]({ commit }, payload) {
+    const data = await authService.register(payload);
 
-    let response = "";
+    localStorage.setItem("accessToken", data.accessToken);
+    localStorage.setItem("refreshToken", data.refreshToken);
+    localStorage.setItem("user", JSON.stringify(data.user));
 
-    context.commit(LOADING_SPINNER_SHOW_MUTATION, true, { root: true });
+    commit(SET_USER_MUTATION, {
+      user: data.user,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken,
+    });
 
+    return data;
+  },
+
+  async [LOGOUT_ACTION]({ commit }) {
     try {
-      response = await Axios.post(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBh0Rs7cwpYWZi8Ur2ZdrZ8_Erf6WCFBoU",
-        postData
-      );
-    } catch (err) {
-      context.commit(LOADING_SPINNER_SHOW_MUTATION, false, { root: true });
-      let errorMessage = SignupValidations.getErrorMessageFromCode(
-        err.response.data.error.message
-      );
-      throw errorMessage;
+      await authService.logout();
+    } catch (error) {
+      console.warn("Logout request failed, local auth will be cleared anyway");
     }
 
-    context.commit(LOADING_SPINNER_SHOW_MUTATION, true);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
 
-    if (response.status === 200) {
-      context.commit(SET_USER_TOKEN_DATA_MUTATION, {
-        email: response.data.email,
-        token: response.data.idToken,
-        expiresIn: response.data.expiresIn,
-        refreshToken: response.data.resfreshToken,
-        userId: response.data.localId,
-      });
-    }
+    commit(CLEAR_AUTH_MUTATION);
   },
 };

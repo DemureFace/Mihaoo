@@ -28,17 +28,13 @@
         <BaseButton tag="a" class="font-semibold">Forgot Password?</BaseButton>
       </div>
 
-      <BaseButton class="w-full p-3 mt-4 font-semibold text-xl">
-        Login
-      </BaseButton>
+      <BaseButton class="w-full p-3 mt-4 font-semibold text-xl">Login</BaseButton>
 
       <div class="mt-4 text-center">
         <p class="font-medium text-weather-primary">
           Don't have an account?
 
-          <BaseButton tag="a" @click="$emit('change-modal', 'signup')">
-            Register
-          </BaseButton>
+          <BaseButton tag="a" @click="$emit('change-modal', 'signup')">Register</BaseButton>
         </p>
       </div>
     </form>
@@ -46,61 +42,62 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
-import SignupValidations from "@/services/SignupValidations";
-import BaseInput from "@/components/base/BaseInput.vue";
-import BaseButton from "@/components/base/BaseButton.vue";
-import {
-  LOADING_SPINNER_SHOW_MUTATION,
-  LOGIN_ACTION,
-} from "@/store/storeconstants";
+  import { mapActions, mapMutations } from 'vuex'
+  import SignupValidations from '@/services/SignupValidations'
+  import BaseInput from '@/components/base/BaseInput.vue'
+  import BaseButton from '@/components/base/BaseButton.vue'
+  import { LOADING_SPINNER_SHOW_MUTATION, LOGIN_ACTION } from '@/store/storeconstants'
 
-export default {
-  components: {
-    BaseInput,
-    BaseButton,
-    SignupValidations,
-  },
-
-  data() {
-    return {
-      email: "",
-      password: "",
-      errors: [],
-      error: "",
-    };
-  },
-
-  methods: {
-    ...mapActions("auth", {
-      login: LOGIN_ACTION,
-    }),
-    ...mapMutations({
-      showLoading: LOADING_SPINNER_SHOW_MUTATION,
-    }),
-    async onLogin() {
-      let validations = new SignupValidations(this.email, this.password);
-
-      this.errors = validations.checkValidations();
-      if (this.errors.length) {
-        return false;
-      }
-      this.error = "";
-
-      this.showLoading(true);
-      //Login check
-      try {
-        await this.login({
-          email: this.email,
-          password: this.password,
-        });
-      } catch (e) {
-        this.error = e;
-        this.showLoading(false);
-      }
-      this.showLoading(false);
-      this.$router.push("/posts");
+  export default {
+    components: {
+      BaseInput,
+      BaseButton,
     },
-  },
-};
+
+    data() {
+      return {
+        email: '',
+        password: '',
+        errors: {},
+        error: '',
+      }
+    },
+
+    methods: {
+      ...mapActions('auth', {
+        login: LOGIN_ACTION,
+      }),
+
+      ...mapMutations({
+        showLoading: LOADING_SPINNER_SHOW_MUTATION,
+      }),
+
+      async onLogin() {
+        const validations = new SignupValidations(this.email, this.password)
+
+        this.errors = validations.checkValidations()
+
+        if (Object.keys(this.errors).length) {
+          return
+        }
+
+        this.error = ''
+        this.showLoading(true)
+
+        try {
+          await this.login({
+            email: this.email,
+            password: this.password,
+          })
+
+          this.$router.push('/posts')
+        } catch (e) {
+          this.error =
+            e?.response?.data?.message || e?.message || 'Login failed. Check email or password.'
+        } finally {
+          this.showLoading(false)
+        }
+      },
+    },
+  }
 </script>
