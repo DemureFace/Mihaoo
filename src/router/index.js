@@ -26,12 +26,21 @@ const routes = [
     redirect: '/home', // Корень будет редиректить в /home
   },
   { path: '/tournament', name: 'tournament', component: TournametView },
+
   { path: '/promo', name: 'promo', component: PromoView },
   { path: '/news', name: 'news', component: NewsView },
   { path: '/currency-converter', name: 'currency-converter', component: CurrencyConverterView },
   { path: '/calendar', name: 'calendar', component: CalendarView },
   { path: '/checklists', name: 'checklists', component: CheckListsView },
-  { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true }
+  { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true },
+  {
+  path: '/banner-export',
+  name: 'BannerExport',
+  component: () => import('@/views/BannerExport.vue'),
+  meta: {
+    title: 'Banner Export'
+  }
+}
 ]
 
 const router = createRouter({
