@@ -1,0 +1,14 @@
+[
+  {
+    "nodeId": "2027:40021",
+    "name": "banner_300x250",
+    "format": "png",
+    "file": "banner_300x250.png"
+  },
+  {
+    "nodeId": "2027:40021",
+    "name": "banner_300x250",
+    "format": "webp",
+    "file": "banner_300x250.webp"
+  }
+]
