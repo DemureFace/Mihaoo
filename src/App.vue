@@ -46,7 +46,26 @@
   import Loader from '@/components/base/BaseLoader.vue'
   import TheHeader from './components/TheHeader.vue'
   import SideBar from './components/SideBar.vue'
+  import { FETCH_USER_ACTION } from '@/store/storeconstants'
+  import { testService } from '@/services/test.service'
 
+  const store = useStore()
+
+  onMounted(async () => {
+    try {
+      const data = await testService.checkBackend()
+      console.log('Backend connected:', data)
+    } catch (error) {
+      console.error('Backend connection failed:', error)
+    }
+
+    try {
+      await store.dispatch(`auth/${FETCH_USER_ACTION}`)
+      console.log('User restored from token')
+    } catch (error) {
+      console.warn('User is not authenticated')
+    }
+  })
   const TabSkeleton = {
     name: 'TabSkeleton',
     template: `
@@ -59,7 +78,6 @@
   `,
   }
 
-  const store = useStore()
   const route = useRoute()
 
   const showLoading = computed(() => store.state.showLoading)

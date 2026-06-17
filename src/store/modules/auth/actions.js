@@ -3,6 +3,7 @@ import {
   LOGIN_ACTION,
   SIGNUP_ACTION,
   LOGOUT_ACTION,
+  FETCH_USER_ACTION,
   SET_USER_MUTATION,
   CLEAR_AUTH_MUTATION,
 } from "@/store/storeconstants";
@@ -38,6 +39,38 @@ export default {
     });
 
     return data;
+  },
+
+  async [FETCH_USER_ACTION]({ commit }) {
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (!accessToken) {
+      commit(CLEAR_AUTH_MUTATION);
+      return null;
+    }
+
+    try {
+      const user = await authService.me();
+
+      localStorage.setItem("user", JSON.stringify(user));
+
+      commit(SET_USER_MUTATION, {
+        user,
+        accessToken,
+        refreshToken,
+      });
+
+      return user;
+    } catch (error) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+
+      commit(CLEAR_AUTH_MUTATION);
+
+      return null;
+    }
   },
 
   async [LOGOUT_ACTION]({ commit }) {

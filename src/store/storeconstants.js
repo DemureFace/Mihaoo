@@ -6,3 +6,4 @@ export const SET_USER_MUTATION = "setUser";
 export const CLEAR_AUTH_MUTATION = "clearAuth";
 
 export const LOADING_SPINNER_SHOW_MUTATION = "showLoading";
+export const FETCH_USER_ACTION = "fetchUser";

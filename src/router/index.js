@@ -2,12 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BasicAuth from '../components/BasicAuth.vue'
 import HomeView from '@/views/DashboardView.vue';
 import TournametView from '@/views/TournamentView.vue';
+import DashboardView from '@/views/DashboardView.vue';
 import PromoView from '@/views/PromoView.vue';
 import CalendarView from '@/views/CalendarView.vue';
 import CurrencyConverterView from '@/views/CurrencyConverterView.vue';
 import NewsView from '@/views/NewsView.vue';
 import CheckListsView from '@/views/CheckListsView.vue';
 import ChecklistDetailView from '@/views/ChecklistDetailView.vue';
+import BannerExport from '@/views/BannerExport.vue';
 
 const routes = [
   // {
@@ -25,13 +27,15 @@ const routes = [
     path: '/',
     redirect: '/home', // Корень будет редиректить в /home
   },
-  { path: '/tournament', name: 'tournament', component: TournametView },
+  { path: '/tournaments', name: 'tournaments', component: TournametView },
+  { path: '/dashboard', name: 'dashboard', component: DashboardView },
   { path: '/promo', name: 'promo', component: PromoView },
   { path: '/news', name: 'news', component: NewsView },
   { path: '/currency-converter', name: 'currency-converter', component: CurrencyConverterView },
   { path: '/calendar', name: 'calendar', component: CalendarView },
   { path: '/checklists', name: 'checklists', component: CheckListsView },
-  { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true }
+  { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true },
+  { path: '/banner-export', name: 'banner-export', component: BannerExport },
 ]
 
 const router = createRouter({
