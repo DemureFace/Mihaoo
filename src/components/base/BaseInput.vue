@@ -43,7 +43,8 @@
       <icon class="fa-solid" :class="icon" />
     </span>
     <input
-      :v-model="inputValue"
+      class="w-full rounded-xl border border-black bg-white px-4 py-3 text-lg outline-none transition placeholder-transparent focus:border-black focus:ring-2 focus:ring-black/10"
+      :value="inputValue"
       :type="type"
       :id="id"
       :placeholder="placeholder"
@@ -65,3 +66,28 @@
     <span v-if="error" class="">{{ error }}</span>
   </div>
 </template>
+
+<style scoped>
+.label-anim {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.label-anim.focused {
+  top: 1px;
+  transform: none;
+  font-size: 10px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.label-anim.labelError {
+  color: #ef4444;
+}
+</style>
