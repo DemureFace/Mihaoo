@@ -1,3 +1,8 @@
+parseFigmaUrl(url)
+extractFigmaFileKey(url)
+extractFigmaNodeId(url)
+normalizeFigmaNodeId(nodeId)
+
 export function extractFigmaFileKey(value) {
   const input = String(value || '').trim();
   if (!input) return '';
