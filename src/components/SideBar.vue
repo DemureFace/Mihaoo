@@ -55,12 +55,12 @@
         <transition name="dropdown">
           <ul
             v-show="tab.children && openDropdown === tab.value && !collapsed"
-            class="ml-8 mt-1 flex flex-col gap-1"
+          class="mt-1 flex flex-col gap-1 px-2 pb-2"
           >
             <li v-for="child in tab.children" :key="child.value">
               <button
                 type="button"
-                class="w-full text-left text-sm rounded-md px-3 py-1.5 transition-all duration-200 hover:bg-black/5"
+                class="w-full box-border text-left text-sm rounded-md border border-black bg-white px-3 py-1.5 transition-all duration-200 hover:bg-black/5"
                 :class="isChildActive(child) ? 'text-brand-blue font-bold' : 'text-black'"
                 @click.stop="handleChildClick(child, tab)"
               >
@@ -155,7 +155,7 @@
       if (bouncingTab.value === value) {
         bouncingTab.value = null
       }
-    }, 700)
+    }, 1500)
   }
 
   function handleClick(tab) {
