@@ -268,6 +268,13 @@
     inspectBannerExport,
   } from '@/services/bannerExportService'
 
+  function getOutputSizeLabel(banner, format) {
+    const output = banner.outputs?.find((item) => item.format === format)
+
+    if (!output) return '—'
+
+    return `${output.sizeKb} KB`
+  }
   const QUALITY_PRESETS = {
     balanced: {
       label: 'Balanced',
@@ -314,6 +321,7 @@
   const detectedBanners = ref([])
   const job = ref(null)
   const error = ref('')
+  const manifest = ref(null)
   const isInspecting = ref(false)
   const isExporting = ref(false)
 
@@ -384,13 +392,7 @@
       isInspecting.value = false
     }
   }
-function getOutputSizeLabel(banner, format) {
-  const output = banner.outputs?.find((item) => item.format === format)
 
-  if (!output) return '—'
-
-  return `${output.sizeKb} KB`
-}
   function selectAllBanners() {
     detectedBanners.value = detectedBanners.value.map((banner) => ({
       ...banner,
@@ -434,6 +436,7 @@ function getOutputSizeLabel(banner, format) {
   async function startExport() {
     error.value = ''
     job.value = null
+    manifest.value = null
     isExporting.value = true
 
     try {
@@ -444,7 +447,6 @@ function getOutputSizeLabel(banner, format) {
       error.value = err.message || 'Something went wrong'
       isExporting.value = false
     }
-    const manifest = ref(null)
   }
 
   function startPolling(jobId) {
@@ -455,7 +457,14 @@ function getOutputSizeLabel(banner, format) {
         const updatedJob = await getBannerExport(jobId)
         job.value = updatedJob
 
-        if (updatedJob.status === 'completed' || updatedJob.status === 'failed') {
+        if (updatedJob.status === 'completed') {
+          isExporting.value = false
+          await loadManifest(updatedJob.id)
+          clearPolling()
+          return
+        }
+
+        if (updatedJob.status === 'failed') {
           isExporting.value = false
 
           if (updatedJob.retryAfterSeconds) {
@@ -463,9 +472,6 @@ function getOutputSizeLabel(banner, format) {
           }
 
           clearPolling()
-        }
-        if (updatedJob.status === 'completed') {
-          await loadManifest(updatedJob.id)
         }
       } catch (err) {
         error.value = err.message || 'Failed to check export status'
