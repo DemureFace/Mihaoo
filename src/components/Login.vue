@@ -1,8 +1,8 @@
 <template>
-  <div class="w-80">
+  <div class="mx-auto w-full max-w-md">
     <h3 class="text-3xl font-bold text-center text-weather-primary">Login</h3>
     <div v-if="error" class="error bg-red-500">{{ error }}</div>
-    <form class="box-border" @submit.prevent="onLogin()">
+    <form class="box-border mt-8 flex flex-col" @submit.prevent="onLogin()">
       <BaseInput
         icon="fa-envelope"
         v-model:inputValue="email"

@@ -84,6 +84,7 @@
     NewspaperIcon,
     ClipboardDocumentCheckIcon,
     ChevronDownIcon,
+    PhotoIcon,
   } from '@heroicons/vue/24/outline'
 
   const props = defineProps({
@@ -145,6 +146,12 @@
       value: 'news',
       icon: NewspaperIcon,
       path: '/news',
+    },
+    {
+      label: 'Banner Export',
+      value: 'banner-export',
+      icon: PhotoIcon,
+      path: '/banner-export',
     },
   ]
 

@@ -11,7 +11,7 @@
         <Transition name="modal-inner">
           <div
             v-if="open"
-            class="relative w-full max-w-xl max-h-[90vh] overflow-y-auto bg-white shadow-xl rounded-2xl border-2 border-black"
+            class="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white shadow-xl rounded-2xl border-2 border-black"
           >
             <button
               type="button"
