@@ -93,15 +93,42 @@
           </p>
         </div>
 
+        <div class="flex gap-3 flex-wrap items-center">
+          <label class="grid gap-1">
+            <span class="text-sm font-medium">Filter by type</span>
+            <select v-model="bannerTypeFilter" class="rounded border px-3 py-2 bg-transparent">
+              <option v-for="type in availableTypes" :key="type" :value="type">
+                {{ type === 'ALL' ? 'All types' : type }}
+              </option>
+            </select>
+          </label>
+
+          <label class="grid gap-1">
+            <span class="text-sm font-medium">Quality preset</span>
+            <select v-model="selectedPreset" class="rounded border px-3 py-2 bg-transparent">
+              <option v-for="(preset, key) in QUALITY_PRESETS" :key="key" :value="key">
+                {{ preset.label }}
+              </option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid">
         <label class="grid gap-1">
-          <span class="text-sm font-medium">Quality preset</span>
-          <select v-model="selectedPreset" class="rounded border px-3 py-2 bg-transparent">
-            <option v-for="(preset, key) in QUALITY_PRESETS" :key="key" :value="key">
-              {{ preset.label }}
-            </option>
-          </select>
+          <span class="text-sm font-medium">Search banners</span>
+          <input
+            v-model="bannerSearch"
+            type="text"
+            class="rounded border px-3 py-2 bg-transparent"
+            placeholder="Search by name, size or node ID..."
+          />
         </label>
       </div>
+
+      <p class="text-xs opacity-60">
+        Showing {{ filteredBanners.length }} of {{ detectedBanners.length }} elements
+      </p>
 
       <div class="overflow-auto rounded border">
         <table class="w-full text-sm">
@@ -116,14 +143,30 @@
           </thead>
 
           <tbody>
-            <tr v-for="banner in detectedBanners" :key="banner.id" class="border-b last:border-b-0">
+            <tr v-for="banner in filteredBanners" :key="banner.id" class="border-b last:border-b-0">
               <td class="p-3">
                 <input v-model="banner.selected" type="checkbox" />
               </td>
-              <td class="p-3 font-medium">{{ banner.name }}</td>
+
+              <td class="p-3 font-medium">
+                {{ banner.name }}
+              </td>
+
               <td class="p-3">{{ banner.width }}×{{ banner.height }}</td>
-              <td class="p-3">{{ banner.type }}</td>
-              <td class="p-3 font-mono text-xs">{{ banner.id }}</td>
+
+              <td class="p-3">
+                {{ banner.type }}
+              </td>
+
+              <td class="p-3 font-mono text-xs">
+                {{ banner.id }}
+              </td>
+            </tr>
+
+            <tr v-if="!filteredBanners.length">
+              <td colspan="5" class="p-4 text-center text-sm opacity-60">
+                No elements found for this filter.
+              </td>
             </tr>
           </tbody>
         </table>
@@ -145,6 +188,7 @@
 
       <div class="rounded border p-3 text-sm">
         <div class="font-medium">Selected preset details</div>
+
         <div class="mt-2 opacity-80">
           <div>Scale: {{ activePreset.scale }}</div>
           <div>WEBP quality: {{ activePreset.webp }}</div>
@@ -242,6 +286,12 @@
                 <span v-else class="opacity-50">—</span>
               </td>
             </tr>
+
+            <tr v-if="!manifest.banners.length">
+              <td colspan="5" class="p-4 text-center text-sm opacity-60">
+                No exported banners found.
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -319,6 +369,8 @@
   const selectedPreset = ref('balanced')
   const inspection = ref(null)
   const detectedBanners = ref([])
+  const bannerSearch = ref('')
+  const bannerTypeFilter = ref('ALL')
   const job = ref(null)
   const error = ref('')
   const manifest = ref(null)
@@ -336,6 +388,39 @@
 
   const selectedCount = computed(() => {
     return detectedBanners.value.filter((banner) => banner.selected).length
+  })
+
+  const BANNER_TYPE_FILTER_OPTIONS = ['ALL', 'FRAME', 'COMPONENT', 'INSTANCE']
+
+  const availableTypes = computed(() => {
+    const loadedTypes = detectedBanners.value.map((banner) => banner.type).filter(Boolean)
+
+    return [...new Set([...BANNER_TYPE_FILTER_OPTIONS, ...loadedTypes])]
+  })
+
+  const filteredBanners = computed(() => {
+    const search = bannerSearch.value.trim().toLowerCase()
+    const selectedType = bannerTypeFilter.value
+
+    return detectedBanners.value.filter((banner) => {
+      const bannerType = banner.type || ''
+      const name = banner.name?.toLowerCase() || ''
+      const size = `${banner.width}x${banner.height}`.toLowerCase()
+      const prettySize = `${banner.width}×${banner.height}`.toLowerCase()
+      const nodeId = banner.id?.toLowerCase() || ''
+
+      const matchesType = selectedType === 'ALL' || bannerType === selectedType
+
+      const matchesSearch =
+        !search ||
+        name.includes(search) ||
+        size.includes(search) ||
+        prettySize.includes(search) ||
+        nodeId.includes(search) ||
+        bannerType.toLowerCase().includes(search)
+
+      return matchesType && matchesSearch
+    })
   })
 
   const selectedFormats = computed(() => {
@@ -362,8 +447,11 @@
   async function loadBanners() {
     error.value = ''
     job.value = null
+    manifest.value = null
     inspection.value = null
     detectedBanners.value = []
+    bannerSearch.value = ''
+    bannerTypeFilter.value = 'ALL'
     isInspecting.value = true
 
     try {
@@ -372,7 +460,7 @@
       inspection.value = result
       detectedBanners.value = (result.banners || []).map((banner) => ({
         ...banner,
-        selected: banner.selected !== false,
+        selected: false,
       }))
 
       if (!detectedBanners.value.length) {
@@ -394,9 +482,11 @@
   }
 
   function selectAllBanners() {
+    const visibleIds = new Set(filteredBanners.value.map((banner) => banner.id))
+
     detectedBanners.value = detectedBanners.value.map((banner) => ({
       ...banner,
-      selected: true,
+      selected: visibleIds.has(banner.id) ? true : banner.selected,
     }))
   }
 
