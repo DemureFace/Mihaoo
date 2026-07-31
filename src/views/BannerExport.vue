@@ -111,6 +111,23 @@
               </option>
             </select>
           </label>
+          <label class="grid gap-1">
+            <span class="text-sm font-medium">Scale for selected</span>
+            <select v-model.number="bulkScale" class="rounded border px-3 py-2 bg-transparent">
+              <option v-for="scale in SCALE_OPTIONS" :key="scale" :value="scale">
+                x{{ scale }}
+              </option>
+            </select>
+          </label>
+
+          <button
+            class="rounded border px-4 py-2 disabled:opacity-50"
+            type="button"
+            :disabled="selectedCount === 0"
+            @click="applyScaleToSelectedBanners"
+          >
+            Apply scale to selected
+          </button>
         </div>
       </div>
 
@@ -133,12 +150,35 @@
       <div class="overflow-auto rounded border">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b text-left">
-              <th class="p-3 w-12">Use</th>
-              <th class="p-3">Name</th>
-              <th class="p-3">Size</th>
-              <th class="p-3">Type</th>
-              <th class="p-3">Node ID</th>
+            <tr v-for="banner in filteredBanners" :key="banner.id" class="border-b last:border-b-0">
+              <td class="p-3">
+                <input v-model="banner.selected" type="checkbox" />
+              </td>
+
+              <td class="p-3 font-medium">
+                {{ banner.name }}
+              </td>
+
+              <td class="p-3">{{ banner.width }}×{{ banner.height }}</td>
+
+              <td class="p-3">
+                <select
+                  v-model.number="banner.scale"
+                  class="rounded border px-2 py-1 bg-transparent"
+                >
+                  <option v-for="scale in SCALE_OPTIONS" :key="scale" :value="scale">
+                    x{{ scale }}
+                  </option>
+                </select>
+              </td>
+
+              <td class="p-3">
+                {{ banner.type }}
+              </td>
+
+              <td class="p-3 font-mono text-xs">
+                {{ banner.id }}
+              </td>
             </tr>
           </thead>
 
@@ -175,23 +215,23 @@
       <div class="grid gap-3 rounded border p-3">
         <div class="text-sm font-medium">Formats</div>
 
-        <label class="flex items-center gap-2">
-          <input v-model="formats.png" type="checkbox" />
-          <span>PNG</span>
-        </label>
+        <div class="grid gap-3 rounded border p-3">
+          <div class="text-sm font-medium">Formats</div>
 
-        <label class="flex items-center gap-2">
-          <input v-model="formats.webp" type="checkbox" />
-          <span>WEBP</span>
-        </label>
+          <label v-for="format in FORMAT_OPTIONS" :key="format.key" class="flex items-center gap-2">
+            <input v-model="formats[format.key]" type="checkbox" />
+            <span>{{ format.label }}</span>
+          </label>
+        </div>
       </div>
 
       <div class="rounded border p-3 text-sm">
         <div class="font-medium">Selected preset details</div>
 
         <div class="mt-2 opacity-80">
-          <div>Scale: {{ activePreset.scale }}</div>
           <div>WEBP quality: {{ activePreset.webp }}</div>
+          <div>JPEG quality: {{ activePreset.jpeg }}</div>
+          <div>AVIF quality: {{ activePreset.avif }}</div>
           <div>PNG compression: {{ activePreset.pngCompressionLevel }}</div>
           <div>Sharpen: {{ activePreset.sharpen ? 'Yes' : 'No' }}</div>
         </div>
@@ -254,9 +294,12 @@
           <thead>
             <tr class="border-b text-left">
               <th class="p-3">Banner</th>
-              <th class="p-3">Size</th>
-              <th class="p-3">PNG</th>
-              <th class="p-3">WEBP</th>
+              <th class="p-3">Original size</th>
+              <th class="p-3">Scale</th>
+              <th class="p-3">Output size</th>
+              <th v-for="format in manifest.formats" :key="format" class="p-3">
+                {{ format.toUpperCase() }}
+              </th>
               <th class="p-3">Saved</th>
             </tr>
           </thead>
@@ -273,23 +316,19 @@
 
               <td class="p-3">{{ banner.width }}×{{ banner.height }}</td>
 
-              <td class="p-3">
-                {{ getOutputSizeLabel(banner, 'png') }}
-              </td>
+              <td class="p-3">x{{ banner.scale || 1 }}</td>
 
               <td class="p-3">
-                {{ getOutputSizeLabel(banner, 'webp') }}
+                {{ banner.outputWidth || banner.width }}×{{ banner.outputHeight || banner.height }}
+              </td>
+
+              <td v-for="format in manifest.formats" :key="format" class="p-3">
+                {{ getOutputSizeLabel(banner, format) }}
               </td>
 
               <td class="p-3">
                 <span v-if="banner.savings">{{ banner.savings.webpVsPngPercent }}%</span>
                 <span v-else class="opacity-50">—</span>
-              </td>
-            </tr>
-
-            <tr v-if="!manifest.banners.length">
-              <td colspan="5" class="p-4 text-center text-sm opacity-60">
-                No exported banners found.
               </td>
             </tr>
           </tbody>
@@ -318,6 +357,15 @@
     inspectBannerExport,
   } from '@/services/bannerExportService'
 
+  const SCALE_OPTIONS = [1, 1.5, 2, 3, 4]
+
+  const FORMAT_OPTIONS = [
+    { key: 'png', label: 'PNG' },
+    { key: 'webp', label: 'WEBP' },
+    { key: 'jpeg', label: 'JPEG' },
+    { key: 'avif', label: 'AVIF' },
+  ]
+
   function getOutputSizeLabel(banner, format) {
     const output = banner.outputs?.find((item) => item.format === format)
 
@@ -328,29 +376,33 @@
   const QUALITY_PRESETS = {
     balanced: {
       label: 'Balanced',
-      scale: 2,
       webp: 86,
+      jpeg: 86,
+      avif: 50,
       pngCompressionLevel: 9,
       sharpen: true,
     },
     maxQuality: {
       label: 'Max quality',
-      scale: 3,
       webp: 90,
+      jpeg: 92,
+      avif: 60,
       pngCompressionLevel: 9,
       sharpen: true,
     },
     lowWeight: {
       label: 'Low weight',
-      scale: 2,
       webp: 78,
+      jpeg: 78,
+      avif: 42,
       pngCompressionLevel: 9,
       sharpen: false,
     },
     textSharp: {
       label: 'Text sharp',
-      scale: 3,
       webp: 88,
+      jpeg: 90,
+      avif: 55,
       pngCompressionLevel: 9,
       sharpen: true,
     },
@@ -364,6 +416,8 @@
   const formats = reactive({
     png: true,
     webp: true,
+    jpeg: false,
+    avif: false,
   })
 
   const selectedPreset = ref('balanced')
@@ -371,6 +425,7 @@
   const detectedBanners = ref([])
   const bannerSearch = ref('')
   const bannerTypeFilter = ref('ALL')
+  const bulkScale = ref(2)
   const job = ref(null)
   const error = ref('')
   const manifest = ref(null)
@@ -424,12 +479,9 @@
   })
 
   const selectedFormats = computed(() => {
-    const result = []
-
-    if (formats.png) result.push('png')
-    if (formats.webp) result.push('webp')
-
-    return result
+    return Object.entries(formats)
+      .filter(([, enabled]) => enabled)
+      .map(([format]) => format)
   })
 
   const retryCountdownLabel = computed(() => {
@@ -452,6 +504,7 @@
     detectedBanners.value = []
     bannerSearch.value = ''
     bannerTypeFilter.value = 'ALL'
+    bulkScale.value = 2
     isInspecting.value = true
 
     try {
@@ -461,6 +514,7 @@
       detectedBanners.value = (result.banners || []).map((banner) => ({
         ...banner,
         selected: false,
+        scale: 2,
       }))
 
       if (!detectedBanners.value.length) {
@@ -490,10 +544,10 @@
     }))
   }
 
-  function clearSelectedBanners() {
+  function applyScaleToSelectedBanners() {
     detectedBanners.value = detectedBanners.value.map((banner) => ({
       ...banner,
-      selected: false,
+      scale: banner.selected ? bulkScale.value : banner.scale,
     }))
   }
 
@@ -507,7 +561,7 @@
         name: banner.name,
         width: banner.width,
         height: banner.height,
-        scale: preset.scale,
+        scale: Number(banner.scale || 2),
       }))
 
     return {
