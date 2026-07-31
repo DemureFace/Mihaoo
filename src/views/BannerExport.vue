@@ -150,6 +150,17 @@
       <div class="overflow-auto rounded border">
         <table class="w-full text-sm">
           <thead>
+            <tr class="border-b text-left">
+              <th class="p-3 w-12">Use</th>
+              <th class="p-3">Name</th>
+              <th class="p-3">Size</th>
+              <th class="p-3">Scale</th>
+              <th class="p-3">Type</th>
+              <th class="p-3">Node ID</th>
+            </tr>
+          </thead>
+
+          <tbody>
             <tr v-for="banner in filteredBanners" :key="banner.id" class="border-b last:border-b-0">
               <td class="p-3">
                 <input v-model="banner.selected" type="checkbox" />
@@ -180,31 +191,9 @@
                 {{ banner.id }}
               </td>
             </tr>
-          </thead>
-
-          <tbody>
-            <tr v-for="banner in filteredBanners" :key="banner.id" class="border-b last:border-b-0">
-              <td class="p-3">
-                <input v-model="banner.selected" type="checkbox" />
-              </td>
-
-              <td class="p-3 font-medium">
-                {{ banner.name }}
-              </td>
-
-              <td class="p-3">{{ banner.width }}×{{ banner.height }}</td>
-
-              <td class="p-3">
-                {{ banner.type }}
-              </td>
-
-              <td class="p-3 font-mono text-xs">
-                {{ banner.id }}
-              </td>
-            </tr>
 
             <tr v-if="!filteredBanners.length">
-              <td colspan="5" class="p-4 text-center text-sm opacity-60">
+              <td colspan="6" class="p-4 text-center text-sm opacity-60">
                 No elements found for this filter.
               </td>
             </tr>
@@ -215,14 +204,10 @@
       <div class="grid gap-3 rounded border p-3">
         <div class="text-sm font-medium">Formats</div>
 
-        <div class="grid gap-3 rounded border p-3">
-          <div class="text-sm font-medium">Formats</div>
-
-          <label v-for="format in FORMAT_OPTIONS" :key="format.key" class="flex items-center gap-2">
-            <input v-model="formats[format.key]" type="checkbox" />
-            <span>{{ format.label }}</span>
-          </label>
-        </div>
+        <label v-for="format in FORMAT_OPTIONS" :key="format.key" class="flex items-center gap-2">
+          <input v-model="formats[format.key]" type="checkbox" />
+          <span>{{ format.label }}</span>
+        </label>
       </div>
 
       <div class="rounded border p-3 text-sm">
@@ -544,6 +529,13 @@
     }))
   }
 
+  function clearSelectedBanners() {
+    detectedBanners.value = detectedBanners.value.map((banner) => ({
+      ...banner,
+      selected: false,
+    }))
+  }
+
   function applyScaleToSelectedBanners() {
     detectedBanners.value = detectedBanners.value.map((banner) => ({
       ...banner,
@@ -571,6 +563,8 @@
       formats: selectedFormats.value,
       quality: {
         webp: preset.webp,
+        jpeg: preset.jpeg,
+        avif: preset.avif,
         pngCompressionLevel: preset.pngCompressionLevel,
         sharpen: preset.sharpen,
       },
