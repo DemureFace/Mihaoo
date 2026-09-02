@@ -55,7 +55,7 @@
         <transition name="dropdown">
           <ul
             v-show="tab.children && openDropdown === tab.value && !collapsed"
-          class="mt-1 flex flex-col gap-1 px-2 pb-2"
+            class="mt-1 flex flex-col gap-1 px-2 pb-2"
           >
             <li v-for="child in tab.children" :key="child.value">
               <button
@@ -152,6 +152,21 @@
       value: 'banner-export',
       icon: PhotoIcon,
       path: '/banner-export',
+    },
+    {
+      label: 'Аналітика',
+      value: 'analytics',
+      path: '/analytics-tasks',
+      children: [
+        {
+          label: 'Таск Ліст',
+          path: '/analytics-tasks',
+        },
+        {
+          label: 'Репорт',
+          path: '/analytics-report',
+        },
+      ],
     },
   ]
 

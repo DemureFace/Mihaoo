@@ -36,6 +36,42 @@ const routes = [
   { path: '/checklists', name: 'checklists', component: CheckListsView },
   { path: '/checklists/:slug', name: 'checklist-detail', component: ChecklistDetailView, props: true },
   { path: '/banner-export', name: 'banner-export', component: BannerExport },
+  {
+  path: '/analytics',
+
+  component: () => import('@/views/analytics/AnalyticsView.vue'),
+
+  redirect: {
+    name: 'analytics-tasks',
+  },
+
+  meta: {
+    section: 'analytics',
+  },
+
+  children: [
+    {
+      path: 'tasks',
+      name: 'analytics-tasks',
+      component: () =>
+        import('@/views/analytics/AnalyticsTaskListView.vue'),
+      meta: {
+        section: 'analytics',
+        subsection: 'tasks',
+      },
+    },
+    {
+      path: 'report',
+      name: 'analytics-report',
+      component: () =>
+        import('@/views/analytics/AnalyticsReportView.vue'),
+      meta: {
+        section: 'analytics',
+        subsection: 'report',
+      },
+    },
+  ],
+},
 ]
 
 const router = createRouter({
