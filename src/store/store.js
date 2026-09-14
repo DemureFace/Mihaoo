@@ -1,10 +1,12 @@
 import { createStore } from 'vuex';
 import auth from './modules/auth/index.js';
+import maps from './modules/maps.js'
 import { LOADING_SPINNER_SHOW_MUTATION } from './storeconstants';
 
 const store = createStore({
   modules: {
     auth,
+    maps,
   },
   state() {
     return {

@@ -85,6 +85,7 @@
     ClipboardDocumentCheckIcon,
     ChevronDownIcon,
     PhotoIcon,
+    MapIcon,
   } from '@heroicons/vue/24/outline'
 
   const props = defineProps({
@@ -142,6 +143,12 @@
       ],
     },
     {
+      label: 'Maps',
+      value: 'maps',
+      icon: MapIcon,
+      path: '/maps',
+    },
+    {
       label: 'News',
       value: 'news',
       icon: NewspaperIcon,
@@ -154,16 +161,18 @@
       path: '/banner-export',
     },
     {
-      label: 'Аналітика',
+      label: 'Analytics',
       value: 'analytics',
-      path: '/analytics-tasks',
+      icon: ClipboardDocumentCheckIcon,
       children: [
         {
-          label: 'Таск Ліст',
+          label: 'Tasks List',
+          value: 'analytics-tasks',
           path: '/analytics-tasks',
         },
         {
-          label: 'Репорт',
+          label: 'Reports',
+          value: 'analytics-report',
           path: '/analytics-report',
         },
       ],
