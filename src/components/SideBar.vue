@@ -168,12 +168,12 @@
         {
           label: 'Tasks List',
           value: 'analytics-tasks',
-          path: '/analytics-tasks',
+          path: '/analytics/tasks',
         },
         {
           label: 'Reports',
           value: 'analytics-report',
-          path: '/analytics-report',
+          path: '/analytics/report',
         },
       ],
     },
