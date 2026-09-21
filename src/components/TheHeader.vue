@@ -1,7 +1,13 @@
 <template>
   <header class="p-4 bg-surface-primary text-dark flex items-center justify-between">
     <div class="flex items-center">
-      <BaseButton type="button" @click="emit('toggle-sidebar')" class="p-2 mr-4 transition">
+      <BaseButton
+        type="button"
+        variant="plain"
+        class="mr-4 p-2"
+        aria-label="Toggle sidebar"
+        @click="emit('toggle-sidebar')"
+      >
         <ChevronDoubleLeftIcon v-if="!props.collapsed" class="w-6 h-6" />
         <ChevronDoubleRightIcon v-else class="w-6 h-6" />
       </BaseButton>
@@ -11,10 +17,10 @@
       </div>
     </div>
     <div class="">
-      <BaseButton class="py-1.5 px-4" @click="toggleModal('login')">Login</BaseButton>
+      <BaseButton size="sm" @click="toggleModal('login')">Login</BaseButton>
     </div>
     <BaseModal v-model="modalActive">
-      <component tag="a" :is="modalComponent" @change-modal="currentModalComponent = $event" />
+      <component :is="modalComponent" @change-modal="currentModalComponent = $event" />
     </BaseModal>
   </header>
 </template>
@@ -33,7 +39,7 @@
   const emit = defineEmits(['toggle-sidebar'])
 
   const currentModalComponent = ref(null)
-  const modalActive = ref(null)
+  const modalActive = ref(false)
 
   const modalComponent = computed(() => {
     switch (currentModalComponent.value) {

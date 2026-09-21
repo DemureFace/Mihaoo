@@ -26,7 +26,15 @@
             <component :is="Component" :key="route.fullPath" />
 
             <template #fallback>
-              <TabSkeleton />
+              <div class="space-y-4 p-6">
+                <div class="h-8 animate-pulse rounded bg-gray-200" />
+
+                <div class="h-4 animate-pulse rounded bg-gray-200" />
+
+                <div class="h-4 w-2/3 animate-pulse rounded bg-gray-200" />
+
+                <div class="h-64 animate-pulse rounded bg-gray-200" />
+              </div>
             </template>
           </Suspense>
         </KeepAlive>
@@ -64,17 +72,6 @@
       console.warn('User is not authenticated')
     }
   })
-  const TabSkeleton = {
-    name: 'TabSkeleton',
-    template: `
-    <div class="p-6 space-y-4">
-      <div class="h-8 bg-gray-200 rounded animate-pulse"></div>
-      <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
-      <div class="h-4 bg-gray-200 rounded animate-pulse w-2/3"></div>
-      <div class="h-64 bg-gray-200 rounded animate-pulse"></div>
-    </div>
-  `,
-  }
 
   const route = useRoute()
 
@@ -90,10 +87,6 @@
     isCollapsed.value ? 'ml-16' : 'ml-56',
     isSpecial.value ? 'p-0 w-full h-screen soon' : 'pt-14 p-6 rounded-3xl',
   ])
-
-  onMounted(() => {
-    // якщо треба auth — залиш
-  })
 </script>
 
 <style scoped>

@@ -31,66 +31,55 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: '',
-  },
+  defineProps({
+    modelValue: {
+      type: [String, Number],
+      default: '',
+    },
 
-  id: {
-    type: String,
-    required: true,
-  },
+    id: {
+      type: String,
+      required: true,
+    },
 
-  label: {
-    type: String,
-    default: '',
-  },
+    label: {
+      type: String,
+      default: '',
+    },
 
-  placeholder: {
-    type: String,
-    default: '',
-  },
+    placeholder: {
+      type: String,
+      default: '',
+    },
 
-  options: {
-    type: Array,
-    default: () => [],
-  },
+    options: {
+      type: Array,
+      default: () => [],
+    },
 
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
 
-  required: {
-    type: Boolean,
-    default: false,
-  },
+    required: {
+      type: Boolean,
+      default: false,
+    },
 
-  error: {
-    type: String,
-    default: '',
-  },
-})
+    error: {
+      type: String,
+      default: '',
+    },
+  })
 
-const emit = defineEmits([
-  'update:modelValue',
-])
+  const emit = defineEmits(['update:modelValue'])
 
-function onChange(event) {
-  const selected =
-    event.target.options[
-      event.target.selectedIndex
-    ]
+  function onChange(event) {
+    const selected = event.target.options[event.target.selectedIndex]
 
-  const value =
-    selected?._value ??
-    selected?.value ??
-    ''
+    const value = selected?._value ?? selected?.value ?? ''
 
-  emit(
-    'update:modelValue',
-    value,
-  )
-}
+    emit('update:modelValue', value)
+  }
 </script>

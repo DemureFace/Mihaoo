@@ -7,6 +7,7 @@
     :href="href || undefined"
     :aria-disabled="disabled || loading || undefined"
     :class="buttonClasses"
+    @click="handleClick"
   >
     <span
       v-if="loading"
@@ -71,7 +72,7 @@
       default: false,
     },
   })
-
+  const emit = defineEmits(['click'])
   const componentTag = computed(() => {
     if (props.to) {
       return RouterLink
@@ -120,4 +121,14 @@
     sizeClasses.value,
     props.fullWidth ? 'w-full' : '',
   ])
+
+  function handleClick(event) {
+    if (props.disabled || props.loading) {
+      event.preventDefault()
+      event.stopPropagation()
+      return
+    }
+
+    emit('click', event)
+  }
 </script>

@@ -63,7 +63,7 @@
                 size="sm"
                 class="w-full box-border justify-start rounded-md border border-black bg-white px-3 py-1.5 text-left transition-all duration-200 hover:bg-black/5"
                 :class="isChildActive(child) ? 'font-bold text-black' : 'text-black'"
-                @click.stop="handleChildClick(child, tab)"
+                @click.stop="handleChildClick(child)"
               >
                 {{ child.label }}
               </BaseButton>
@@ -94,8 +94,6 @@
   const props = defineProps({
     collapsed: { type: Boolean, default: false },
   })
-
-  const emit = defineEmits(['change-tab'])
 
   const router = useRouter()
   const route = useRoute()
@@ -193,14 +191,23 @@
 
   function handleClick(tab) {
     // Якщо у таби є dropdown — тільки відкриваємо/закриваємо меню
-    if (tab.children && tab.children.length) {
+    if (tab.children?.length) {
+      if (props.collapsed) {
+        const target = tab.children.find((child) => route.path === child.path) ?? tab.children[0]
+
+        router.push(target.path)
+        bounce(tab.value)
+
+        return
+      }
+
       openDropdown.value = openDropdown.value === tab.value ? null : tab.value
+
       return
     }
 
     // Якщо клікнули по вже активній табі — нічого не робимо
 
-    emit('change-tab', tab.value)
     bounce(tab.value)
 
     if (tab.path) {
@@ -208,13 +215,12 @@
     }
   }
 
-  function handleChildClick(child, parentTab) {
+  function handleChildClick(child) {
     // Якщо цей child вже відкритий — нічого не робимо
     if (route.path === child.path) return
 
     // Якщо у App.vue немає компонента для child.value,
     // краще залишати активною батьківську табу
-    emit('change-tab', parentTab.value)
 
     bounce(parentTab.value)
 
@@ -228,10 +234,16 @@
   }
 
   function isTabActive(tab) {
-    if (tab.path && route.path === tab.path) return true
+    if (tab.path) {
+      if (route.path === tab.path || route.path.startsWith(`${tab.path}/`)) {
+        return true
+      }
+    }
 
     if (tab.children) {
-      return tab.children.some((child) => isChildActive(child))
+      return tab.children.some(
+        (child) => route.path === child.path || route.path.startsWith(`${child.path}/`),
+      )
     }
 
     return false

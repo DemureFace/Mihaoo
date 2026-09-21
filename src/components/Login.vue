@@ -1,40 +1,45 @@
 <template>
   <div class="mx-auto w-full max-w-md">
-    <h3 class="text-3xl font-bold text-center text-weather-primary">Login</h3>
-    <div v-if="error" class="error bg-red-500">{{ error }}</div>
-    <form class="box-border mt-8 flex flex-col" @submit.prevent="onLogin()">
+    <h3 class="text-center text-3xl font-bold text-weather-primary">Login</h3>
+
+    <div v-if="error" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+      {{ error }}
+    </div>
+
+    <form class="mt-8 flex flex-col gap-4" @submit.prevent="onLogin">
       <BaseInput
-        icon="fa-envelope"
         v-model="email"
-        id="email"
+        id="login-email"
         label="Email"
         type="email"
+        autocomplete="email"
         :error="errors.email"
       />
 
       <BaseInput
-        icon="fa-lock"
-        v-model:inputValue="password"
-        id="password"
+        v-model="password"
+        id="login-password"
         label="Password"
         type="password"
+        autocomplete="current-password"
         :error="errors.password"
       />
-      <div class="flex justify-between mt-4">
-        <label class="text-base">
-          <BaseCheckbox v-model="rememberMe" id="checkbox" />
-          Remember me
-        </label>
-        <BaseButton tag="a" class="font-semibold">Forgot Password?</BaseButton>
+
+      <div class="flex items-center justify-between gap-4">
+        <BaseCheckbox v-model="rememberMe" id="login-remember">Remember me</BaseCheckbox>
+
+        <BaseButton type="button" variant="link" disabled>Forgot Password?</BaseButton>
       </div>
 
-      <BaseButton class="w-full p-3 mt-4 font-semibold text-xl">Login</BaseButton>
+      <BaseButton type="submit" variant="primary" size="lg" fullWidth>Login</BaseButton>
 
-      <div class="mt-4 text-center">
+      <div class="text-center">
         <p class="font-medium text-weather-primary">
           Don't have an account?
 
-          <BaseButton tag="a" @click="$emit('change-modal', 'signup')">Register</BaseButton>
+          <BaseButton type="button" variant="link" @click="$emit('change-modal', 'signup')">
+            Register
+          </BaseButton>
         </p>
       </div>
     </form>
@@ -46,18 +51,21 @@
   import SignupValidations from '@/services/SignupValidations'
   import BaseInput from '@/components/base/BaseInput.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
+  import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
   import { LOADING_SPINNER_SHOW_MUTATION, LOGIN_ACTION } from '@/store/storeconstants'
 
   export default {
     components: {
       BaseInput,
       BaseButton,
+      BaseCheckbox,
     },
 
     data() {
       return {
         email: '',
         password: '',
+        rememberMe: false,
         errors: {},
         error: '',
       }

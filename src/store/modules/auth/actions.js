@@ -13,7 +13,16 @@ export default {
     const data = await authService.login(payload);
 
     localStorage.setItem("accessToken", data.accessToken);
-    localStorage.setItem("refreshToken", data.refreshToken);
+    if (data.refreshToken) {
+  localStorage.setItem(
+    'refreshToken',
+    data.refreshToken,
+  )
+} else {
+  localStorage.removeItem(
+    'refreshToken',
+  )
+};
     localStorage.setItem("user", JSON.stringify(data.user));
 
     commit(SET_USER_MUTATION, {

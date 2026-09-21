@@ -38,9 +38,15 @@
         class="sm:col-span-2"
       />
 
-      <BaseInput v-model="draft.from" id="analytics-from" label="Від" type="date" />
+      <BaseInput
+        v-model="draft.from"
+        id="analytics-from"
+        label="Від"
+        type="date"
+        :error="dateError"
+      />
 
-      <BaseInput v-model="draft.to" id="analytics-to" label="До" type="date" />
+      <BaseInput v-model="draft.to" id="analytics-to" label="До" type="date" :error="dateError" />
 
       <BaseSelect
         v-model="draft.executorId"

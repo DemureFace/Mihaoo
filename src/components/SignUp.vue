@@ -4,21 +4,22 @@
     <div v-if="error" class="error bg-red-500">{{ error }}</div>
     <form class="box-border mt-8 flex flex-col" @submit.prevent="onSignup()">
       <BaseInput
-        icon="fa-envelope"
         v-model="email"
-        id="email"
+        id="signup-email"
         label="Email"
         type="email"
+        autocomplete="email"
         :error="errors.email"
       />
 
       <BaseInput
-        icon="fa-lock"
-        v-model:inputValue="password"
-        id="password"
+        v-model="password"
+        id="signup-password"
         label="Password"
         type="password"
+        autocomplete="new-password"
         :error="errors.password"
+        hint="Minimum 8 characters. Use Hebrew letters and special characters only."
       />
 
       <p class="mt-1 text-xs text-neutral-500">
@@ -26,20 +27,26 @@
       </p>
 
       <div class="flex justify-between mt-4">
-        <label class="text-base">
-          <BaseCheckbox v-model="termsAccepted" id="checkbox" />
-          I agree to the
-          <BaseButton tag="a" class="font-semibold">terms & conditions</BaseButton>
-        </label>
+        <div>
+          <BaseCheckbox v-model="termsAccepted" id="signup-terms">
+            I agree to the terms & conditions
+          </BaseCheckbox>
+
+          <p v-if="errors.terms" class="mt-1 text-xs font-medium text-red-600">
+            {{ errors.terms }}
+          </p>
+        </div>
       </div>
 
-      <BaseButton class="w-full p-3 mt-4 font-semibold text-xl">Register</BaseButton>
+      <BaseButton type="submit" variant="primary" size="lg" fullWidth>Register</BaseButton>
 
       <div class="mt-4 text-center">
         <p class="font-medium text-weather-primary">
           Already have an account?
 
-          <BaseButton tag="a" class="" @click="$emit('change-modal', 'login')">Login</BaseButton>
+          <BaseButton type="button" variant="link" @click="$emit('change-modal', 'login')">
+            Login
+          </BaseButton>
         </p>
       </div>
     </form>
@@ -50,6 +57,7 @@
   import SignupValidations from '@/services/SignupValidations'
   import BaseInput from '@/components/base/BaseInput.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
+  import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
 
   import { mapActions, mapMutations } from 'vuex'
   import { SIGNUP_ACTION, LOADING_SPINNER_SHOW_MUTATION } from '@/store/storeconstants'
@@ -58,12 +66,14 @@
     components: {
       BaseInput,
       BaseButton,
+      BaseCheckbox,
     },
 
     data() {
       return {
         email: '',
         password: '',
+        termsAccepted: false,
         errors: {},
         error: '',
       }
@@ -89,6 +99,10 @@
         const validations = new SignupValidations(this.email.trim(), this.password)
 
         this.errors = validations.checkValidations()
+
+        if (!this.termsAccepted) {
+          this.errors.terms = 'Please accept the terms & conditions'
+        }
 
         if (Object.keys(this.errors).length) {
           return

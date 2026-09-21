@@ -69,11 +69,11 @@
     <template v-else>
       <!-- Warning -->
       <div
-        v-if="analytics.warning"
+        v-if="analytics.membersError"
         class="border-b border-neutral-200 bg-amber-50 px-[18px] py-3 text-[13px] text-amber-800"
         role="status"
       >
-        {{ analytics.warning }}
+        {{ analytics.membersError }}
       </div>
 
       <!-- Empty -->
@@ -257,7 +257,13 @@
 
       return match ? `${match[3]}.${match[2]}.${match[1]}` : '—'
     }
+    if (key === 'reporter') {
+      return store.getters['analytics/memberName'](row.reporterId)
+    }
 
+    if (key === 'assignee') {
+      return row.assignee || store.getters['analytics/memberName'](row.executorId)
+    }
     return row[key] ?? '—'
   }
 
