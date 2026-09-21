@@ -58,14 +58,15 @@
             class="mt-1 flex flex-col gap-1 px-2 pb-2"
           >
             <li v-for="child in tab.children" :key="child.value">
-              <button
-                type="button"
-                class="w-full box-border text-left text-sm rounded-md border border-black bg-white px-3 py-1.5 transition-all duration-200 hover:bg-black/5"
-                :class="isChildActive(child) ? 'text-brand-blue font-bold' : 'text-black'"
+              <BaseButton
+                variant="plain"
+                size="sm"
+                class="w-full box-border justify-start rounded-md border border-black bg-white px-3 py-1.5 text-left transition-all duration-200 hover:bg-black/5"
+                :class="isChildActive(child) ? 'font-bold text-black' : 'text-black'"
                 @click.stop="handleChildClick(child, tab)"
               >
                 {{ child.label }}
-              </button>
+              </BaseButton>
             </li>
           </ul>
         </transition>
@@ -87,6 +88,8 @@
     PhotoIcon,
     MapIcon,
   } from '@heroicons/vue/24/outline'
+
+  import BaseButton from '@/components/base/BaseButton.vue'
 
   const props = defineProps({
     collapsed: { type: Boolean, default: false },

@@ -8,11 +8,7 @@
       </p>
     </header>
 
-    <!--
-      Крок 4:
-      тут буде спільна панель AnalyticsFilters,
-      яка працюватиме і для Task List, і для Report.
-    -->
+    <AnalyticsFilters />
 
     <RouterView />
   </section>
@@ -20,7 +16,10 @@
 
 <script setup>
   import { computed } from 'vue'
+
   import { RouterView, useRoute } from 'vue-router'
+
+  import AnalyticsFilters from '@/components/analytics/AnalyticsFilters.vue'
 
   const route = useRoute()
 

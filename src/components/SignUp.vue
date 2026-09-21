@@ -30,6 +30,10 @@
         :error="errors.password"
       />
 
+      <p class="mt-1 text-xs text-neutral-500">
+        Minimum 8 characters. Use Hebrew letters and special characters only.
+      </p>
+
       <div class="flex justify-between mt-4">
         <label class="text-base">
           <input type="checkbox" id="checkbox" />
@@ -109,12 +113,11 @@
 
         try {
           await this.signup({
-            name: this.username.trim(),
             email: this.email.trim().toLowerCase(),
             password: this.password,
           })
 
-          this.$router.push('/posts')
+          this.$router.push('/analytics/tasks')
         } catch (error) {
           this.error = error?.response?.data?.message || error?.message || 'Registration failed'
         } finally {

@@ -2,25 +2,26 @@
   <Teleport to="body">
     <Transition name="modal-outer">
       <div
-        v-show="open"
-        class="fixed inset-0 z-[200] bg-black/30 backdrop-blur-sm flex justify-center items-center p-4"
-        @click.self="close()"
+        v-if="open"
+        class="fixed inset-0 z-[200] flex items-center justify-center bg-black/30 p-4 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
+        @click.self="close"
       >
-        <Transition name="modal-inner">
+        <Transition name="modal-inner" appear>
           <div
-            v-if="open"
-            class="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white shadow-xl rounded-2xl border-2 border-black"
+            class="relative max-h-[90vh] w-full overflow-y-auto rounded-2xl border-2 border-black bg-white shadow-xl"
+            :class="sizeClass"
           >
-            <button
-              type="button"
-              class="absolute top-2 right-2 rounded px-2 py-1 hover:bg-gray-100"
-              @click.stop="close()"
+            <BaseButton
+              variant="ghost"
+              size="sm"
+              class="absolute right-2 top-2 z-10"
               aria-label="Close"
+              @click="close"
             >
               ✕
-            </button>
+            </BaseButton>
 
             <div class="p-6">
               <slot />
@@ -33,52 +34,92 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, onBeforeUnmount, watch } from 'vue'
+  import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+
+  import BaseButton from '@/components/base/BaseButton.vue'
 
   const props = defineProps({
-    modelValue: { type: Boolean, default: undefined },
-    modalActive: { type: Boolean, default: false },
+    modelValue: {
+      type: Boolean,
+      default: undefined,
+    },
+
+    // temporary backward compatibility
+    modalActive: {
+      type: Boolean,
+      default: false,
+    },
+
+    size: {
+      type: String,
+      default: 'md',
+    },
   })
+
   const emit = defineEmits(['update:modelValue', 'close-modal'])
 
-  const open = computed(() =>
-    typeof props.modelValue === 'boolean' ? props.modelValue : props.modalActive,
-  )
+  const open = computed(() => {
+    return props.modelValue !== undefined ? props.modelValue : props.modalActive
+  })
+
+  const sizeClass = computed(() => {
+    const sizes = {
+      sm: 'max-w-md',
+      md: 'max-w-2xl',
+      lg: 'max-w-4xl',
+      xl: 'max-w-6xl',
+    }
+
+    return sizes[props.size] || sizes.md
+  })
 
   function close() {
     emit('update:modelValue', false)
     emit('close-modal')
   }
-  function onEsc(e) {
-    if (e.key === 'Escape') close()
+
+  function onEsc(event) {
+    if (event.key === 'Escape' && open.value) {
+      close()
+    }
   }
 
-  onMounted(() => window.addEventListener('keydown', onEsc))
-  onBeforeUnmount(() => window.removeEventListener('keydown', onEsc))
+  watch(open, (value) => {
+    document.body.style.overflow = value ? 'hidden' : ''
+  })
 
-  watch(open, (on) => {
-    document.body.style.overflow = on ? 'hidden' : ''
+  onMounted(() => {
+    window.addEventListener('keydown', onEsc)
+  })
+
+  onBeforeUnmount(() => {
+    document.body.style.overflow = ''
+
+    window.removeEventListener('keydown', onEsc)
   })
 </script>
 
 <style scoped>
   .modal-outer-enter-active,
   .modal-outer-leave-active {
-    transition: opacity 0.25s ease;
+    transition: opacity 0.2s ease;
   }
+
   .modal-outer-enter-from,
   .modal-outer-leave-to {
     opacity: 0;
   }
+
   .modal-inner-enter-active,
   .modal-inner-leave-active {
     transition:
-      transform 0.25s ease,
-      opacity 0.25s ease;
+      opacity 0.2s ease,
+      transform 0.2s ease;
   }
+
   .modal-inner-enter-from,
   .modal-inner-leave-to {
-    transform: translateY(10px) scale(0.98);
     opacity: 0;
+    transform: translateY(8px) scale(0.98);
   }
 </style>

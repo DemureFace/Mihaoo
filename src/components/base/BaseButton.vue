@@ -1,39 +1,113 @@
 <template>
   <component
-    :class="{
-      'text-weather-secondary underline hover:no-underline': tag === 'a',
-    }"
-    :is="tag"
-    :to="{ name: path }"
-    @click="$emit('click')"
+    :is="componentTag"
+    :type="componentTag === 'button' ? type : undefined"
+    :disabled="componentTag === 'button' ? disabled || loading : undefined"
+    :to="to || undefined"
+    :aria-disabled="disabled || loading || undefined"
+    :class="buttonClasses"
   >
-    <span :class="textClasess">
-      <slot name="default"></slot>
-    </span>
+    <span
+      v-if="loading"
+      class="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent"
+      aria-hidden="true"
+    />
+
+    <slot />
   </component>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+  import { computed } from 'vue'
+  import { RouterLink } from 'vue-router'
 
-defineEmits(["click"]);
+  const props = defineProps({
+    variant: {
+      type: String,
+      default: 'secondary',
+      validator: (value) =>
+        ['primary', 'secondary', 'ghost', 'danger', 'link', 'plain'].includes(value),
+    },
 
-const props = defineProps({
-  tag: {
-    type: String,
-    default: "button",
-  },
-  path: {
-    type: String,
-    default: "",
-  },
-  click: {
-    type: String,
-    default: "",
-  },
-  textClasess: {
-    type: String,
-    default: "",
-  },
-});
+    size: {
+      type: String,
+      default: 'md',
+      validator: (value) => ['sm', 'md', 'lg'].includes(value),
+    },
+
+    type: {
+      type: String,
+      default: 'button',
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+
+    tag: {
+      type: String,
+      default: 'button',
+    },
+
+    to: {
+      type: [String, Object],
+      default: null,
+    },
+
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
+  })
+
+  const componentTag = computed(() => {
+    if (props.to) {
+      return RouterLink
+    }
+
+    return props.tag
+  })
+
+  const variantClasses = computed(() => {
+    const variants = {
+      primary: 'border-black bg-black text-white hover:bg-neutral-800',
+
+      secondary: 'border-black bg-white text-black hover:bg-neutral-100',
+
+      ghost: 'border-transparent bg-transparent text-black hover:bg-neutral-100',
+
+      danger: 'border-red-700 bg-red-700 text-white hover:bg-red-800',
+
+      link: 'border-transparent bg-transparent p-0 text-black underline underline-offset-2 hover:no-underline',
+
+      plain: 'border-transparent bg-transparent text-inherit',
+    }
+
+    return variants[props.variant]
+  })
+
+  const sizeClasses = computed(() => {
+    const sizes = {
+      sm: 'px-3 py-1.5 text-xs',
+      md: 'px-4 py-2 text-sm',
+      lg: 'px-5 py-3 text-base',
+    }
+
+    return props.variant === 'link' || props.variant === 'plain' ? '' : sizes[props.size]
+  })
+
+  const buttonClasses = computed(() => [
+    'inline-flex items-center justify-center gap-2 rounded-lg border font-medium transition',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30',
+    'disabled:cursor-not-allowed disabled:opacity-40',
+    variantClasses.value,
+    sizeClasses.value,
+    props.fullWidth ? 'w-full' : '',
+  ])
 </script>
