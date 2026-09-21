@@ -6,6 +6,7 @@
     :to="to || undefined"
     :href="href || undefined"
     :aria-disabled="disabled || loading || undefined"
+    :tabindex="disabled || loading ? -1 : undefined"
     :class="buttonClasses"
     @click="handleClick"
   >
@@ -117,6 +118,7 @@
     'inline-flex items-center justify-center gap-2 rounded-lg border font-medium transition',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30',
     'disabled:cursor-not-allowed disabled:opacity-40',
+    props.disabled || props.loading ? 'cursor-not-allowed opacity-40' : '',
     variantClasses.value,
     sizeClasses.value,
     props.fullWidth ? 'w-full' : '',

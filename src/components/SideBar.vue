@@ -219,11 +219,6 @@
     // Якщо цей child вже відкритий — нічого не робимо
     if (route.path === child.path) return
 
-    // Якщо у App.vue немає компонента для child.value,
-    // краще залишати активною батьківську табу
-
-    bounce(parentTab.value)
-
     if (child.path) {
       router.push(child.path)
     }

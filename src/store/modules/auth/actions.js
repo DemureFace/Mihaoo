@@ -8,6 +8,28 @@ import {
   CLEAR_AUTH_MUTATION,
 } from "@/store/storeconstants";
 
+function persistAuth(data) {
+  localStorage.setItem(
+    'accessToken',
+    data.accessToken,
+  )
+
+  if (data.refreshToken) {
+    localStorage.setItem(
+      'refreshToken',
+      data.refreshToken,
+    )
+  } else {
+    localStorage.removeItem(
+      'refreshToken',
+    )
+  }
+
+  localStorage.setItem(
+    'user',
+    JSON.stringify(data.user),
+  )
+}
 export default {
   async [LOGIN_ACTION]({ commit }, payload) {
     const data = await authService.login(payload);

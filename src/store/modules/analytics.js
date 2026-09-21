@@ -134,7 +134,7 @@ export default {
       state.loading = false
     },
 
-    CLEAR_RESULT(state) {
+CLEAR_RESULT(state) {
   state.requestId += 1
   state.rows = []
   state.loading = false

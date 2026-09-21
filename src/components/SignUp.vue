@@ -1,8 +1,10 @@
 <template>
   <div class="mx-auto w-full max-w-md">
     <h3 class="text-3xl font-bold text-center text-weather-primary">Registration</h3>
-    <div v-if="error" class="error bg-red-500">{{ error }}</div>
-    <form class="box-border mt-8 flex flex-col" @submit.prevent="onSignup()">
+    <div v-if="error" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+      {{ error }}
+    </div>
+    <form class="mt-8 flex flex-col gap-4" @submit.prevent="onSignup">
       <BaseInput
         v-model="email"
         id="signup-email"
@@ -21,10 +23,6 @@
         :error="errors.password"
         hint="Minimum 8 characters. Use Hebrew letters and special characters only."
       />
-
-      <p class="mt-1 text-xs text-neutral-500">
-        Minimum 8 characters. Use Hebrew letters and special characters only.
-      </p>
 
       <div class="flex justify-between mt-4">
         <div>

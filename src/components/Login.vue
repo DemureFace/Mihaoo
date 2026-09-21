@@ -48,7 +48,7 @@
 
 <script>
   import { mapActions, mapMutations } from 'vuex'
-  import SignupValidations from '@/services/SignupValidations'
+  import LoginValidations from '@/services/LoginValidations'
   import BaseInput from '@/components/base/BaseInput.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
   import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
@@ -81,7 +81,7 @@
       }),
 
       async onLogin() {
-        const validations = new SignupValidations(this.email, this.password)
+        const validations = new LoginValidations(this.email, this.password)
 
         this.errors = validations.checkValidations()
 
