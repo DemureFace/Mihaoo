@@ -11,7 +11,6 @@
         :id="id"
         :name="name"
         :type="resolvedType"
-        :value="currentValue"
         :placeholder="placeholder"
         :disabled="disabled"
         :required="required"
@@ -54,12 +53,6 @@
 
   const props = defineProps({
     modelValue: {
-      type: [String, Number],
-      default: undefined,
-    },
-
-    // temporary backward compatibility
-    inputValue: {
       type: [String, Number],
       default: undefined,
     },
@@ -125,13 +118,9 @@
     },
   })
 
-  const emit = defineEmits(['update:modelValue', 'update:inputValue'])
+  const emit = defineEmits(['update:modelValue'])
 
   const showPassword = ref(false)
-
-  const currentValue = computed(() => {
-    return props.modelValue !== undefined ? props.modelValue : (props.inputValue ?? '')
-  })
 
   const resolvedType = computed(() => {
     if (props.type !== 'password') {
@@ -145,6 +134,5 @@
     const value = event.target.value
 
     emit('update:modelValue', value)
-    emit('update:inputValue', value)
   }
 </script>

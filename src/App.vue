@@ -1,6 +1,3 @@
-<!-- <BasicAuth v-if="!isAuthenticated" @loggedIn="isAuthenticated = true" /> -->
-
-<!-- <div v-else> -->
 <template>
   <Preloader />
 

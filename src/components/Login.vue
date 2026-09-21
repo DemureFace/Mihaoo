@@ -26,8 +26,6 @@
       />
 
       <div class="flex items-center justify-between gap-4">
-        <BaseCheckbox v-model="rememberMe" id="login-remember">Remember me</BaseCheckbox>
-
         <BaseButton type="button" variant="link" disabled>Forgot Password?</BaseButton>
       </div>
 

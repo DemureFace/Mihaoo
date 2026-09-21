@@ -32,7 +32,7 @@
     </div>
 
     <!-- Модалка -->
-    <BaseModal :modal-active="showEditor" @close-modal="showEditor = false">
+    <BaseModal :modal-active="showEditor">
       <ChecklistEditor :value="editing" @save="onSave" />
     </BaseModal>
   </section>

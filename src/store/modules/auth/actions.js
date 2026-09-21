@@ -1,4 +1,5 @@
-import { authService } from "@/services/auth.service";
+import { authService } from '@/services/auth.service'
+
 import {
   LOGIN_ACTION,
   SIGNUP_ACTION,
@@ -6,7 +7,7 @@ import {
   FETCH_USER_ACTION,
   SET_USER_MUTATION,
   CLEAR_AUTH_MUTATION,
-} from "@/store/storeconstants";
+} from '@/store/storeconstants'
 
 function persistAuth(data) {
   localStorage.setItem(
@@ -14,107 +15,125 @@ function persistAuth(data) {
     data.accessToken,
   )
 
-  if (data.refreshToken) {
-    localStorage.setItem(
-      'refreshToken',
-      data.refreshToken,
-    )
-  } else {
-    localStorage.removeItem(
-      'refreshToken',
-    )
-  }
+  localStorage.removeItem(
+    'refreshToken',
+  )
 
   localStorage.setItem(
     'user',
     JSON.stringify(data.user),
   )
 }
-export default {
-  async [LOGIN_ACTION]({ commit }, payload) {
-    const data = await authService.login(payload);
 
-    localStorage.setItem("accessToken", data.accessToken);
-    if (data.refreshToken) {
-  localStorage.setItem(
-    'refreshToken',
-    data.refreshToken,
+function clearStoredAuth() {
+  localStorage.removeItem(
+    'accessToken',
   )
-} else {
+
   localStorage.removeItem(
     'refreshToken',
   )
-};
-    localStorage.setItem("user", JSON.stringify(data.user));
 
-    commit(SET_USER_MUTATION, {
-      user: data.user,
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-    });
+  localStorage.removeItem(
+    'user',
+  )
+}
 
-    return data;
+export default {
+  async [LOGIN_ACTION](
+    { commit },
+    payload,
+  ) {
+    const data =
+      await authService.login(
+        payload,
+      )
+
+    persistAuth(data)
+
+    commit(
+      SET_USER_MUTATION,
+      {
+        user: data.user,
+        accessToken:
+          data.accessToken,
+        refreshToken: null,
+      },
+    )
+
+    return data
   },
 
-  async [SIGNUP_ACTION]({ commit }, payload) {
-    const data = await authService.register(payload);
+  async [SIGNUP_ACTION](
+    { commit },
+    payload,
+  ) {
+    const data =
+      await authService.register(
+        payload,
+      )
 
-    localStorage.setItem("accessToken", data.accessToken);
-    localStorage.setItem("refreshToken", data.refreshToken);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    persistAuth(data)
 
-    commit(SET_USER_MUTATION, {
-      user: data.user,
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-    });
+    commit(
+      SET_USER_MUTATION,
+      {
+        user: data.user,
+        accessToken:
+          data.accessToken,
+        refreshToken: null,
+      },
+    )
 
-    return data;
+    return data
   },
 
-  async [FETCH_USER_ACTION]({ commit }) {
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
+  async [FETCH_USER_ACTION]({
+    commit,
+  }) {
+    const accessToken =
+      localStorage.getItem(
+        'accessToken',
+      )
 
     if (!accessToken) {
-      commit(CLEAR_AUTH_MUTATION);
-      return null;
+      clearStoredAuth()
+      commit(CLEAR_AUTH_MUTATION)
+
+      return null
     }
 
     try {
-      const user = await authService.me();
+      const user =
+        await authService.me()
 
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem(
+        'user',
+        JSON.stringify(user),
+      )
 
-      commit(SET_USER_MUTATION, {
-        user,
-        accessToken,
-        refreshToken,
-      });
+      commit(
+        SET_USER_MUTATION,
+        {
+          user,
+          accessToken,
+          refreshToken: null,
+        },
+      )
 
-      return user;
-    } catch (error) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
+      return user
+    } catch {
+      clearStoredAuth()
+      commit(CLEAR_AUTH_MUTATION)
 
-      commit(CLEAR_AUTH_MUTATION);
-
-      return null;
+      return null
     }
   },
 
-  async [LOGOUT_ACTION]({ commit }) {
-    try {
-      await authService.logout();
-    } catch (error) {
-      console.warn("Logout request failed, local auth will be cleared anyway");
-    }
-
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
-
-    commit(CLEAR_AUTH_MUTATION);
+  async [LOGOUT_ACTION]({
+    commit,
+  }) {
+    clearStoredAuth()
+    commit(CLEAR_AUTH_MUTATION)
   },
-};
+}

@@ -13,7 +13,8 @@
       >
         <!-- Основна таба -->
         <BaseButton
-          class="flex items-center gap-2 rounded-lg w-full transition-all duration-300 ease-in-out"
+          variant="plain"
+          class="flex w-full items-center gap-2 rounded-lg transition-all duration-300 ease-in-out"
           :class="[
             isTabActive(tab) ? 'active' : '',
             collapsed ? 'p-1 justify-center' : 'px-3 py-1.5',
