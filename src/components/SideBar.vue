@@ -93,7 +93,6 @@
 
   const props = defineProps({
     collapsed: { type: Boolean, default: false },
-    currentTab: { type: String, required: true },
   })
 
   const emit = defineEmits(['change-tab'])
@@ -200,7 +199,6 @@
     }
 
     // Якщо клікнули по вже активній табі — нічого не робимо
-    if (tab.value === props.currentTab) return
 
     emit('change-tab', tab.value)
     bounce(tab.value)
@@ -230,7 +228,6 @@
   }
 
   function isTabActive(tab) {
-    if (props.currentTab === tab.value) return true
     if (tab.path && route.path === tab.path) return true
 
     if (tab.children) {

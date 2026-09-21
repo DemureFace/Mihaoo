@@ -5,7 +5,7 @@
     <form class="box-border mt-8 flex flex-col" @submit.prevent="onLogin()">
       <BaseInput
         icon="fa-envelope"
-        v-model:inputValue="email"
+        v-model="email"
         id="email"
         label="Email"
         type="email"
@@ -22,7 +22,7 @@
       />
       <div class="flex justify-between mt-4">
         <label class="text-base">
-          <input type="checkbox" id="checkbox" />
+          <BaseCheckbox v-model="rememberMe" id="checkbox" />
           Remember me
         </label>
         <BaseButton tag="a" class="font-semibold">Forgot Password?</BaseButton>

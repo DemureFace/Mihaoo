@@ -13,7 +13,7 @@
     <div class="">
       <BaseButton class="py-1.5 px-4" @click="toggleModal('login')">Login</BaseButton>
     </div>
-    <BaseModal :modalActive="modalActive" @close-modal="modalActive = false">
+    <BaseModal v-model="modalActive">
       <component tag="a" :is="modalComponent" @change-modal="currentModalComponent = $event" />
     </BaseModal>
   </header>

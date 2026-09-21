@@ -134,6 +134,15 @@ export default {
       state.loading = false
     },
 
+    CLEAR_RESULT(state) {
+  state.requestId += 1
+  state.rows = []
+  state.loading = false
+  state.error = ''
+  state.total = null
+  state.hasNext = false
+},
+
     MEMBERS_BEGIN(state) {
       state.membersLoading = true
 

@@ -212,15 +212,7 @@
 </template>
 
 <script setup>
-  import {
-    computed,
-    reactive,
-    watch,
-    onMounted,
-    onBeforeUnmount,
-    onActivated,
-    onDeactivated,
-  } from 'vue'
+  import { computed, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
   import { useStore } from 'vuex'
   import BaseButton from '@/components/base/BaseButton.vue'
   const store = useStore()

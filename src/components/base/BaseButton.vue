@@ -4,6 +4,7 @@
     :type="componentTag === 'button' ? type : undefined"
     :disabled="componentTag === 'button' ? disabled || loading : undefined"
     :to="to || undefined"
+    :href="href || undefined"
     :aria-disabled="disabled || loading || undefined"
     :class="buttonClasses"
   >
@@ -60,6 +61,11 @@
       default: null,
     },
 
+    href: {
+      type: String,
+      default: '',
+    },
+
     fullWidth: {
       type: Boolean,
       default: false,
@@ -69,6 +75,10 @@
   const componentTag = computed(() => {
     if (props.to) {
       return RouterLink
+    }
+
+    if (props.href) {
+      return 'a'
     }
 
     return props.tag

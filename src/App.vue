@@ -19,21 +19,19 @@
   </aside>
 
   <main :class="mainClasses">
-    <transition name="fade">
-      <Suspense>
-        <template #default>
-          <KeepAlive>
-            <router-view v-slot="{ Component, route }">
-              <component :is="Component" :key="route.fullPath" />
-            </router-view>
-          </KeepAlive>
-        </template>
+    <RouterView v-slot="{ Component, route }">
+      <Transition name="fade" mode="out-in">
+        <KeepAlive>
+          <Suspense>
+            <component :is="Component" :key="route.fullPath" />
 
-        <template #fallback>
-          <TabSkeleton />
-        </template>
-      </Suspense>
-    </transition>
+            <template #fallback>
+              <TabSkeleton />
+            </template>
+          </Suspense>
+        </KeepAlive>
+      </Transition>
+    </RouterView>
   </main>
 </template>
 

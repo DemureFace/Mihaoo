@@ -4,17 +4,8 @@
     <div v-if="error" class="error bg-red-500">{{ error }}</div>
     <form class="box-border mt-8 flex flex-col" @submit.prevent="onSignup()">
       <BaseInput
-        icon="fa-user"
-        v-model:inputValue="username"
-        id="username"
-        label="Username"
-        type="text"
-        :error="errors.username"
-      />
-
-      <BaseInput
         icon="fa-envelope"
-        v-model:inputValue="email"
+        v-model="email"
         id="email"
         label="Email"
         type="email"
@@ -36,7 +27,7 @@
 
       <div class="flex justify-between mt-4">
         <label class="text-base">
-          <input type="checkbox" id="checkbox" />
+          <BaseCheckbox v-model="termsAccepted" id="checkbox" />
           I agree to the
           <BaseButton tag="a" class="font-semibold">terms & conditions</BaseButton>
         </label>
@@ -71,7 +62,6 @@
 
     data() {
       return {
-        username: '',
         email: '',
         password: '',
         errors: {},
@@ -96,11 +86,7 @@
       }),
 
       async onSignup() {
-        const validations = new SignupValidations(
-          this.email.trim(),
-          this.password,
-          this.username.trim(),
-        )
+        const validations = new SignupValidations(this.email.trim(), this.password)
 
         this.errors = validations.checkValidations()
 
