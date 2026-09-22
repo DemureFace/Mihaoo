@@ -53,11 +53,6 @@
       default: false,
     },
 
-    tag: {
-      type: String,
-      default: 'button',
-    },
-
     to: {
       type: [String, Object],
       default: null,
@@ -83,7 +78,7 @@
       return 'a'
     }
 
-    return props.tag
+    return 'button'
   })
 
   const variantClasses = computed(() => {

@@ -11,7 +11,12 @@
     class="fixed top-0 left-0 right-0 z-50 bg-background-cardLight h-14"
   />
 
-  <aside class="fixed top-14 left-0 w-56 h-[calc(100vh-3.5rem)]">
+  <aside
+    :class="[
+      'fixed top-14 left-0 h-[calc(100vh-3.5rem)] transition-all duration-300',
+      isCollapsed ? 'w-16' : 'w-56',
+    ]"
+  >
     <SideBar :collapsed="isCollapsed" />
   </aside>
 

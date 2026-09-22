@@ -32,8 +32,8 @@
     </div>
 
     <!-- Модалка -->
-    <BaseModal :modal-active="showEditor">
-      <ChecklistEditor :value="editing" @save="onSave" />
+    <BaseModal v-model="showEditor">
+      <ChecklistEditor v-model="showEditor" :value="editing" @save="onSave" />
     </BaseModal>
   </section>
 </template>
@@ -73,6 +73,8 @@
     } else {
       create(payload)
     }
+
+    showEditor.value = false
   }
 
   function onDelete(cl) {

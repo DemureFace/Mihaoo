@@ -49,21 +49,18 @@
   import LoginValidations from '@/services/LoginValidations'
   import BaseInput from '@/components/base/BaseInput.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
-  import BaseCheckbox from '@/components/base/BaseCheckbox.vue'
   import { LOADING_SPINNER_SHOW_MUTATION, LOGIN_ACTION } from '@/store/storeconstants'
 
   export default {
     components: {
       BaseInput,
       BaseButton,
-      BaseCheckbox,
     },
 
     data() {
       return {
         email: '',
         password: '',
-        rememberMe: false,
         errors: {},
         error: '',
       }

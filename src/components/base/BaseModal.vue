@@ -44,23 +44,15 @@
       default: undefined,
     },
 
-    // temporary backward compatibility
-    modalActive: {
-      type: Boolean,
-      default: false,
-    },
-
     size: {
       type: String,
       default: 'md',
     },
   })
 
-  const emit = defineEmits(['update:modelValue', 'close-modal'])
+  const emit = defineEmits(['update:modelValue'])
 
-  const open = computed(() => {
-    return props.modelValue !== undefined ? props.modelValue : props.modalActive
-  })
+  const open = computed(() => props.modelValue)
 
   const sizeClass = computed(() => {
     const sizes = {
@@ -75,13 +67,6 @@
 
   function close() {
     emit('update:modelValue', false)
-    emit('close-modal')
-  }
-
-  function onEsc(event) {
-    if (event.key === 'Escape' && open.value) {
-      close()
-    }
   }
 
   watch(open, (value) => {

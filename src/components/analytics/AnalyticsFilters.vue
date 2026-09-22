@@ -24,7 +24,9 @@
       <div class="ml-auto flex gap-2">
         <BaseButton @click="resetFilters">Скинути</BaseButton>
 
-        <BaseButton variant="primary" @click="applyFilters">Застосувати</BaseButton>
+        <BaseButton variant="primary" :disabled="Boolean(dateError)" @click="applyFilters">
+          Застосувати
+        </BaseButton>
       </div>
     </div>
 

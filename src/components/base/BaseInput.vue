@@ -11,6 +11,7 @@
         :id="id"
         :name="name"
         :type="resolvedType"
+        :value="modelValue"
         :placeholder="placeholder"
         :disabled="disabled"
         :required="required"
@@ -54,7 +55,7 @@
   const props = defineProps({
     modelValue: {
       type: [String, Number],
-      default: undefined,
+      default: '',
     },
 
     id: {

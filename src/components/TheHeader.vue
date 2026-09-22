@@ -17,10 +17,14 @@
       </div>
     </div>
     <div class="">
-      <BaseButton size="sm" @click="toggleModal('login')">Login</BaseButton>
+      <BaseButton size="sm" @click="openAuthModal('login')">Login</BaseButton>
     </div>
     <BaseModal v-model="modalActive">
-      <component :is="modalComponent" @change-modal="currentModalComponent = $event" />
+      <component
+        :is="modalComponent"
+        @change-modal="currentModalComponent = $event"
+        @authenticated="closeAuthModal"
+      />
     </BaseModal>
   </header>
 </template>
@@ -51,9 +55,13 @@
         return null
     }
   })
-
-  const toggleModal = (component) => {
-    modalActive.value = !modalActive.value
+  function closeAuthModal() {
+    modalActive.value = false
+    currentModalComponent.value = null
+  }
+  function openAuthModal(component) {
     currentModalComponent.value = component
+
+    modalActive.value = true
   }
 </script>
