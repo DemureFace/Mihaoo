@@ -41,12 +41,13 @@
   const props = defineProps({
     modelValue: {
       type: Boolean,
-      default: undefined,
+      default: false,
     },
 
     size: {
       type: String,
       default: 'md',
+      validator: (value) => ['sm', 'md', 'lg', 'xl'].includes(value),
     },
   })
 
@@ -62,16 +63,28 @@
       xl: 'max-w-6xl',
     }
 
-    return sizes[props.size] || sizes.md
+    return sizes[props.size]
   })
 
   function close() {
     emit('update:modelValue', false)
   }
 
-  watch(open, (value) => {
-    document.body.style.overflow = value ? 'hidden' : ''
-  })
+  function onEsc(event) {
+    if (event.key === 'Escape' && open.value) {
+      close()
+    }
+  }
+
+  watch(
+    open,
+    (value) => {
+      document.body.style.overflow = value ? 'hidden' : ''
+    },
+    {
+      immediate: true,
+    },
+  )
 
   onMounted(() => {
     window.addEventListener('keydown', onEsc)

@@ -57,6 +57,8 @@
       BaseButton,
     },
 
+    emits: ['change-modal', 'authenticated'],
+
     data() {
       return {
         email: '',
@@ -90,8 +92,11 @@
         try {
           await this.login({
             email: this.email.trim().toLowerCase(),
+
             password: this.password,
           })
+
+          this.$emit('authenticated')
 
           this.$router.push('/analytics/tasks')
         } catch (e) {

@@ -23,13 +23,18 @@
     </header>
 
     <BaseModal v-model="showEditor">
-      <ChecklistEditor :value="checklist" @save="onSave" />
+      <ChecklistEditor v-model="showEditor" :value="checklist" @save="onSave" />
     </BaseModal>
 
     <ul class="space-y-2">
       <li v-for="item in checklist.items" :key="item.id" class="border rounded p-3">
         <label class="flex gap-3 items-center cursor-pointer">
-          <input type="checkbox" :checked="isChecked(item.id)" @change="toggle(item.id)" class="accent-green-600 focus:ring-2 focus:ring-green-400" />
+          <input
+            type="checkbox"
+            :checked="isChecked(item.id)"
+            @change="toggle(item.id)"
+            class="accent-green-600 focus:ring-2 focus:ring-green-400"
+          />
           <span>{{ item.text }}</span>
         </label>
       </li>
@@ -66,7 +71,6 @@
   import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
   import BaseModal from '@/components/base/BaseModal.vue'
-  import { ArrowLeftIcon } from '@heroicons/vue/24/outline'
   import ChecklistEditor from '@/components/ChecklistEditor.vue'
   import { useChecklists } from '@/composables/useChecklists'
   import ChecklistNode from '@/components/ChecklistNode.vue'
@@ -81,7 +85,6 @@
   } from '@/lib/storage'
   function openEdit() {
     showEditor.value = true
-    console.log('🔵 openEdit -> showEditor =', showEditor.value)
   }
   const { update, remove } = useChecklists()
   const router = useRouter()
@@ -136,7 +139,6 @@
     lastFilled.value = getLastFilledAt(s)
   }
 
-  onMounted(load)
   watch(slug, load)
 
   const hasChecklist = computed(() => !!checklist.value)

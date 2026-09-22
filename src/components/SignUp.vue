@@ -67,6 +67,8 @@
       BaseCheckbox,
     },
 
+    emits: ['change-modal', 'authenticated'],
+
     data() {
       return {
         email: '',
@@ -75,13 +77,6 @@
         errors: {},
         error: '',
       }
-    },
-
-    props: {
-      openRegistrationModal: {
-        type: Function,
-        required: false,
-      },
     },
 
     methods: {
