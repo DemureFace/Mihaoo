@@ -2,10 +2,16 @@
   <BaseModal v-model="isOpen" size="xl">
     <form class="space-y-5" @submit.prevent="submit">
       <header class="border-b border-neutral-200 pb-5 pr-10">
-        <h2 class="text-2xl font-bold tracking-[-0.02em] text-black">Нова задача</h2>
+        <h2 class="text-2xl font-bold tracking-[-0.02em] text-black">
+          {{ isDuplicate ? 'Створити схожу задачу' : 'Нова задача' }}
+        </h2>
 
         <p class="mt-1 text-sm text-neutral-500">
-          Одна форма створить окремий рядок Task List для кожного вибраного бренду.
+          {{
+            isDuplicate
+              ? 'Основні дані скопійовані. Перевір поля та вкажи нового виконавця, SP і дату звіту.'
+              : 'Одна форма створить окремий рядок Task List для кожного вибраного бренду.'
+          }}
         </p>
       </header>
 
@@ -262,6 +268,11 @@
       type: Boolean,
       default: false,
     },
+
+    initialData: {
+      type: Object,
+      default: null,
+    },
   })
 
   const emit = defineEmits(['update:modelValue', 'created'])
@@ -305,6 +316,50 @@
       status: 'IN_PROGRESS',
       closedAt: '',
     }
+  }
+
+  function formatInputDate(value) {
+    if (!value) {
+      return ''
+    }
+
+    return String(value).slice(0, 10)
+  }
+
+  function applyInitialData() {
+    const data = props.initialData
+
+    if (!data) {
+      return
+    }
+
+    form.title = data.title || ''
+
+    form.description = data.description || ''
+
+    form.platform = data.platform || ''
+
+    form.taskType = data.taskType || ''
+
+    form.brands = Array.isArray(data.brands) ? [...data.brands] : []
+
+    form.requestedById = data.requestedById ?? ''
+
+    form.jiraKey = data.jiraKey || ''
+
+    form.dueDate = formatInputDate(data.dueDate)
+
+    // Навмисно НЕ переносимо:
+    // executor
+    // SP
+    // status
+    // reportDate
+    form.executorId = ''
+    form.storyPointsPerBrand = ''
+    form.status = 'IN_PROGRESS'
+    form.reportDate = today()
+    form.closedAt = ''
+    form.differentExecutorsPerBrand = false
   }
 
   const form = reactive(createInitialForm())
@@ -366,6 +421,10 @@
     }
 
     return result
+  })
+
+  const isDuplicate = computed(() => {
+    return Boolean(props.initialData)
   })
 
   const selectedBrands = computed(() => {
@@ -569,14 +628,22 @@
     },
   )
 
+  async function prepareOpen() {
+    resetForm()
+
+    await loadReferenceData()
+
+    if (props.modelValue) {
+      applyInitialData()
+    }
+  }
+
   watch(
     () => props.modelValue,
 
     (open) => {
       if (open) {
-        resetForm()
-
-        loadReferenceData()
+        prepareOpen()
 
         return
       }

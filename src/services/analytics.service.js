@@ -104,6 +104,15 @@ export const analyticsService = {
     }
   },
 
+  async getDuplicateTemplate(id, signal) {
+    const { data } = await api.get(`/tasks/${id}/duplicate`, {
+      signal,
+      timeout: 20000,
+    })
+
+    return data
+  },
+
   async listMembers(signal) {
     const { data } = await api.get('/team-members', {
       params: {

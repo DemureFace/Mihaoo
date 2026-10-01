@@ -24,7 +24,7 @@
           Експорт CSV
         </BaseButton>
 
-        <BaseButton variant="primary" @click="createOpen = true">+ Нова задача</BaseButton>
+        <BaseButton variant="primary" @click="openCreateTask">+ Нова задача</BaseButton>
       </div>
     </header>
     <div
@@ -225,8 +225,17 @@
     </template>
   </section>
 
-  <AnalyticsTaskDetailsModal v-model="detailsOpen" :task-id="selectedTaskId" @updated="reload()" />
-  <AnalyticsTaskCreateModal v-model="createOpen" @created="handleTaskCreated" />
+  <AnalyticsTaskDetailsModal
+    v-model="detailsOpen"
+    :task-id="selectedTaskId"
+    @updated="reload()"
+    @duplicate="handleDuplicateTask"
+  />
+  <AnalyticsTaskCreateModal
+    v-model="createOpen"
+    :initial-data="createInitialData"
+    @created="handleTaskCreated"
+  />
 </template>
 
 <script setup>
@@ -243,11 +252,20 @@
   const selectedTaskId = ref(null)
   const exportLoading = ref(false)
   const exportError = ref('')
+  const createInitialData = ref(null)
 
   let exportController = null
 
   function handleTaskCreated() {
+    createInitialData.value = null
+
     reload(1)
+  }
+
+  function handleDuplicateTask(template) {
+    createInitialData.value = template
+    detailsOpen.value = false
+    createOpen.value = true
   }
 
   function openDetails(taskId) {
@@ -409,6 +427,10 @@
     exportController?.abort()
 
     store.commit('analytics/CLEAR_RESULT')
+  }
+  function openCreateTask() {
+    createInitialData.value = null
+    createOpen.value = true
   }
 
   watch(

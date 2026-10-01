@@ -50,13 +50,31 @@
               </h2>
             </div>
 
-            <BaseButton v-if="!editing" size="sm" variant="primary" @click="startEditing">
-              Редагувати
-            </BaseButton>
+            <div class="flex items-center gap-2">
+              <BaseButton
+                v-if="!editing"
+                size="sm"
+                :loading="duplicateLoading"
+                @click="createSimilarTask"
+              >
+                Створити схожу
+              </BaseButton>
 
-            <BaseButton v-else size="sm" @click="cancelEditing">Скасувати</BaseButton>
+              <BaseButton v-if="!editing" size="sm" variant="primary" @click="startEditing">
+                Редагувати
+              </BaseButton>
+
+              <BaseButton v-else size="sm" @click="cancelEditing">Скасувати</BaseButton>
+            </div>
           </div>
         </header>
+
+        <div
+          v-if="duplicateError"
+          class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+        >
+          {{ duplicateError }}
+        </div>
 
         <!-- VIEW -->
         <div v-if="!editing" class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[1fr_340px]">
@@ -485,7 +503,7 @@
     },
   })
 
-  const emit = defineEmits(['update:modelValue', 'updated'])
+  const emit = defineEmits(['update:modelValue', 'updated', 'duplicate'])
 
   const store = useStore()
 
@@ -508,6 +526,9 @@
   const rowActionLoading = ref(false)
   const rowActionError = ref('')
   const deleteConfirmationOpen = ref(false)
+
+  const duplicateLoading = ref(false)
+  const duplicateError = ref('')
 
   let controller = null
 
@@ -807,6 +828,29 @@
     }
   }
 
+  async function createSimilarTask() {
+    const taskBrandId = selectedBrand.value?.id || props.taskId
+
+    if (!taskBrandId) {
+      return
+    }
+
+    duplicateError.value = ''
+    duplicateLoading.value = true
+
+    try {
+      const template = await analyticsService.getDuplicateTemplate(taskBrandId)
+
+      emit('duplicate', template)
+
+      isOpen.value = false
+    } catch (requestError) {
+      duplicateError.value = getErrorMessage(requestError)
+    } finally {
+      duplicateLoading.value = false
+    }
+  }
+
   async function deleteSelectedBrand() {
     if (!selectedBrand.value || selectedBrand.value.deletedAt) {
       return
@@ -961,6 +1005,9 @@
       rowActionLoading.value = false
       rowActionError.value = ''
       deleteConfirmationOpen.value = false
+
+      duplicateLoading.value = false
+      duplicateError.value = ''
 
       loading.value = false
     },
