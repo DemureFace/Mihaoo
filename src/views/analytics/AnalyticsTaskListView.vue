@@ -112,7 +112,12 @@
             <tr
               v-for="row in analytics.rows"
               :key="row.id"
-              class="border-b border-neutral-100 transition hover:bg-neutral-100"
+              class="cursor-pointer border-b border-neutral-100 transition hover:bg-neutral-100"
+              tabindex="0"
+              role="button"
+              @click="openDetails(row.id)"
+              @keydown.enter="openDetails(row.id)"
+              @keydown.space.prevent="openDetails(row.id)"
             >
               <td
                 v-for="[key] in columns"
@@ -209,14 +214,24 @@
       </footer>
     </template>
   </section>
+
+  <AnalyticsTaskDetailsModal v-model="detailsOpen" :task-id="selectedTaskId" />
 </template>
 
 <script setup>
-  import { computed, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
+  import { computed, ref, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
   import { useStore } from 'vuex'
   import BaseButton from '@/components/base/BaseButton.vue'
+  import AnalyticsTaskDetailsModal from '@/components/analytics/AnalyticsTaskDetailsModal.vue'
   const store = useStore()
   const analytics = computed(() => store.state.analytics)
+  const detailsOpen = ref(false)
+  const selectedTaskId = ref(null)
+
+  function openDetails(taskId) {
+    selectedTaskId.value = taskId
+    detailsOpen.value = true
+  }
 
   const columns = [
     ['id', '№'],

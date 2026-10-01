@@ -130,4 +130,21 @@ export const analyticsService = {
 
     return data
   },
+  async updateTaskBrand(id, payload, signal) {
+  const { data } = await api.patch(`/tasks/${id}`, payload, {
+    signal,
+    timeout: 20000,
+  })
+
+  return data
+},
+
+async updateTaskGroup(id, payload, signal) {
+  const { data } = await api.patch(`/tasks/${id}/group`, payload, {
+    signal,
+    timeout: 20000,
+  })
+
+  return data
+},
 }
