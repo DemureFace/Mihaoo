@@ -215,7 +215,7 @@
     </template>
   </section>
 
-  <AnalyticsTaskDetailsModal v-model="detailsOpen" :task-id="selectedTaskId" />
+  <AnalyticsTaskDetailsModal v-model="detailsOpen" :task-id="selectedTaskId" @updated="reload()" />
 </template>
 
 <script setup>
