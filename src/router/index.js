@@ -39,6 +39,9 @@ const routes = [
     path: '/tournaments',
     name: 'tournaments',
     component: TournamentView,
+        meta: {
+  requiresAuth: true,
+},
   },
 
   {
