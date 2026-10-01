@@ -156,6 +156,24 @@ export const analyticsService = {
     return data
   },
 
+  async deleteTaskBrand(id, signal) {
+    const { data } = await api.delete(`/tasks/${id}`, {
+      signal,
+      timeout: 20000,
+    })
+
+    return data
+  },
+
+  async restoreTaskBrand(id, signal) {
+    const { data } = await api.post(`/tasks/${id}/restore`, null, {
+      signal,
+      timeout: 20000,
+    })
+
+    return data
+  },
+
   async updateTaskGroup(id, payload, signal) {
     const { data } = await api.patch(`/tasks/${id}/group`, payload, {
       signal,

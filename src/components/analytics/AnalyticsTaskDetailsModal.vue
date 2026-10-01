@@ -248,6 +248,36 @@
                   </dd>
                 </div>
               </dl>
+              <div class="mt-5 border-t border-neutral-200 pt-4">
+                <div
+                  v-if="rowActionError"
+                  class="mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700"
+                >
+                  {{ rowActionError }}
+                </div>
+
+                <BaseButton
+                  v-if="selectedBrand?.deletedAt"
+                  variant="secondary"
+                  size="sm"
+                  :loading="rowActionLoading"
+                  full-width
+                  @click="restoreSelectedBrand"
+                >
+                  Відновити рядок
+                </BaseButton>
+
+                <BaseButton
+                  v-else
+                  variant="danger"
+                  size="sm"
+                  :loading="rowActionLoading"
+                  full-width
+                  @click="deleteConfirmationOpen = true"
+                >
+                  Видалити рядок
+                </BaseButton>
+              </div>
             </section>
           </aside>
         </div>
@@ -387,7 +417,37 @@
             </footer>
           </section>
         </div>
+        <div
+          v-if="deleteConfirmationOpen"
+          class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4"
+        >
+          <p class="text-sm font-semibold text-red-800">
+            Видалити {{ formatBrand(selectedBrand?.brand) }}?
+          </p>
 
+          <p class="mt-1 text-sm text-red-700">
+            Рядок зникне з Task List, але його можна буде відновити пізніше.
+          </p>
+
+          <div class="mt-4 flex justify-end gap-2">
+            <BaseButton
+              size="sm"
+              :disabled="rowActionLoading"
+              @click="deleteConfirmationOpen = false"
+            >
+              Скасувати
+            </BaseButton>
+
+            <BaseButton
+              variant="danger"
+              size="sm"
+              :loading="rowActionLoading"
+              @click="deleteSelectedBrand"
+            >
+              Так, видалити
+            </BaseButton>
+          </div>
+        </div>
         <footer class="mt-6 flex justify-end border-t border-neutral-200 pt-5">
           <BaseButton @click="isOpen = false">Закрити</BaseButton>
         </footer>
@@ -444,6 +504,10 @@
   const commentText = ref('')
   const commentSaving = ref(false)
   const commentError = ref('')
+
+  const rowActionLoading = ref(false)
+  const rowActionError = ref('')
+  const deleteConfirmationOpen = ref(false)
 
   let controller = null
 
@@ -647,6 +711,8 @@
     selectedBrandId.value = id
 
     commentError.value = ''
+    rowActionError.value = ''
+    deleteConfirmationOpen.value = false
 
     if (editing.value) {
       hydrateBrandForm()
@@ -738,6 +804,46 @@
       commentError.value = getErrorMessage(requestError)
     } finally {
       commentSaving.value = false
+    }
+  }
+
+  async function deleteSelectedBrand() {
+    if (!selectedBrand.value || selectedBrand.value.deletedAt) {
+      return
+    }
+
+    rowActionError.value = ''
+    rowActionLoading.value = true
+
+    try {
+      await analyticsService.deleteTaskBrand(selectedBrand.value.id)
+
+      deleteConfirmationOpen.value = false
+
+      await refreshTask()
+    } catch (requestError) {
+      rowActionError.value = getErrorMessage(requestError)
+    } finally {
+      rowActionLoading.value = false
+    }
+  }
+
+  async function restoreSelectedBrand() {
+    if (!selectedBrand.value?.deletedAt) {
+      return
+    }
+
+    rowActionError.value = ''
+    rowActionLoading.value = true
+
+    try {
+      await analyticsService.restoreTaskBrand(selectedBrand.value.id)
+
+      await refreshTask()
+    } catch (requestError) {
+      rowActionError.value = getErrorMessage(requestError)
+    } finally {
+      rowActionLoading.value = false
     }
   }
 
@@ -851,6 +957,10 @@
       commentText.value = ''
       commentError.value = ''
       commentSaving.value = false
+
+      rowActionLoading.value = false
+      rowActionError.value = ''
+      deleteConfirmationOpen.value = false
 
       loading.value = false
     },
