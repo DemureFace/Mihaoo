@@ -87,17 +87,6 @@
   }
 
   // Map chosen target button to default currency formatting locale (kept for parity)
-  const defaultFormatLocaleByTarget = {
-    de: 'de',
-    'en-au': 'au',
-    et: 'et',
-    fi: 'fi',
-    fr: 'fr',
-    it: 'it',
-    no: 'no',
-    el: 'gr',
-    pt: 'pt',
-  }
 
   // Currency rules from your converter:contentReference[oaicite:4]{index=4}
   const conversionRules = {
@@ -202,8 +191,9 @@
    */
   function processText(text, locale) {
     const pattern =
-      /([€$£])\s?(\d[\d.,\s]*)|(\d[\d.,\s]*)\s*(€|\$|£|kr|eur|usd|cad|aud|nzd|nok|chf|gbp)/gi
-    const out = String(text || '').replace(pattern, (m, sb, v1, v2, sa) => {
+      /([€$£])\s?(\d[\d.,\s]*)|(\d[\d.,\s]*)\s*(?:€|\$|£|kr|eur|usd|cad|aud|nzd|nok|chf|gbp)/gi
+
+    const out = String(text || '').replace(pattern, (m, sb, v1, v2) => {
       const amountStr = sb ? v1 : v2
       if (!amountStr || !/\d/.test(amountStr)) return m
 
@@ -221,7 +211,7 @@
       .replace(/([€$£]\s?\d[\d.,]*)(?=\p{L})/gu, '$1 ')
       .replace(/(\d[\d.,]*\s?(?:€|\$|£|kr))(?=\p{L})/gu, '$1 ')
 
-    spaced = spaced.replace(/(\p{Sc}\s?\d[\d.,]*|\d[\d.,]*\s?(?:€|\$|£|kr))(?=[+\-\/×:])/gu, '$1 ')
+    spaced = spaced.replace(/(\p{Sc}\s?\d[\d.,]*|\d[\d.,]*\s?(?:€|\$|£|kr))(?=[-+/×:])/gu, '$1 ')
 
     // AU pokies transform:contentReference[oaicite:10]{index=10}
     if (locale === 'au') {
@@ -247,11 +237,11 @@
     const NUM_TOKEN = '[0-9]{1,3}(?:[ \\t\\u00A0\\.,]*[0-9]{3})*(?:[\\.,][0-9]{1,3})?'
     const CURRENCY_TOKEN = '(?:€|EUR)'
     const PATTERN = new RegExp(
-      `(?:(${CURRENCY_TOKEN})[ \\t\\u00A0]*(${NUM_TOKEN})|(${NUM_TOKEN})[ \\t\\u00A0]*(${CURRENCY_TOKEN}))`,
+      `(?:(?:${CURRENCY_TOKEN})[ \\t\\u00A0]*(${NUM_TOKEN})|(${NUM_TOKEN})[ \\t\\u00A0]*(?:${CURRENCY_TOKEN}))`,
       'gi',
     )
 
-    return String(text || '').replace(PATTERN, (match, c1, n1, n2, c2) => {
+    return String(text || '').replace(PATTERN, (match, n1, n2) => {
       const rawNum = n1 || n2
       if (!rawNum) return match
 

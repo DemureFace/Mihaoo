@@ -197,7 +197,7 @@ export default {
         const members = await analyticsService.listMembers()
 
         commit('MEMBERS_SUCCESS', members)
-      } catch (error) {
+      } catch {
         commit('MEMBERS_FAIL', 'Не вдалося завантажити список команди.')
       }
     },
