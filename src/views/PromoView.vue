@@ -1,119 +1,155 @@
 <template>
-  <div class="max-w-7xl mx-auto p-4 space-y-4">
-    <BaseRichText
-    v-model="html"
-    v-model:plain="input"
-    placeholder="Insert the ENTIRE task here"
-    class="mb-4"
-  />
-    <BaseButton class="px-6 py-2" @click="parseNow">Parse and generate template</BaseButton>
-    <transition name="fade">
-      <div v-if="Object.keys(allBrandMarkup).length" class="mt-6">
-        <div class="columns-1 md:columns-3 gap-6">
-          <div
-            v-for="(markup, brand) in allBrandMarkup"
-            :key="brand"
-            class="break-inside-avoid border-1 border-dashed mb-8 p-4 rounded-lg"
-          >
-            <h2 class="text-center font-bold text-black text-xl mb-4 uppercase">
-              {{ brandLabel(brand) }}
-            </h2>
-            <div v-for="(value, type) in markup" :key="type" class="mb-6">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-black font-bold text-lg mr-2">
-                  {{ TEMPLATE_LABELS[type] || type }}
-                </span>
-                <BaseButton @click="copyToClipboard(value)" class="px-2 py-1">Copy</BaseButton>
-              </div>
-              <div class="relative">
-                <pre
-                  :class="[
-                    'overflow-auto rounded-lg border-1 bg-white text-black p-3 whitespace-pre-wrap text-xs transition-all duration-300',
-                    isExpanded(keyOf(brand, type)) ? 'max-h-[80vh]' : 'max-h-24',
-                  ]"
-                  >{{ value }}</pre
-                >
+  <section class="mx-auto max-w-5xl space-y-6 p-4">
+    <header>
+      <h1 class="text-2xl font-bold text-black">Promo Generator</h1>
 
-                <BaseButton
-                  type="button"
-                  class="absolute top-2 right-2 p-1 rounded"
-                  @click="toggleExpand(keyOf(brand, type))"
-                  :aria-label="isExpanded(keyOf(brand, type)) ? 'Collapse' : 'Expand'"
-                  :title="isExpanded(keyOf(brand, type)) ? 'Collapse' : 'Expand'"
-                >
-                  <ArrowsPointingOutIcon v-if="!isExpanded(keyOf(brand, type))" class="w-6 h-6" />
-                  <ArrowsPointingInIcon v-else class="w-6 h-6" />
-                </BaseButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </transition>
-  </div>
+      <p class="mt-1 text-sm text-neutral-500">Generate promo templates from a task description.</p>
+    </header>
+
+    <BaseSelect v-model="brand" id="promo-brand" label="Brand" :options="brandOptions" />
+
+    <BaseTextarea
+      v-model="input"
+      id="promo-task"
+      label="Task"
+      :rows="12"
+      placeholder="Insert the entire promo task here"
+    />
+
+    <BaseInput v-model="imageUrl" id="promo-image" label="Image URL" placeholder="https://..." />
+
+    <div v-if="error" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+      {{ error }}
+    </div>
+
+    <BaseButton
+      variant="primary"
+      size="lg"
+      :disabled="!canGenerate"
+      :loading="loading"
+      @click="handleGenerate"
+    >
+      {{ loading ? 'Generating...' : 'Generate' }}
+    </BaseButton>
+
+    <div v-if="result" class="space-y-4">
+      <GeneratedArtifact v-if="result.template" title="Promo Page" :content="result.template" />
+
+      <GeneratedArtifact v-if="result.card" title="Promo Card" :content="result.card" />
+
+      <GeneratedArtifact v-if="result.rulesHtml" title="Promo Rules" :content="result.rulesHtml" />
+    </div>
+  </section>
 </template>
+
 <script setup>
-  import { ref } from 'vue'
-  import { useParser } from '@/components/mixins/useParser.js'
+  import { computed, onBeforeUnmount, ref, watch } from 'vue'
+
   import BaseButton from '@/components/base/BaseButton.vue'
-  import BaseRichText from '@/components/base/BaseRichText.vue'
-  import { ArrowsPointingOutIcon, ArrowsPointingInIcon } from '@heroicons/vue/24/solid'
-  import { BRANDS } from '@/components/templates/brandsList'
+  import BaseInput from '@/components/base/BaseInput.vue'
+  import BaseSelect from '@/components/base/BaseSelect.vue'
+  import BaseTextarea from '@/components/base/BaseTextarea.vue'
+  import GeneratedArtifact from '@/components/generator/GeneratedArtifact.vue'
 
-  const html = ref('') // якщо треба зберігати HTML окремо
+  import { promoTemplatesService } from '@/services/promoTemplates.service'
 
-  // key -> label
-  const BRAND_LABELS = Object.freeze(
-    BRANDS.reduce((acc, { key, label }) => ((acc[key] = label || key), acc), {}),
-  )
+  const brand = ref('BH')
 
-  // хелпер (із фолбеком)
-  const brandLabel = (key) => BRAND_LABELS[key] || key
+  const input = ref('')
+  const imageUrl = ref('')
 
-  const expanded = ref({}) // { 'brand::type': true/false }
+  const error = ref('')
+  const loading = ref(false)
 
-  const keyOf = (brand, type) => `${brand}::${type}`
-  const isExpanded = (k) => !!expanded.value[k]
-  const toggleExpand = (k) => {
-    expanded.value[k] = !expanded.value[k]
-  }
-  // 1) Спочатку дістаємо parse
-  const { input, allBrandMarkup, parse } = useParser()
+  const result = ref(null)
 
-  // 2) Приймаємо табу від батька
-  const props = defineProps({
-    currentTab: { type: String, default: 'promo' }, // 'tournaments' | 'promo'
+  let requestController = null
+
+  const brandOptions = [
+    {
+      value: 'BH',
+      label: 'Boho Casino',
+    },
+    {
+      value: 'SG',
+      label: 'Slots Gallery',
+    },
+    {
+      value: 'MW',
+      label: 'MoonWin',
+    },
+  ]
+
+  const canGenerate = computed(() => {
+    return input.value.trim().length >= 10 && Boolean(brand.value) && Boolean(imageUrl.value.trim())
   })
-  // 3) Нормалізуємо назву таби в режим
-  function toMode(tab) {
-    const t = String(tab || '').toLowerCase()
-    return t.includes('promo') ? 'promo' : 'tournaments'
+
+  watch([brand, input, imageUrl], () => {
+    clearGeneratedResult()
+  })
+
+  function cancelCurrentRequest() {
+    if (!requestController) {
+      return
+    }
+
+    requestController.abort()
+    requestController = null
   }
 
-  // 5) Кнопка "Parse" — теж з поточною табою
-  function parseNow() {
-    parse(toMode(props.currentTab))
+  function clearGeneratedResult() {
+    cancelCurrentRequest()
+
+    result.value = null
+    error.value = ''
+    loading.value = false
   }
-  const TEMPLATE_LABELS = {
-    promoInner: 'Internal promo page',
-    promoCard: 'Promo card',
+
+  async function handleGenerate() {
+    error.value = ''
+    result.value = null
+
+    if (!canGenerate.value) {
+      error.value = 'Fill in the task, brand and image URL.'
+
+      return
+    }
+
+    cancelCurrentRequest()
+
+    const controller = new AbortController()
+
+    requestController = controller
+
+    loading.value = true
+
+    try {
+      const payload = {
+        text: input.value.trim(),
+        brand: brand.value,
+        imageUrl: imageUrl.value.trim(),
+      }
+
+      result.value = await promoTemplatesService.generate(payload, controller.signal)
+    } catch (requestError) {
+      if (requestError?.code === 'ERR_CANCELED') {
+        return
+      }
+
+      const message = requestError?.response?.data?.message
+
+      error.value = Array.isArray(message)
+        ? message.join(', ')
+        : message || requestError?.message || 'Failed to generate promo.'
+    } finally {
+      if (requestController === controller) {
+        requestController = null
+        loading.value = false
+      }
+    }
   }
-  function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-  }
+
+  onBeforeUnmount(() => {
+    cancelCurrentRequest()
+  })
 </script>
-
-<style>
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 1s;
-  }
-  .fade-enter-from,
-  .fade-leave-to {
-    opacity: 0;
-  }
-  .fade-enter-to,
-  .fade-leave-from {
-    opacity: 1;
-  }
-</style>
