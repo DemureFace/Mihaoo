@@ -16,22 +16,32 @@
       <div class="ml-auto flex items-center gap-2">
         <BaseButton :loading="analytics.loading" @click="reload()">Оновити</BaseButton>
 
-        <BaseButton disabled>Експорт CSV</BaseButton>
+        <BaseButton
+          :loading="exportLoading"
+          :disabled="analytics.loading || exportLoading"
+          @click="handleExport"
+        >
+          Експорт CSV
+        </BaseButton>
 
-        <BaseButton variant="primary" disabled>+ Нова задача</BaseButton>
+        <BaseButton variant="primary" @click="createOpen = true">+ Нова задача</BaseButton>
       </div>
     </header>
-
+    <div
+      v-if="exportError"
+      class="border-b border-red-200 bg-red-50 px-[18px] py-3 text-sm text-red-700"
+      role="alert"
+    >
+      {{ exportError }}
+    </div>
     <!-- Filters -->
 
     <!-- Info -->
     <div
       class="border-b border-neutral-200 bg-neutral-50 px-[18px] py-3 text-[13px] text-neutral-500"
     >
-      Поки підключено тільки перегляд даних. Створення, редагування та CSV додамо наступним кроком.
-      Дата в таблиці — поточний
-      <span class="font-semibold text-neutral-700">reportDate</span>
-      з API.
+      Один рядок таблиці відповідає одному бренду. Натисни на рядок, щоб переглянути або
+      відредагувати задачу. CSV експортується з урахуванням активних фільтрів.
     </div>
 
     <!-- Loading -->
@@ -216,21 +226,89 @@
   </section>
 
   <AnalyticsTaskDetailsModal v-model="detailsOpen" :task-id="selectedTaskId" @updated="reload()" />
+  <AnalyticsTaskCreateModal v-model="createOpen" @created="handleTaskCreated" />
 </template>
 
 <script setup>
   import { computed, ref, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
   import { useStore } from 'vuex'
+  import { analyticsService } from '@/services/analytics.service'
   import BaseButton from '@/components/base/BaseButton.vue'
   import AnalyticsTaskDetailsModal from '@/components/analytics/AnalyticsTaskDetailsModal.vue'
+  import AnalyticsTaskCreateModal from '@/components/analytics/AnalyticsTaskCreateModal.vue'
   const store = useStore()
   const analytics = computed(() => store.state.analytics)
   const detailsOpen = ref(false)
+  const createOpen = ref(false)
   const selectedTaskId = ref(null)
+  const exportLoading = ref(false)
+  const exportError = ref('')
+
+  let exportController = null
+
+  function handleTaskCreated() {
+    reload(1)
+  }
 
   function openDetails(taskId) {
     selectedTaskId.value = taskId
     detailsOpen.value = true
+  }
+
+  async function handleExport() {
+    exportController?.abort()
+
+    const currentController = new AbortController()
+
+    exportController = currentController
+
+    exportLoading.value = true
+    exportError.value = ''
+
+    try {
+      const { blob, filename } = await analyticsService.exportCsv(
+        analytics.value.filters,
+        currentController.signal,
+      )
+
+      const url = URL.createObjectURL(blob)
+
+      const link = document.createElement('a')
+
+      link.href = url
+      link.download = filename
+
+      document.body.appendChild(link)
+
+      link.click()
+
+      link.remove()
+
+      URL.revokeObjectURL(url)
+    } catch (requestError) {
+      if (requestError?.code === 'ERR_CANCELED') {
+        return
+      }
+
+      exportError.value = getRequestErrorMessage(requestError, 'Не вдалося експортувати CSV.')
+    } finally {
+      if (exportController === currentController) {
+        exportController = null
+        exportLoading.value = false
+      }
+    }
+  }
+
+  function getRequestErrorMessage(error, fallback) {
+    const response = error?.response?.data
+
+    const message = response?.message || response?.error?.message
+
+    if (Array.isArray(message)) {
+      return message.join(', ')
+    }
+
+    return message || error?.message || fallback
   }
 
   const columns = [
@@ -326,7 +404,10 @@
     if (!active) return
 
     active = false
+
     controller?.abort()
+    exportController?.abort()
+
     store.commit('analytics/CLEAR_RESULT')
   }
 

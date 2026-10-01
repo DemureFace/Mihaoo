@@ -169,6 +169,40 @@
               <div v-else class="px-4 py-10 text-center text-sm text-neutral-500">
                 Коментарів поки немає.
               </div>
+              <div class="border-t border-neutral-200 bg-neutral-50 p-4">
+                <BaseTextarea
+                  v-model="commentText"
+                  id="task-comment"
+                  label="Новий коментар"
+                  :rows="3"
+                  placeholder="Напиши коментар..."
+                  :disabled="commentSaving || Boolean(selectedBrand?.deletedAt)"
+                />
+
+                <div v-if="commentError" class="mt-2 text-sm font-medium text-red-600">
+                  {{ commentError }}
+                </div>
+
+                <div class="mt-3 flex flex-wrap items-center justify-between gap-3">
+                  <p class="text-xs text-neutral-500">
+                    Коментар буде додано до
+                    <span class="font-semibold text-black">
+                      {{ formatBrand(selectedBrand?.brand) }}
+                    </span>
+                    · #{{ selectedBrand?.id || '—' }}
+                  </p>
+
+                  <BaseButton
+                    variant="primary"
+                    size="sm"
+                    :loading="commentSaving"
+                    :disabled="!canSubmitComment"
+                    @click="submitComment"
+                  >
+                    Додати коментар
+                  </BaseButton>
+                </div>
+              </div>
             </section>
           </div>
 
@@ -407,6 +441,10 @@
   const groupSaving = ref(false)
   const brandSaving = ref(false)
 
+  const commentText = ref('')
+  const commentSaving = ref(false)
+  const commentError = ref('')
+
   let controller = null
 
   const groupForm = reactive({
@@ -434,6 +472,14 @@
 
   const selectedBrand = computed(() => {
     return task.value?.brands?.find((row) => row.id === selectedBrandId.value) || null
+  })
+  const canSubmitComment = computed(() => {
+    return (
+      Boolean(selectedBrand.value) &&
+      !selectedBrand.value?.deletedAt &&
+      commentText.value.trim().length > 0 &&
+      !commentSaving.value
+    )
   })
 
   const taskTypeOptions = computed(() => {
@@ -600,6 +646,8 @@
   function selectBrand(id) {
     selectedBrandId.value = id
 
+    commentError.value = ''
+
     if (editing.value) {
       hydrateBrandForm()
     }
@@ -668,6 +716,29 @@
     hydrateForms()
 
     emit('updated')
+  }
+
+  async function submitComment() {
+    const body = commentText.value.trim()
+
+    if (!body || !selectedBrand.value) {
+      return
+    }
+
+    commentError.value = ''
+    commentSaving.value = true
+
+    try {
+      await analyticsService.addTaskComment(selectedBrand.value.id, body)
+
+      commentText.value = ''
+
+      await refreshTask()
+    } catch (requestError) {
+      commentError.value = getErrorMessage(requestError)
+    } finally {
+      commentSaving.value = false
+    }
   }
 
   async function saveGroup() {
@@ -776,6 +847,11 @@
 
       error.value = ''
       editError.value = ''
+
+      commentText.value = ''
+      commentError.value = ''
+      commentSaving.value = false
+
       loading.value = false
     },
 

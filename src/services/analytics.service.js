@@ -117,6 +117,23 @@ export const analyticsService = {
 
     return readItems(data)
   },
+  async getReferenceData(signal) {
+    const { data } = await api.get('/reference-data', {
+      signal,
+      timeout: 20000,
+    })
+
+    return data
+  },
+
+  async createTask(payload, signal) {
+    const { data } = await api.post('/tasks', payload, {
+      signal,
+      timeout: 20000,
+    })
+
+    return data
+  },
 
   async getTask(id, signal) {
     if (!id) {
@@ -144,6 +161,51 @@ export const analyticsService = {
       signal,
       timeout: 20000,
     })
+
+    return data
+  },
+
+  async exportCsv(query, signal) {
+    const params = cleanParams({
+      search: query.search,
+      from: query.from,
+      to: query.to,
+
+      executorId: query.executorId,
+      requestedById: query.requestedById,
+
+      brand: query.brand,
+      platform: query.platform,
+      taskType: query.taskType,
+      status: query.status,
+    })
+
+    const response = await api.get('/tasks/export', {
+      params,
+      signal,
+      timeout: 30000,
+      responseType: 'blob',
+    })
+
+    const disposition = response.headers['content-disposition'] || ''
+
+    const filenameMatch = disposition.match(/filename="?([^"]+)"?/i)
+
+    return {
+      blob: response.data,
+      filename: filenameMatch?.[1] || 'tasks.csv',
+    }
+  },
+
+  async addTaskComment(id, body, signal) {
+    const { data } = await api.post(
+      `/tasks/${id}/comments`,
+      { body },
+      {
+        signal,
+        timeout: 20000,
+      },
+    )
 
     return data
   },
