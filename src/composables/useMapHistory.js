@@ -12,9 +12,7 @@ export function useMapHistory(limit = 100) {
   const canRedo = computed(() => future.value.length > 0)
 
   function resetHistory(snapshot) {
-    past.value = [
-      cloneSnapshot(snapshot),
-    ]
+    past.value = [cloneSnapshot(snapshot)]
 
     future.value = []
   }
@@ -22,16 +20,9 @@ export function useMapHistory(limit = 100) {
   function checkpoint(snapshot) {
     const next = cloneSnapshot(snapshot)
 
-    const current =
-      past.value[
-        past.value.length - 1
-      ]
+    const current = past.value[past.value.length - 1]
 
-    if (
-      current &&
-      JSON.stringify(current) ===
-        JSON.stringify(next)
-    ) {
+    if (current && JSON.stringify(current) === JSON.stringify(next)) {
       return
     }
 
@@ -49,16 +40,11 @@ export function useMapHistory(limit = 100) {
       return null
     }
 
-    const current =
-      past.value.pop()
+    const current = past.value.pop()
 
     future.value.unshift(current)
 
-    return cloneSnapshot(
-      past.value[
-        past.value.length - 1
-      ],
-    )
+    return cloneSnapshot(past.value[past.value.length - 1])
   }
 
   function redo() {
@@ -66,12 +52,9 @@ export function useMapHistory(limit = 100) {
       return null
     }
 
-    const next =
-      future.value.shift()
+    const next = future.value.shift()
 
-    past.value.push(
-      cloneSnapshot(next),
-    )
+    past.value.push(cloneSnapshot(next))
 
     return cloneSnapshot(next)
   }

@@ -1,10 +1,7 @@
 import Validations from './Validations'
 
 export default class LoginValidations {
-  constructor(
-    email,
-    password,
-  ) {
+  constructor(email, password) {
     this.email = email
     this.password = password
   }
@@ -12,18 +9,12 @@ export default class LoginValidations {
   checkValidations() {
     const errors = {}
 
-    if (
-      !Validations.checkEmail(
-        this.email,
-      )
-    ) {
-      errors.email =
-        'Invalid Email'
+    if (!Validations.checkEmail(this.email)) {
+      errors.email = 'Invalid Email'
     }
 
     if (!this.password) {
-      errors.password =
-        'Password is required'
+      errors.password = 'Password is required'
     }
 
     return errors

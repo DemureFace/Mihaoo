@@ -39,9 +39,9 @@ const routes = [
     path: '/tournaments',
     name: 'tournaments',
     component: TournamentView,
-        meta: {
-  requiresAuth: true,
-},
+    meta: {
+      requiresAuth: true,
+    },
   },
 
   {
@@ -49,8 +49,8 @@ const routes = [
     name: 'promo',
     component: PromoView,
     meta: {
-  requiresAuth: true,
-},
+      requiresAuth: true,
+    },
   },
 
   {
@@ -88,27 +88,27 @@ const routes = [
     path: '/banner-export',
     name: 'banner-export',
     component: BannerExport,
-      meta: {
-    requiresAuth: true,
-  },
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
-  path: '/maps',
-  name: 'maps',
-  component: MapsView,
-},
-{
-  path: '/maps/:id',
-  name: 'map-view',
-  component: MapView,
-  props: true,
-},
-{
-  path: '/maps/:id/edit',
-  name: 'map-edit',
-  component: MapEditorView,
-  props: true,
-},
+    path: '/maps',
+    name: 'maps',
+    component: MapsView,
+  },
+  {
+    path: '/maps/:id',
+    name: 'map-view',
+    component: MapView,
+    props: true,
+  },
+  {
+    path: '/maps/:id/edit',
+    name: 'map-edit',
+    component: MapEditorView,
+    props: true,
+  },
 
   {
     path: '/analytics',
@@ -127,8 +127,7 @@ const routes = [
       {
         path: 'tasks',
         name: 'analytics-tasks',
-        component: () =>
-          import('@/views/analytics/AnalyticsTaskListView.vue'),
+        component: () => import('@/views/analytics/AnalyticsTaskListView.vue'),
 
         meta: {
           section: 'analytics',
@@ -139,8 +138,7 @@ const routes = [
       {
         path: 'report',
         name: 'analytics-report',
-        component: () =>
-          import('@/views/analytics/AnalyticsReportView.vue'),
+        component: () => import('@/views/analytics/AnalyticsReportView.vue'),
 
         meta: {
           section: 'analytics',
@@ -164,16 +162,13 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const requiresAuth = to.matched.some(
-    (record) => record.meta.requiresAuth,
-  )
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 
   if (!requiresAuth) {
     return true
   }
 
-  const accessToken =
-    localStorage.getItem('accessToken')
+  const accessToken = localStorage.getItem('accessToken')
 
   if (accessToken) {
     return true

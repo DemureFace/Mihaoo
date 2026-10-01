@@ -1,16 +1,9 @@
-import {
-  analyticsService,
-} from '@/services/analytics.service'
+import { analyticsService } from '@/services/analytics.service'
 
-import {
-  createDefaultAnalyticsFilters,
-} from '@/constants/analytics'
+import { createDefaultAnalyticsFilters } from '@/constants/analytics'
 
 function getErrorMessage(error) {
-  if (
-    error.code === 'AUTH_REQUIRED' ||
-    error.response?.status === 401
-  ) {
+  if (error.code === 'AUTH_REQUIRED' || error.response?.status === 401) {
     return 'Увійди у Mihaoo через Login, потім натисни «Оновити».'
   }
 
@@ -35,8 +28,7 @@ export default {
   state: () => ({
     rows: [],
 
-    filters:
-      createDefaultAnalyticsFilters(),
+    filters: createDefaultAnalyticsFilters(),
 
     filterVersion: 0,
 
@@ -60,24 +52,15 @@ export default {
   }),
 
   getters: {
-    memberName:
-      (state) =>
-      (memberId) => {
-        if (!memberId) {
-          return '—'
-        }
+    memberName: (state) => (memberId) => {
+      if (!memberId) {
+        return '—'
+      }
 
-        const member =
-          state.members.find(
-            (item) =>
-              item.id === memberId,
-          )
+      const member = state.members.find((item) => item.id === memberId)
 
-        return (
-          member?.displayName ||
-          `ID ${memberId}`
-        )
-      },
+      return member?.displayName || `ID ${memberId}`
+    },
   },
 
   mutations: {
@@ -93,8 +76,7 @@ export default {
     },
 
     RESET_FILTERS(state) {
-      state.filters =
-        createDefaultAnalyticsFilters()
+      state.filters = createDefaultAnalyticsFilters()
 
       state.page = 1
 
@@ -120,8 +102,7 @@ export default {
 
       state.total = result.total
 
-      state.hasNext =
-        result.hasNext
+      state.hasNext = result.hasNext
     },
 
     FAIL(state, message) {
@@ -134,14 +115,14 @@ export default {
       state.loading = false
     },
 
-CLEAR_RESULT(state) {
-  state.requestId += 1
-  state.rows = []
-  state.loading = false
-  state.error = ''
-  state.total = null
-  state.hasNext = false
-},
+    CLEAR_RESULT(state) {
+      state.requestId += 1
+      state.rows = []
+      state.loading = false
+      state.error = ''
+      state.total = null
+      state.hasNext = false
+    },
 
     MEMBERS_BEGIN(state) {
       state.membersLoading = true
@@ -149,19 +130,13 @@ CLEAR_RESULT(state) {
       state.membersError = ''
     },
 
-    MEMBERS_SUCCESS(
-      state,
-      members,
-    ) {
+    MEMBERS_SUCCESS(state, members) {
       state.members = members
 
       state.membersLoading = false
     },
 
-    MEMBERS_FAIL(
-      state,
-      message,
-    ) {
+    MEMBERS_FAIL(state, message) {
       state.members = []
 
       state.membersLoading = false
@@ -171,115 +146,59 @@ CLEAR_RESULT(state) {
   },
 
   actions: {
-    async load(
-      { state, commit },
-      {
-        page = state.page,
-        signal,
-      } = {},
-    ) {
+    async load({ state, commit }, { page = state.page, signal } = {}) {
       commit('BEGIN', page)
 
-      const requestId =
-        state.requestId
+      const requestId = state.requestId
 
       try {
-        if (
-          !localStorage.getItem(
-            'accessToken',
-          )
-        ) {
-          const error =
-            new Error(
-              'Authentication required',
-            )
+        if (!localStorage.getItem('accessToken')) {
+          const error = new Error('Authentication required')
 
-          error.code =
-            'AUTH_REQUIRED'
+          error.code = 'AUTH_REQUIRED'
 
           throw error
         }
 
-        const result =
-          await analyticsService.list(
-            {
-              ...state.filters,
-              page,
-            },
-            signal,
-          )
+        const result = await analyticsService.list(
+          {
+            ...state.filters,
+            page,
+          },
+          signal,
+        )
 
-        if (
-          requestId ===
-            state.requestId &&
-          !signal?.aborted
-        ) {
-          commit(
-            'SUCCESS',
-            result,
-          )
+        if (requestId === state.requestId && !signal?.aborted) {
+          commit('SUCCESS', result)
         }
       } catch (error) {
-        if (
-          requestId ===
-            state.requestId &&
-          !signal?.aborted &&
-          error.code !==
-            'ERR_CANCELED'
-        ) {
-          commit(
-            'FAIL',
-            getErrorMessage(
-              error,
-            ),
-          )
+        if (requestId === state.requestId && !signal?.aborted && error.code !== 'ERR_CANCELED') {
+          commit('FAIL', getErrorMessage(error))
         }
       } finally {
-        if (
-          requestId ===
-          state.requestId
-        ) {
+        if (requestId === state.requestId) {
           commit('FINISH')
         }
       }
     },
 
-    async loadMembers({
-      state,
-      commit,
-    }) {
-      if (
-        state.membersLoading ||
-        state.members.length
-      ) {
+    async loadMembers({ state, commit }) {
+      if (state.membersLoading || state.members.length) {
         return
       }
 
-      if (
-        !localStorage.getItem(
-          'accessToken',
-        )
-      ) {
+      if (!localStorage.getItem('accessToken')) {
         return
       }
 
-      commit(
-        'MEMBERS_BEGIN',
-      )
+      commit('MEMBERS_BEGIN')
 
       try {
-        const members =
-          await analyticsService.listMembers()
+        const members = await analyticsService.listMembers()
 
-        commit(
-          'MEMBERS_SUCCESS',
-          members,
-        )
+        commit('MEMBERS_SUCCESS', members)
       } catch (error) {
-        commit(
-          'MEMBERS_FAIL',
-          'Не вдалося завантажити список команди.',
-        )
+        commit('MEMBERS_FAIL', 'Не вдалося завантажити список команди.')
       }
     },
   },

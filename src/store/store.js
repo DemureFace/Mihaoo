@@ -1,8 +1,8 @@
-import { createStore } from 'vuex';
-import auth from './modules/auth/index.js';
+import { createStore } from 'vuex'
+import auth from './modules/auth/index.js'
 import maps from './modules/maps.js'
 import analytics from './modules/analytics.js'
-import { LOADING_SPINNER_SHOW_MUTATION } from './storeconstants';
+import { LOADING_SPINNER_SHOW_MUTATION } from './storeconstants'
 
 const store = createStore({
   modules: {
@@ -13,13 +13,13 @@ const store = createStore({
   state() {
     return {
       showLoading: false,
-    };
+    }
   },
   mutations: {
     [LOADING_SPINNER_SHOW_MUTATION](state, payload) {
-        state.showLoading = payload;
+      state.showLoading = payload
     },
   },
-});
+})
 
-export default store;
+export default store

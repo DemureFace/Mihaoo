@@ -1,45 +1,39 @@
 import axios from 'axios'
 
+export const AUTH_EXPIRED_EVENT = 'auth:expired'
+
 const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
 })
 
-api.interceptors.request.use(
-  (config) => {
-    const accessToken =
-      localStorage.getItem(
-        'accessToken',
-      )
+function clearStoredAuth() {
+  localStorage.removeItem('accessToken')
+  localStorage.removeItem('refreshToken')
+  localStorage.removeItem('user')
+}
 
-    if (accessToken) {
-      config.headers.Authorization =
-        `Bearer ${accessToken}`
-    }
+api.interceptors.request.use((config) => {
+  const accessToken = localStorage.getItem('accessToken')
 
-    return config
-  },
-)
+  if (accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`
+  }
+
+  return config
+})
 
 api.interceptors.response.use(
   (response) => response,
 
   (error) => {
-    if (
-      error.response?.status === 401
-    ) {
-      localStorage.removeItem(
-        'accessToken',
-      )
+    const isUnauthorized = error.response?.status === 401
 
-      localStorage.removeItem(
-        'refreshToken',
-      )
+    const hadAccessToken = Boolean(localStorage.getItem('accessToken'))
 
-      localStorage.removeItem(
-        'user',
-      )
+    if (isUnauthorized && hadAccessToken) {
+      clearStoredAuth()
+
+      window.dispatchEvent(new CustomEvent(AUTH_EXPIRED_EVENT))
     }
 
     return Promise.reject(error)

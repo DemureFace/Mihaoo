@@ -2,7 +2,12 @@
   <li class="py-1">
     <!-- leaf -->
     <label v-if="node.type === 'check'" class="flex gap-3 items-center cursor-pointer">
-      <input type="checkbox" :checked="isChecked(node.id)" @change="toggle(node.id)" class="accent-green-600" />
+      <input
+        type="checkbox"
+        :checked="isChecked(node.id)"
+        @change="toggle(node.id)"
+        class="accent-green-600"
+      />
       <span>{{ node.text }}</span>
     </label>
 
@@ -23,9 +28,9 @@
 </template>
 
 <script setup>
-defineProps({
-  node: { type: Object, required: true },
-  isChecked: { type: Function, required: true },
-  toggle: { type: Function, required: true },
-})
+  defineProps({
+    node: { type: Object, required: true },
+    isChecked: { type: Function, required: true },
+    toggle: { type: Function, required: true },
+  })
 </script>

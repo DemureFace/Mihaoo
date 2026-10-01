@@ -52,6 +52,8 @@
   import { LOADING_SPINNER_SHOW_MUTATION, LOGIN_ACTION } from '@/store/storeconstants'
 
   export default {
+    name: 'LoginForm',
+
     components: {
       BaseInput,
       BaseButton,

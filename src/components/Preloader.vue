@@ -9,6 +9,10 @@
 <script setup>
   import { ref, onMounted } from 'vue'
 
+  defineOptions({
+    name: 'AppPreloader',
+  })
+
   const visible = ref(true)
 
   onMounted(() => {

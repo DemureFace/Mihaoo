@@ -2,39 +2,33 @@ export const MAP_TEMPLATES = [
   {
     id: 'blank',
     name: 'Blank Map',
-    description:
-      'Start with an empty canvas.',
+    description: 'Start with an empty canvas.',
     category: 'General',
   },
 
   {
     id: 'pilot-readiness',
     name: 'Pilot Readiness',
-    description:
-      'Mihaoo release readiness flow with QA, Go/No-Go and production pilot.',
+    description: 'Mihaoo release readiness flow with QA, Go/No-Go and production pilot.',
     category: 'Release',
   },
 
   {
     id: 'release-roadmap',
     name: 'Release Roadmap',
-    description:
-      'Visual release roadmap with milestones.',
+    description: 'Visual release roadmap with milestones.',
     category: 'Planning',
   },
 
   {
     id: 'architecture',
     name: 'Architecture Map',
-    description:
-      'Services, databases and dependencies.',
+    description: 'Services, databases and dependencies.',
     category: 'Technical',
   },
 ]
 
-export function buildMapFromTemplate(
-  templateId,
-) {
+export function buildMapFromTemplate(templateId) {
   switch (templateId) {
     case 'pilot-readiness':
       return buildPilotReadiness()
@@ -50,12 +44,7 @@ export function buildMapFromTemplate(
   }
 }
 
-function createNode(
-  id,
-  x,
-  y,
-  data,
-) {
+function createNode(id, x, y, data) {
   return {
     id,
 
@@ -80,11 +69,7 @@ function createNode(
   }
 }
 
-function createEdge(
-  source,
-  target,
-  label = '',
-) {
+function createEdge(source, target, label = '') {
   return {
     id: crypto.randomUUID(),
 
@@ -112,221 +97,136 @@ function buildBlank() {
 
 function buildPilotReadiness() {
   const ids = {
-    development:
-      crypto.randomUUID(),
+    development: crypto.randomUUID(),
 
-    regression:
-      crypto.randomUUID(),
+    regression: crypto.randomUUID(),
 
-    e2e:
-      crypto.randomUUID(),
+    e2e: crypto.randomUUID(),
 
-    production:
-      crypto.randomUUID(),
+    production: crypto.randomUUID(),
 
-    goNoGo:
-      crypto.randomUUID(),
+    goNoGo: crypto.randomUUID(),
 
-    pilot:
-      crypto.randomUUID(),
+    pilot: crypto.randomUUID(),
 
-    release:
-      crypto.randomUUID(),
+    release: crypto.randomUUID(),
   }
 
   const nodes = [
-    createNode(
-      ids.development,
-      80,
-      80,
-      {
-        type: 'step',
+    createNode(ids.development, 80, 80, {
+      type: 'step',
 
-        title:
-          'P0 Features Complete',
+      title: 'P0 Features Complete',
 
-        description:
-          'All P0 release functionality is completed, available on staging and passed QA.',
+      description: 'All P0 release functionality is completed, available on staging and passed QA.',
 
-        status: 'active',
+      status: 'active',
 
-        owner:
-          'Mykhailo B',
+      owner: 'Mykhailo B',
 
-        dueDate:
-          '2026-09-20',
-      },
-    ),
+      dueDate: '2026-09-20',
+    }),
 
-    createNode(
-      ids.regression,
-      380,
-      80,
-      {
-        type: 'step',
+    createNode(ids.regression, 380, 80, {
+      type: 'step',
 
-        title:
-          'Regression & RBAC',
+      title: 'Regression & RBAC',
 
-        description:
-          'Blocker and Critical bugs = 0. Approved High exceptions only. Auth, permissions and Platform Scope verified.',
+      description:
+        'Blocker and Critical bugs = 0. Approved High exceptions only. Auth, permissions and Platform Scope verified.',
 
-        status: 'draft',
+      status: 'draft',
 
-        owner:
-          'QA',
+      owner: 'QA',
 
-        dueDate:
-          '2026-09-27',
-      },
-    ),
+      dueDate: '2026-09-27',
+    }),
 
-    createNode(
-      ids.e2e,
-      680,
-      80,
-      {
-        type: 'step',
+    createNode(ids.e2e, 680, 80, {
+      type: 'step',
 
-        title:
-          'E2E Scenarios',
+      title: 'E2E Scenarios',
 
-        description:
-          'Admin, Content Lead and Content Specialist critical user flows are successfully completed.',
+      description:
+        'Admin, Content Lead and Content Specialist critical user flows are successfully completed.',
 
-        status: 'draft',
-      },
-    ),
+      status: 'draft',
+    }),
 
-    createNode(
-      ids.production,
-      980,
-      80,
-      {
-        type: 'milestone',
+    createNode(ids.production, 980, 80, {
+      type: 'milestone',
 
-        title:
-          'Production Ready',
+      title: 'Production Ready',
 
-        description:
-          'Production configuration, pilot accounts, documentation, monitoring, backup and rollback are ready.',
+      description:
+        'Production configuration, pilot accounts, documentation, monitoring, backup and rollback are ready.',
 
-        status: 'draft',
+      status: 'draft',
 
-        dueDate:
-          '2026-09-30',
-      },
-    ),
+      dueDate: '2026-09-30',
+    }),
 
-    createNode(
-      ids.goNoGo,
-      980,
-      360,
-      {
-        type: 'decision',
+    createNode(ids.goNoGo, 980, 360, {
+      type: 'decision',
 
-        title:
-          'Go / No-Go',
+      title: 'Go / No-Go',
 
-        description:
-          'Final GO requires approval from Mykhailo B, Vladyslav Ko and Hryhorii S.',
+      description: 'Final GO requires approval from Mykhailo B, Vladyslav Ko and Hryhorii S.',
 
-        status: 'draft',
+      status: 'draft',
 
-        owner:
-          'Mykhailo B + Vladyslav Ko + Hryhorii S',
+      owner: 'Mykhailo B + Vladyslav Ko + Hryhorii S',
 
-        dueDate:
-          '2026-09-30',
-      },
-    ),
+      dueDate: '2026-09-30',
+    }),
 
-    createNode(
-      ids.pilot,
-      680,
-      360,
-      {
-        type: 'milestone',
+    createNode(ids.pilot, 680, 360, {
+      type: 'milestone',
 
-        title:
-          'Production Pilot',
+      title: 'Production Pilot',
 
-        description:
-          'Pilot on production with 3 users. Issues and bugs are reported in Jira.',
+      description: 'Pilot on production with 3 users. Issues and bugs are reported in Jira.',
 
-        status: 'draft',
+      status: 'draft',
 
-        owner:
-          'Mykhailo B',
+      owner: 'Mykhailo B',
 
-        dueDate:
-          '2026-10-01',
-      },
-    ),
+      dueDate: '2026-10-01',
+    }),
 
-    createNode(
-      ids.release,
-      380,
-      360,
-      {
-        type: 'milestone',
+    createNode(ids.release, 380, 360, {
+      type: 'milestone',
 
-        title:
-          'Full Release',
+      title: 'Full Release',
 
-        description:
-          'Release to the full Content Team after successful pilot completion.',
+      description: 'Release to the full Content Team after successful pilot completion.',
 
-        status: 'draft',
+      status: 'draft',
 
-        dueDate:
-          '2026-10-08',
-      },
-    ),
+      dueDate: '2026-10-08',
+    }),
   ]
 
   const edges = [
-    createEdge(
-      ids.development,
-      ids.regression,
-    ),
+    createEdge(ids.development, ids.regression),
 
-    createEdge(
-      ids.regression,
-      ids.e2e,
-    ),
+    createEdge(ids.regression, ids.e2e),
 
-    createEdge(
-      ids.e2e,
-      ids.production,
-    ),
+    createEdge(ids.e2e, ids.production),
 
-    createEdge(
-      ids.production,
-      ids.goNoGo,
-    ),
+    createEdge(ids.production, ids.goNoGo),
 
-    createEdge(
-      ids.goNoGo,
-      ids.pilot,
-      'GO',
-    ),
+    createEdge(ids.goNoGo, ids.pilot, 'GO'),
 
-    createEdge(
-      ids.pilot,
-      ids.release,
-    ),
+    createEdge(ids.pilot, ids.release),
   ]
 
   return {
-    title:
-      'Mihaoo Pilot Readiness',
+    title: 'Mihaoo Pilot Readiness',
 
-    description:
-      'REL-05 Pilot Readiness flow.',
+    description: 'REL-05 Pilot Readiness flow.',
 
-    type:
-      'pilot-readiness',
+    type: 'pilot-readiness',
 
     nodes,
     edges,
@@ -334,177 +234,91 @@ function buildPilotReadiness() {
 }
 
 function buildReleaseRoadmap() {
-  const sprint =
-    crypto.randomUUID()
+  const sprint = crypto.randomUUID()
 
-  const freeze =
-    crypto.randomUUID()
+  const freeze = crypto.randomUUID()
 
-  const pilot =
-    crypto.randomUUID()
+  const pilot = crypto.randomUUID()
 
-  const release =
-    crypto.randomUUID()
+  const release = crypto.randomUUID()
 
   return {
-    title:
-      'Mihaoo Release Roadmap',
+    title: 'Mihaoo Release Roadmap',
 
-    description:
-      'Release milestones and rollout.',
+    description: 'Release milestones and rollout.',
 
-    type:
-      'release-roadmap',
+    type: 'release-roadmap',
 
     nodes: [
-      createNode(
-        sprint,
-        100,
-        180,
-        {
-          type: 'step',
-          title:
-            'Development',
-        },
-      ),
+      createNode(sprint, 100, 180, {
+        type: 'step',
+        title: 'Development',
+      }),
 
-      createNode(
-        freeze,
-        400,
-        180,
-        {
-          type: 'milestone',
-          title:
-            'Feature Freeze',
-        },
-      ),
+      createNode(freeze, 400, 180, {
+        type: 'milestone',
+        title: 'Feature Freeze',
+      }),
 
-      createNode(
-        pilot,
-        700,
-        180,
-        {
-          type: 'milestone',
-          title:
-            'Pilot',
-        },
-      ),
+      createNode(pilot, 700, 180, {
+        type: 'milestone',
+        title: 'Pilot',
+      }),
 
-      createNode(
-        release,
-        1000,
-        180,
-        {
-          type: 'milestone',
-          title:
-            'Full Release',
-        },
-      ),
+      createNode(release, 1000, 180, {
+        type: 'milestone',
+        title: 'Full Release',
+      }),
     ],
 
-    edges: [
-      createEdge(
-        sprint,
-        freeze,
-      ),
-
-      createEdge(
-        freeze,
-        pilot,
-      ),
-
-      createEdge(
-        pilot,
-        release,
-      ),
-    ],
+    edges: [createEdge(sprint, freeze), createEdge(freeze, pilot), createEdge(pilot, release)],
   }
 }
 
 function buildArchitecture() {
-  const frontend =
-    crypto.randomUUID()
+  const frontend = crypto.randomUUID()
 
-  const gateway =
-    crypto.randomUUID()
+  const gateway = crypto.randomUUID()
 
-  const service =
-    crypto.randomUUID()
+  const service = crypto.randomUUID()
 
-  const database =
-    crypto.randomUUID()
+  const database = crypto.randomUUID()
 
   return {
-    title:
-      'Mihaoo Architecture',
+    title: 'Mihaoo Architecture',
 
-    description:
-      'Base microservice architecture map.',
+    description: 'Base microservice architecture map.',
 
-    type:
-      'architecture',
+    type: 'architecture',
 
     nodes: [
-      createNode(
-        frontend,
-        100,
-        180,
-        {
-          type: 'service',
-          title:
-            'Mihaoo Frontend',
-        },
-      ),
+      createNode(frontend, 100, 180, {
+        type: 'service',
+        title: 'Mihaoo Frontend',
+      }),
 
-      createNode(
-        gateway,
-        400,
-        180,
-        {
-          type: 'service',
-          title:
-            'API Gateway',
-        },
-      ),
+      createNode(gateway, 400, 180, {
+        type: 'service',
+        title: 'API Gateway',
+      }),
 
-      createNode(
-        service,
-        700,
-        180,
-        {
-          type: 'service',
-          title:
-            'Microservice',
-        },
-      ),
+      createNode(service, 700, 180, {
+        type: 'service',
+        title: 'Microservice',
+      }),
 
-      createNode(
-        database,
-        1000,
-        180,
-        {
-          type: 'service',
-          title:
-            'PostgreSQL',
-        },
-      ),
+      createNode(database, 1000, 180, {
+        type: 'service',
+        title: 'PostgreSQL',
+      }),
     ],
 
     edges: [
-      createEdge(
-        frontend,
-        gateway,
-      ),
+      createEdge(frontend, gateway),
 
-      createEdge(
-        gateway,
-        service,
-      ),
+      createEdge(gateway, service),
 
-      createEdge(
-        service,
-        database,
-      ),
+      createEdge(service, database),
     ],
   }
 }

@@ -7,13 +7,13 @@
 
   <TheHeader
     :collapsed="isCollapsed"
+    class="fixed left-0 right-0 top-0 z-50 h-14 bg-background-cardLight"
     @toggle-sidebar="isCollapsed = !isCollapsed"
-    class="fixed top-0 left-0 right-0 z-50 bg-background-cardLight h-14"
   />
 
   <aside
     :class="[
-      'fixed top-14 left-0 h-[calc(100vh-3.5rem)] transition-all duration-300',
+      'fixed left-0 top-14 h-[calc(100vh-3.5rem)] transition-all duration-300',
       isCollapsed ? 'w-16' : 'w-56',
     ]"
   >
@@ -46,49 +46,78 @@
 </template>
 
 <script setup>
-  import { ref, computed, onMounted } from 'vue'
-  import { useStore } from 'vuex'
-  import { useRoute } from 'vue-router'
+  import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
-  import Preloader from './components/Preloader.vue'
+  import { useRoute, useRouter } from 'vue-router'
+
+  import { useStore } from 'vuex'
+
   import Loader from '@/components/base/BaseLoader.vue'
-  import TheHeader from './components/TheHeader.vue'
-  import SideBar from './components/SideBar.vue'
-  import { FETCH_USER_ACTION } from '@/store/storeconstants'
-  import { testService } from '@/services/test.service'
+  import Preloader from '@/components/Preloader.vue'
+  import SideBar from '@/components/SideBar.vue'
+  import TheHeader from '@/components/TheHeader.vue'
+
+  import { AUTH_EXPIRED_EVENT } from '@/services/api'
+
+  import { FETCH_USER_ACTION, LOGOUT_ACTION } from '@/store/storeconstants'
 
   const store = useStore()
-
-  onMounted(async () => {
-    try {
-      const data = await testService.checkBackend()
-      console.log('Backend connected:', data)
-    } catch (error) {
-      console.error('Backend connection failed:', error)
-    }
-
-    try {
-      await store.dispatch(`auth/${FETCH_USER_ACTION}`)
-      console.log('User restored from token')
-    } catch (error) {
-      console.warn('User is not authenticated')
-    }
-  })
-
   const route = useRoute()
+  const router = useRouter()
 
-  const showLoading = computed(() => store.state.showLoading)
   const isCollapsed = ref(false)
 
+  let handlingAuthExpired = false
+
+  const showLoading = computed(() => store.state.showLoading)
+
   const isSpecial = computed(() => {
-    // підлаштуй під свої route.name
     return route.name === 'home' || route.name === 'news'
   })
 
   const mainClasses = computed(() => [
     isCollapsed.value ? 'ml-16' : 'ml-56',
+
     isSpecial.value ? 'p-0 w-full h-screen soon' : 'pt-14 p-6 rounded-3xl',
   ])
+
+  async function handleAuthExpired() {
+    if (handlingAuthExpired) {
+      return
+    }
+
+    handlingAuthExpired = true
+
+    try {
+      const requiresAuth = route.matched.some((record) => record.meta.requiresAuth)
+
+      const redirect = route.fullPath
+
+      await store.dispatch(`auth/${LOGOUT_ACTION}`)
+
+      if (requiresAuth) {
+        await router.replace({
+          path: '/dashboard',
+          query: {
+            auth: 'login',
+            redirect,
+          },
+        })
+      }
+    } finally {
+      handlingAuthExpired = false
+    }
+  }
+
+  onMounted(async () => {
+    window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
+
+    await store.dispatch(`auth/${FETCH_USER_ACTION}`)
+  })
+
+  onBeforeUnmount(() => {
+    window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
+  })
 </script>
 
 <style scoped>
@@ -96,6 +125,7 @@
   .fade-leave-active {
     transition: opacity 0.3s ease;
   }
+
   .fade-enter-from,
   .fade-leave-to {
     opacity: 0;

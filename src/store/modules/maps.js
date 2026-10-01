@@ -64,34 +64,24 @@ export default {
       const now = new Date().toISOString()
 
       const map = {
-  id:
-    crypto.randomUUID(),
+        id: crypto.randomUUID(),
 
-  title:
-    payload.title ||
-    'Untitled Map',
+        title: payload.title || 'Untitled Map',
 
-  description:
-    payload.description || '',
+        description: payload.description || '',
 
-  type:
-    payload.type || 'blank',
+        type: payload.type || 'blank',
 
-  status:
-    'draft',
+        status: 'draft',
 
-  nodes:
-    payload.nodes || [],
+        nodes: payload.nodes || [],
 
-  edges:
-    payload.edges || [],
+        edges: payload.edges || [],
 
-  createdAt:
-    now,
+        createdAt: now,
 
-  updatedAt:
-    now,
-}
+        updatedAt: now,
+      }
 
       commit('SET_MAPS', [map, ...state.maps])
 
@@ -104,83 +94,46 @@ export default {
       commit('SET_MAPS', maps)
     },
 
-    duplicateMap({
-  state,
-  commit,
-}, id) {
-  const source =
-    state.maps.find(
-      (map) =>
-        map.id === id,
-    )
+    duplicateMap({ state, commit }, id) {
+      const source = state.maps.find((map) => map.id === id)
 
-  if (!source) {
-    throw new Error(
-      'Map not found',
-    )
-  }
+      if (!source) {
+        throw new Error('Map not found')
+      }
 
-  const now =
-    new Date()
-      .toISOString()
+      const now = new Date().toISOString()
 
-  const copy = {
-    ...JSON.parse(
-      JSON.stringify(
-        source,
-      ),
-    ),
+      const copy = {
+        ...JSON.parse(JSON.stringify(source)),
 
-    id:
-      crypto.randomUUID(),
+        id: crypto.randomUUID(),
 
-    title:
-      `${source.title} Copy`,
+        title: `${source.title} Copy`,
 
-    status:
-      'draft',
+        status: 'draft',
 
-    createdAt:
-      now,
+        createdAt: now,
 
-    updatedAt:
-      now,
-  }
+        updatedAt: now,
+      }
 
-  commit(
-    'SET_MAPS',
-    [
-      copy,
-      ...state.maps,
-    ],
-  )
+      commit('SET_MAPS', [copy, ...state.maps])
 
-  return copy
-},
+      return copy
+    },
 
-    updateMap({
-  state,
-  commit,
-}, updatedMap) {
-  const maps =
-    state.maps.map(
-      (map) =>
-        map.id ===
-        updatedMap.id
+    updateMap({ state, commit }, updatedMap) {
+      const maps = state.maps.map((map) =>
+        map.id === updatedMap.id
           ? {
               ...updatedMap,
 
-              updatedAt:
-                new Date()
-                  .toISOString(),
+              updatedAt: new Date().toISOString(),
             }
           : map,
-    )
+      )
 
-  commit(
-    'SET_MAPS',
-    maps,
-  )
-}
+      commit('SET_MAPS', maps)
+    },
   },
 }

@@ -54,7 +54,7 @@ export default {
   </Components.Block>
 </Components.Block>
 `,
-promoCard: (data) => `
+  promoCard: (data) => `
 {
   "title": "${data.name}",
   "pool": "${data.prize}",
@@ -64,7 +64,7 @@ promoCard: (data) => `
   "bgMob": "${data.bgImageSrcMob}"
 },`,
 
-promoInner: (data) => `
+  promoInner: (data) => `
 ${data.rulesHtml}
-`
+`,
 }

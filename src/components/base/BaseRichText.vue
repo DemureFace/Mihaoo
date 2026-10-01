@@ -93,7 +93,7 @@
         aria-multiline="true"
         @input="onInput"
         @keydown="onKeydown"
-        @keydown.shift.enter.prevent="insertBr"
+        @keydown.shift.enter.exact.prevent="insertBr"
         @paste="onPaste"
         @focus="$emit('focus')"
         @blur="$emit('blur')"

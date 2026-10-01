@@ -57,7 +57,7 @@ export default {
 </Components.Block>
 `,
 
-promoCard: (data) => `
+  promoCard: (data) => `
 {
   "title":"${data.name}",
   "prize": "${data.prize}",
@@ -80,7 +80,7 @@ promoCard: (data) => `
 },
 `,
 
-promoInner: (data) => `
+  promoInner: (data) => `
 <Components.Block
   templateName={'cms-page'}
   mod={'promotion'}

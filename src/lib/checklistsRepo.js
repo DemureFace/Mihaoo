@@ -48,22 +48,27 @@ export function saveChecklists(arr) {
 
 export function generateSlug(title) {
   const base = String(title || '')
-    .toLowerCase().trim()
+    .toLowerCase()
+    .trim()
     .replace(/[^a-z0-9\u0400-\u04FF\s-]/g, '')
     .replace(/\s+/g, '-')
   return base || `cl-${Date.now()}`
 }
 
 function safeParse(json, fallback) {
-  try { return JSON.parse(json) } catch { return fallback }
+  try {
+    return JSON.parse(json)
+  } catch {
+    return fallback
+  }
 }
 
 function withTimestamps(seed) {
   const now = new Date().toISOString()
-  return seed.map(s => ({
+  return seed.map((s) => ({
     updatedAt: s.updatedAt || s.createdAt || now,
     createdAt: s.createdAt || now,
-    ...s
+    ...s,
   }))
 }
 
@@ -73,7 +78,7 @@ function withTimestamps(seed) {
  * Зіставлення — по slug.
  */
 function migrate(current, seed) {
-  const bySlug = Object.fromEntries(current.map(c => [c.slug, c]))
+  const bySlug = Object.fromEntries(current.map((c) => [c.slug, c]))
   const result = [...current]
 
   for (const s of seed) {
@@ -90,9 +95,9 @@ function migrate(current, seed) {
         description: s.description,
         items: s.items,
         // createdAt залишаємо старий, updatedAt — зі сіду
-        updatedAt: s.updatedAt || s.createdAt || new Date().toISOString()
+        updatedAt: s.updatedAt || s.createdAt || new Date().toISOString(),
       }
-      const idx = result.findIndex(x => x.slug === s.slug)
+      const idx = result.findIndex((x) => x.slug === s.slug)
       result.splice(idx, 1, updated)
     }
   }

@@ -6,7 +6,7 @@
       </div>
 
       <!-- Контурні пагорби (лише stroke, без fill) -->
-      <svg class="hills " viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+      <svg class="hills" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
         <!-- Далекі пагорби -->
         <path
           d="M0,160 C120,110 200,140 320,120 C440,100 560,150 680,120 C800,90 880,120 1000,80"
@@ -33,14 +33,4 @@
   </div>
 </template>
 
-<script setup>
-  import { useParser } from '@/components/mixins/useParser.js'
-   import BaseButton from '@/components/base/BaseButton.vue'
-
-
-  const { input, cmsCodeInnerPage, cmsCodeSr, parse } = useParser()
-
-  function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
-  }
-</script>
+<script setup></script>

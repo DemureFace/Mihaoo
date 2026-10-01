@@ -156,6 +156,8 @@
     await store.dispatch(`auth/${LOGOUT_ACTION}`)
 
     closeAuthModal()
+
+    await router.replace('/dashboard')
   }
 
   watch(

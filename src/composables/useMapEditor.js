@@ -1,8 +1,4 @@
-import {
-  computed,
-  ref,
-  toRaw,
-} from 'vue'
+import { computed, ref, toRaw } from 'vue'
 
 export function useMapEditor() {
   const nodes = ref([])
@@ -11,100 +7,82 @@ export function useMapEditor() {
   const selectedNodeId = ref(null)
   const selectedEdgeId = ref(null)
   const selectedEdge = computed(() => {
-  if (!selectedEdgeId.value) {
-    return null
-  }
+    if (!selectedEdgeId.value) {
+      return null
+    }
 
-  return (
-    edges.value.find(
-      (edge) =>
-        edge.id === selectedEdgeId.value,
-    ) || null
-  )
-})
+    return edges.value.find((edge) => edge.id === selectedEdgeId.value) || null
+  })
 
   const selectedNode = computed(() => {
     if (!selectedNodeId.value) return null
 
-    return nodes.value.find(
-      (node) => node.id === selectedNodeId.value,
-    ) || null
+    return nodes.value.find((node) => node.id === selectedNodeId.value) || null
   })
 
   function loadMap(map) {
-  nodes.value = cloneSerializable(
-    map?.nodes || [],
-  )
+    nodes.value = cloneSerializable(map?.nodes || [])
 
-  edges.value = cloneSerializable(
-    map?.edges || [],
-  )
+    edges.value = cloneSerializable(map?.edges || [])
 
-  selectedNodeId.value = null
-}
+    selectedNodeId.value = null
+  }
 
   function addNode(type = 'step', position = null) {
-  const index = nodes.value.length
+    const index = nodes.value.length
 
-  const node = {
-    id: crypto.randomUUID(),
+    const node = {
+      id: crypto.randomUUID(),
 
-    type: 'mihaoo',
+      type: 'mihaoo',
 
-    position:
-      position || {
+      position: position || {
         x: 100 + (index % 4) * 260,
-        y:
-          100 +
-          Math.floor(index / 4) * 180,
+        y: 100 + Math.floor(index / 4) * 180,
       },
 
-    data: {
-      type,
-      title: getDefaultTitle(type),
-      description: '',
-      status: 'draft',
-      owner: '',
-      dueDate: '',
-      url: '',
-    },
+      data: {
+        type,
+        title: getDefaultTitle(type),
+        description: '',
+        status: 'draft',
+        owner: '',
+        dueDate: '',
+        url: '',
+      },
+    }
+
+    nodes.value.push(node)
+
+    selectedNodeId.value = node.id
+    selectedEdgeId.value = null
+
+    return node
   }
-
-  nodes.value.push(node)
-
-  selectedNodeId.value = node.id
-  selectedEdgeId.value = null
-
-  return node
-}
 
   function duplicateNode(id) {
-  const source = nodes.value.find(
-    (node) => node.id === id,
-  )
+    const source = nodes.value.find((node) => node.id === id)
 
-  if (!source) return
+    if (!source) return
 
-  const copy = cloneSerializable(source)
+    const copy = cloneSerializable(source)
 
-  copy.id = crypto.randomUUID()
+    copy.id = crypto.randomUUID()
 
-  copy.position = {
-    x: source.position.x + 40,
-    y: source.position.y + 40,
+    copy.position = {
+      x: source.position.x + 40,
+      y: source.position.y + 40,
+    }
+
+    copy.data.title = `${source.data.title} Copy`
+
+    nodes.value.push(copy)
+
+    selectedNodeId.value = copy.id
   }
 
-  copy.data.title = `${source.data.title} Copy`
-
-  nodes.value.push(copy)
-
-  selectedNodeId.value = copy.id
-}
-
   function updateNode(id, patch) {
-    const node = nodes.value.find(
-      (node) => node.id === id,
-    )
+    const node = nodes.value.find((node) => node.id === id)
 
     if (!node) return
 
@@ -115,15 +93,9 @@ export function useMapEditor() {
   }
 
   function deleteNode(id) {
-    nodes.value = nodes.value.filter(
-      (node) => node.id !== id,
-    )
+    nodes.value = nodes.value.filter((node) => node.id !== id)
 
-    edges.value = edges.value.filter(
-      (edge) =>
-        edge.source !== id &&
-        edge.target !== id,
-    )
+    edges.value = edges.value.filter((edge) => edge.source !== id && edge.target !== id)
 
     if (selectedNodeId.value === id) {
       selectedNodeId.value = null
@@ -131,19 +103,18 @@ export function useMapEditor() {
   }
 
   function selectNode(id) {
-  selectedNodeId.value = id
-  selectedEdgeId.value = null
-}
-function selectEdge(id) {
-  selectedEdgeId.value = id
-  selectedNodeId.value = null
-}
+    selectedNodeId.value = id
+    selectedEdgeId.value = null
+  }
+  function selectEdge(id) {
+    selectedEdgeId.value = id
+    selectedNodeId.value = null
+  }
 
   function clearSelection() {
-  selectedNodeId.value = null
-  selectedEdgeId.value = null
-}
-
+    selectedNodeId.value = null
+    selectedEdgeId.value = null
+  }
 
   function addConnection(connection) {
     if (!connection.source || !connection.target) {
@@ -151,9 +122,7 @@ function selectEdge(id) {
     }
 
     const alreadyExists = edges.value.some(
-      (edge) =>
-        edge.source === connection.source &&
-        edge.target === connection.target,
+      (edge) => edge.source === connection.source && edge.target === connection.target,
     )
 
     if (alreadyExists) return
@@ -172,47 +141,35 @@ function selectEdge(id) {
   }
 
   function getSnapshot() {
-  return {
-    nodes: cloneSerializable(nodes.value),
-    edges: cloneSerializable(edges.value),
+    return {
+      nodes: cloneSerializable(nodes.value),
+      edges: cloneSerializable(edges.value),
+    }
   }
-}
 
-function restoreSnapshot(snapshot) {
-  nodes.value =
-    cloneSerializable(
-      snapshot?.nodes || [],
-    )
+  function restoreSnapshot(snapshot) {
+    nodes.value = cloneSerializable(snapshot?.nodes || [])
 
-  edges.value =
-    cloneSerializable(
-      snapshot?.edges || [],
-    )
+    edges.value = cloneSerializable(snapshot?.edges || [])
 
-  selectedNodeId.value = null
-}
-
-function updateEdge(id, patch) {
-  const edge = edges.value.find(
-    (edge) => edge.id === id,
-  )
-
-  if (!edge) return
-
-  Object.assign(edge, patch)
-}
-
-function deleteEdge(id) {
-  edges.value = edges.value.filter(
-    (edge) => edge.id !== id,
-  )
-
-  if (
-    selectedEdgeId.value === id
-  ) {
-    selectedEdgeId.value = null
+    selectedNodeId.value = null
   }
-}
+
+  function updateEdge(id, patch) {
+    const edge = edges.value.find((edge) => edge.id === id)
+
+    if (!edge) return
+
+    Object.assign(edge, patch)
+  }
+
+  function deleteEdge(id) {
+    edges.value = edges.value.filter((edge) => edge.id !== id)
+
+    if (selectedEdgeId.value === id) {
+      selectedEdgeId.value = null
+    }
+  }
 
   return {
     nodes,
@@ -231,17 +188,16 @@ function deleteEdge(id) {
 
     selectNode,
     clearSelection,
-selectedEdgeId,
-selectedEdge,
+    selectedEdgeId,
+    selectedEdge,
 
-selectEdge,
-updateEdge,
-deleteEdge,
+    selectEdge,
+    updateEdge,
+    deleteEdge,
     addConnection,
 
     getSnapshot,
   }
-
 }
 
 function cloneSerializable(value) {
@@ -249,9 +205,7 @@ function cloneSerializable(value) {
     return value
   }
 
-  return JSON.parse(
-    JSON.stringify(toRaw(value)),
-  )
+  return JSON.parse(JSON.stringify(toRaw(value)))
 }
 
 function getDefaultTitle(type) {

@@ -13,8 +13,7 @@
 </template>
 
 <script setup>
- import BaseButton from './base/BaseButton.vue'
-
+  import BaseButton from './base/BaseButton.vue'
 
   defineProps({
     currentTab: {
@@ -24,6 +23,4 @@
   })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

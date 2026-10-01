@@ -11,5 +11,5 @@ export const BRAND_TEMPLATES = {
   spinrise: spinrise,
   winorio: winorio,
   bohocasino: bohocasino,
-  slotsgallery: slotsgallery
+  slotsgallery: slotsgallery,
 }

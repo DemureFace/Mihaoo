@@ -24,26 +24,19 @@ export default class SignupValidations {
     const hasHebrew = /[\u0590-\u05FF]/u.test(this.password)
 
     // Special characters
-    const hasSpecial =
-      /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/.test(
-        this.password,
-      )
+    const hasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/.test(this.password)
 
     // Only Hebrew + special characters
-    const onlyAllowedCharacters =
-      /^[\u0590-\u05FF!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]+$/u.test(
-        this.password,
-      )
+    const onlyAllowedCharacters = /^[\u0590-\u05FF!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]+$/u.test(
+      this.password,
+    )
 
     if (!hasHebrew) {
-      errors.password =
-        'Password must contain at least one Hebrew character'
+      errors.password = 'Password must contain at least one Hebrew character'
     } else if (!hasSpecial) {
-      errors.password =
-        'Password must contain at least one special character'
+      errors.password = 'Password must contain at least one special character'
     } else if (!onlyAllowedCharacters) {
-      errors.password =
-        'Password can contain only Hebrew characters and special characters'
+      errors.password = 'Password can contain only Hebrew characters and special characters'
     }
 
     return errors
