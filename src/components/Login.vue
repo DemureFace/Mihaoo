@@ -97,8 +97,6 @@
           })
 
           this.$emit('authenticated')
-
-          this.$router.push('/analytics/tasks')
         } catch (e) {
           this.error =
             e?.response?.data?.message || e?.message || 'Login failed. Check email or password.'

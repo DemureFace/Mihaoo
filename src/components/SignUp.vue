@@ -110,7 +110,7 @@
             password: this.password,
           })
 
-          this.$router.push('/analytics/tasks')
+          this.$emit('authenticated')
         } catch (error) {
           this.error = error?.response?.data?.message || error?.message || 'Registration failed'
         } finally {

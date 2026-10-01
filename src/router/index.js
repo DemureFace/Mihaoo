@@ -45,6 +45,9 @@ const routes = [
     path: '/promo',
     name: 'promo',
     component: PromoView,
+    meta: {
+  requiresAuth: true,
+},
   },
 
   {
@@ -82,6 +85,9 @@ const routes = [
     path: '/banner-export',
     name: 'banner-export',
     component: BannerExport,
+      meta: {
+    requiresAuth: true,
+  },
   },
   {
   path: '/maps',
@@ -154,26 +160,29 @@ const router = createRouter({
   },
 })
 
-// Глобальний Guard
-// Поки він вимкнений, meta.requiresAuth ні на що не впливає.
-//
-// router.beforeEach((to, from, next) => {
-//   const isAuthenticated = Boolean(localStorage.getItem('authToken'))
-//   const requiresAuth = to.matched.some(
-//     (record) => record.meta.requiresAuth,
-//   )
-//
-//   if (requiresAuth && !isAuthenticated) {
-//     next('/login')
-//     return
-//   }
-//
-//   if (to.path === '/login' && isAuthenticated) {
-//     next('/home')
-//     return
-//   }
-//
-//   next()
-// })
+router.beforeEach((to) => {
+  const requiresAuth = to.matched.some(
+    (record) => record.meta.requiresAuth,
+  )
+
+  if (!requiresAuth) {
+    return true
+  }
+
+  const accessToken =
+    localStorage.getItem('accessToken')
+
+  if (accessToken) {
+    return true
+  }
+
+  return {
+    path: '/dashboard',
+    query: {
+      auth: 'login',
+      redirect: to.fullPath,
+    },
+  }
+})
 
 export default router
