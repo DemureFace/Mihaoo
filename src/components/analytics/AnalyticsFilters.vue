@@ -40,6 +40,13 @@
         class="sm:col-span-2"
       />
 
+      <div
+        v-if="analytics.referenceDataError"
+        class="border-t border-neutral-200 bg-amber-50 px-4 py-3 text-xs text-amber-800"
+      >
+        {{ analytics.referenceDataError }}
+      </div>
+
       <BaseInput
         v-model="draft.from"
         id="analytics-from"
@@ -64,6 +71,7 @@
         label="Бренд"
         placeholder="Усі бренди"
         :options="brands"
+        :disabled="analytics.referenceDataLoading"
       />
 
       <BaseSelect
@@ -72,6 +80,7 @@
         label="Платформа"
         placeholder="Усі платформи"
         :options="platforms"
+        :disabled="analytics.referenceDataLoading"
       />
 
       <BaseSelect
@@ -80,6 +89,7 @@
         label="Тип задачі"
         placeholder="Усі типи"
         :options="taskTypes"
+        :disabled="analytics.referenceDataLoading"
       />
 
       <BaseSelect
@@ -108,13 +118,7 @@
   import BaseButton from '@/components/base/BaseButton.vue'
   import BaseInput from '@/components/base/BaseInput.vue'
   import BaseSelect from '@/components/base/BaseSelect.vue'
-  import {
-    ANALYTICS_PLATFORMS,
-    ANALYTICS_BRANDS,
-    ANALYTICS_TASK_TYPES,
-    ANALYTICS_STATUSES,
-    createDefaultAnalyticsFilters,
-  } from '@/constants/analytics'
+  import { ANALYTICS_STATUSES, createDefaultAnalyticsFilters } from '@/constants/analytics'
 
   const store = useStore()
 
@@ -127,11 +131,32 @@
     }))
   })
 
-  const platforms = ANALYTICS_PLATFORMS
+  const platforms = computed(() => {
+    return (
+      analytics.value.referenceData?.platforms?.map((platform) => ({
+        value: platform.code,
+        label: platform.name,
+      })) || []
+    )
+  })
 
-  const brands = ANALYTICS_BRANDS
+  const brands = computed(() => {
+    return (
+      analytics.value.referenceData?.brands?.map((brand) => ({
+        value: brand.code,
+        label: brand.name,
+      })) || []
+    )
+  })
 
-  const taskTypes = ANALYTICS_TASK_TYPES
+  const taskTypes = computed(() => {
+    return (
+      analytics.value.referenceData?.taskTypes?.map((type) => ({
+        value: type.code,
+        label: type.name,
+      })) || []
+    )
+  })
 
   const statuses = ANALYTICS_STATUSES
 
@@ -270,6 +295,7 @@
 
   onMounted(() => {
     store.dispatch('analytics/loadMembers')
+    store.dispatch('analytics/loadReferenceData')
   })
 
   watch(
@@ -278,6 +304,7 @@
     (token) => {
       if (token) {
         store.dispatch('analytics/loadMembers')
+        store.dispatch('analytics/loadReferenceData')
       }
     },
   )

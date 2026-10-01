@@ -34,6 +34,10 @@ export default {
 
     page: 1,
 
+    sortBy: 'reportDate',
+
+    sortOrder: 'desc',
+
     loading: false,
 
     error: '',
@@ -49,6 +53,12 @@ export default {
     membersLoading: false,
 
     membersError: '',
+
+    referenceData: null,
+
+    referenceDataLoading: false,
+
+    referenceDataError: '',
   }),
 
   getters: {
@@ -61,6 +71,29 @@ export default {
 
       return member?.displayName || `ID ${memberId}`
     },
+    platformLabel: (state) => (code) => {
+      if (!code) {
+        return '—'
+      }
+
+      return state.referenceData?.platforms?.find((item) => item.code === code)?.name || code
+    },
+
+    brandLabel: (state) => (code) => {
+      if (!code) {
+        return '—'
+      }
+
+      return state.referenceData?.brands?.find((item) => item.code === code)?.name || code
+    },
+
+    taskTypeLabel: (state) => (code) => {
+      if (!code) {
+        return '—'
+      }
+
+      return state.referenceData?.taskTypes?.find((item) => item.code === code)?.name || code
+    },
   },
 
   mutations: {
@@ -72,6 +105,18 @@ export default {
 
       state.page = 1
 
+      state.filterVersion += 1
+    },
+
+    SET_SORT(state, sortBy) {
+      if (state.sortBy === sortBy) {
+        state.sortOrder = state.sortOrder === 'asc' ? 'desc' : 'asc'
+      } else {
+        state.sortBy = sortBy
+        state.sortOrder = 'desc'
+      }
+
+      state.page = 1
       state.filterVersion += 1
     },
 
@@ -143,6 +188,22 @@ export default {
 
       state.membersError = message
     },
+
+    REFERENCE_DATA_BEGIN(state) {
+      state.referenceDataLoading = true
+      state.referenceDataError = ''
+    },
+
+    REFERENCE_DATA_SUCCESS(state, data) {
+      state.referenceData = data
+      state.referenceDataLoading = false
+    },
+
+    REFERENCE_DATA_FAIL(state, message) {
+      state.referenceData = null
+      state.referenceDataLoading = false
+      state.referenceDataError = message
+    },
   },
 
   actions: {
@@ -163,6 +224,10 @@ export default {
         const result = await analyticsService.list(
           {
             ...state.filters,
+
+            sortBy: state.sortBy,
+            sortOrder: state.sortOrder,
+
             page,
           },
           signal,
@@ -199,6 +264,26 @@ export default {
         commit('MEMBERS_SUCCESS', members)
       } catch {
         commit('MEMBERS_FAIL', 'Не вдалося завантажити список команди.')
+      }
+    },
+
+    async loadReferenceData({ state, commit }) {
+      if (state.referenceDataLoading || state.referenceData) {
+        return
+      }
+
+      if (!localStorage.getItem('accessToken')) {
+        return
+      }
+
+      commit('REFERENCE_DATA_BEGIN')
+
+      try {
+        const data = await analyticsService.getReferenceData()
+
+        commit('REFERENCE_DATA_SUCCESS', data)
+      } catch {
+        commit('REFERENCE_DATA_FAIL', 'Не вдалося завантажити бренди, платформи та типи задач.')
       }
     },
   },

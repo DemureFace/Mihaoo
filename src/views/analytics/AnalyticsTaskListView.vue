@@ -113,7 +113,23 @@
                   'text-right': key === 'id' || key === 'sp',
                 }"
               >
-                {{ label }}
+                <button
+                  v-if="isSortable(key)"
+                  type="button"
+                  class="inline-flex items-center gap-1 font-semibold transition hover:text-black"
+                  :class="isActiveSort(key) ? 'text-black' : 'text-neutral-500'"
+                  @click="changeSort(key)"
+                >
+                  {{ label }}
+
+                  <span class="text-[11px]" aria-hidden="true">
+                    {{ sortIndicator(key) }}
+                  </span>
+                </button>
+
+                <template v-else>
+                  {{ label }}
+                </template>
               </th>
             </tr>
           </thead>
@@ -153,7 +169,7 @@
                   v-else-if="key === 'brand'"
                   class="inline-flex rounded-full border border-black bg-white px-2.5 py-0.5 text-xs font-semibold text-black"
                 >
-                  {{ row.brand }}
+                  {{ cellText(row, key) }}
                 </span>
 
                 <!-- Jira -->
@@ -285,7 +301,14 @@
 
     try {
       const { blob, filename } = await analyticsService.exportCsv(
-        analytics.value.filters,
+        {
+          ...analytics.value.filters,
+
+          sortBy: analytics.value.sortBy,
+
+          sortOrder: analytics.value.sortOrder,
+        },
+
         currentController.signal,
       )
 
@@ -343,11 +366,55 @@
     ['reportDate', 'Дата звіту'],
   ]
 
+  const sortableColumns = {
+    sp: 'storyPoints',
+    status: 'status',
+    reportDate: 'reportDate',
+  }
+
   const numberFormat = new Intl.NumberFormat('uk-UA', {
     maximumFractionDigits: 2,
   })
 
+  function isSortable(key) {
+    return Boolean(sortableColumns[key])
+  }
+
+  function isActiveSort(key) {
+    return sortableColumns[key] === analytics.value.sortBy
+  }
+
+  function sortIndicator(key) {
+    if (!isActiveSort(key)) {
+      return '↕'
+    }
+
+    return analytics.value.sortOrder === 'asc' ? '↑' : '↓'
+  }
+
+  function changeSort(key) {
+    const sortBy = sortableColumns[key]
+
+    if (!sortBy) {
+      return
+    }
+
+    store.commit('analytics/SET_SORT', sortBy)
+  }
+
   function cellText(row, key) {
+    if (key === 'type') {
+      return store.getters['analytics/taskTypeLabel'](row.type)
+    }
+
+    if (key === 'platform') {
+      return store.getters['analytics/platformLabel'](row.platform)
+    }
+
+    if (key === 'brand') {
+      return store.getters['analytics/brandLabel'](row.brand)
+    }
+
     if (key === 'status') {
       return (
         {

@@ -487,7 +487,7 @@
 
   import DetailRow from '@/components/analytics/DetailRow.vue'
 
-  import { ANALYTICS_STATUSES, ANALYTICS_TASK_TYPES } from '@/constants/analytics'
+  import { ANALYTICS_STATUSES } from '@/constants/analytics'
 
   import { analyticsService } from '@/services/analytics.service'
 
@@ -568,7 +568,11 @@
   })
 
   const taskTypeOptions = computed(() => {
-    const options = [...ANALYTICS_TASK_TYPES]
+    const options =
+      store.state.analytics.referenceData?.taskTypes?.map((type) => ({
+        value: type.code,
+        label: type.name,
+      })) || []
 
     if (task.value?.taskType && !options.some((option) => option.value === task.value.taskType)) {
       options.push({
@@ -627,17 +631,15 @@
   }
 
   function formatPlatform(value) {
-    return value === 'P8' ? '8P' : value || '—'
+    return store.getters['analytics/platformLabel'](value)
   }
 
   function formatBrand(value) {
-    if (!value) return '—'
-
-    return value === 'RANDOM' ? 'Random' : value
+    return store.getters['analytics/brandLabel'](value)
   }
 
   function taskTypeLabel(value) {
-    return ANALYTICS_TASK_TYPES.find((item) => item.value === value)?.label || value || '—'
+    return store.getters['analytics/taskTypeLabel'](value)
   }
 
   function statusLabel(value) {
@@ -761,6 +763,10 @@
 
   async function loadTask() {
     if (!props.taskId) return
+
+    if (!store.state.analytics.referenceData) {
+      await store.dispatch('analytics/loadReferenceData')
+    }
 
     cancelRequest()
 

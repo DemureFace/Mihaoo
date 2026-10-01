@@ -1,10 +1,6 @@
 import api from './api'
 
-import { ANALYTICS_TASK_TYPES } from '@/constants/analytics'
-
 export const PAGE_SIZE = 25
-
-const taskTypeLabels = new Map(ANALYTICS_TASK_TYPES.map((type) => [type.value, type.label]))
 
 function readItems(data) {
   if (Array.isArray(data)) {
@@ -41,11 +37,11 @@ function normalizeTask(row) {
 
     title: group.title || 'Без назви',
 
-    type: taskTypeLabels.get(group.taskType) || group.taskType,
+    type: group.taskType,
 
-    platform: group.platform === 'P8' ? '8P' : group.platform,
+    platform: group.platform,
 
-    brand: row.brand === 'RANDOM' ? 'Random' : row.brand,
+    brand: row.brand,
 
     executorId: row.executorId,
 
@@ -83,6 +79,9 @@ export const analyticsService = {
       platform: query.platform,
       taskType: query.taskType,
       status: query.status,
+
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
     })
 
     const { data } = await api.get('/tasks', {
@@ -194,6 +193,8 @@ export const analyticsService = {
 
   async exportCsv(query, signal) {
     const params = cleanParams({
+      sortBy: query.sortBy,
+      sortOrder: query.sortOrder,
       search: query.search,
       from: query.from,
       to: query.to,
