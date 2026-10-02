@@ -160,6 +160,30 @@ export const analyticsService = {
     return readItems(data)
   },
 
+  async getAnalyticsReport(query = {}, signal) {
+  const params = cleanParams({
+    search: query.search,
+    from: query.from,
+    to: query.to,
+
+    executorId: query.executorId,
+    requestedById: query.requestedById,
+
+    brand: query.brand,
+    platform: query.platform,
+    taskType: query.taskType,
+    status: query.status,
+  })
+
+  const { data } = await api.get('/tasks/report', {
+    params,
+    signal,
+    timeout: 20000,
+  })
+
+  return data
+},
+
   async getWeeklyReport(id, signal) {
     if (!id) {
       throw new Error('Weekly Report id is required')

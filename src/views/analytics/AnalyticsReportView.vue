@@ -47,12 +47,40 @@
           {{ kpi.label }}
         </p>
 
-        <p class="m-0 mt-1 text-[27px] font-bold leading-tight tracking-[-0.02em]">—</p>
+        <p class="m-0 mt-1 text-[27px] font-bold leading-tight tracking-[-0.02em]">
+          <span v-if="reportLoading">…</span>
+
+          <span v-else-if="kpi.value !== null && kpi.value !== undefined">
+            {{ kpi.raw ? formatMetric(kpi.value) : kpi.value }}
+          </span>
+
+          <span v-else>—</span>
+        </p>
 
         <p class="mt-1 text-xs text-neutral-400">
           {{ kpi.description }}
         </p>
       </article>
+    </div>
+
+    <div
+      v-if="!analyticsReportApiReady"
+      class="rounded-[14px] border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-500"
+    >
+      KPI будуть заповнені після підключення
+      <code class="font-mono text-xs">GET /tasks/report</code>
+      .
+    </div>
+
+    <div
+      v-else-if="reportError"
+      class="rounded-[14px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+    >
+      {{ reportError }}
+
+      <BaseButton variant="secondary" size="sm" class="ml-2" @click="loadAnalyticsReport">
+        Повторити
+      </BaseButton>
     </div>
 
     <AnalyticsWeeklyReportHistory
@@ -374,7 +402,7 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import { useStore } from 'vuex'
   import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
   import { analyticsService } from '@/services/analytics.service'
@@ -387,6 +415,14 @@
   const store = useStore()
 
   const analytics = computed(() => store.state.analytics)
+
+  const analyticsReportApiReady = ref(import.meta.env.VITE_ANALYTICS_REPORT_API_READY === 'true')
+
+  const reportData = ref(null)
+
+  const reportLoading = ref(false)
+
+  const reportError = ref('')
 
   const weeklyReportOpen = ref(false)
   const weeklyReportEditSource = ref(null)
@@ -426,6 +462,25 @@
     const response = error?.response?.data
 
     return response?.error?.message || response?.message || fallback
+  }
+
+  async function loadAnalyticsReport() {
+    if (!analyticsReportApiReady.value) {
+      return
+    }
+
+    reportLoading.value = true
+    reportError.value = ''
+
+    try {
+      reportData.value = await analyticsService.getAnalyticsReport(analytics.value.filters)
+    } catch (error) {
+      reportData.value = null
+
+      reportError.value = getApiErrorMessage(error, 'Не вдалося завантажити Analytics Report.')
+    } finally {
+      reportLoading.value = false
+    }
   }
 
   function openNewWeeklyReport() {
@@ -571,28 +626,52 @@
     return store.getters['analytics/brandLabel'](code)
   }
 
-  const kpis = [
-    {
-      key: 'completed',
-      label: 'Закрито задач',
-      description: 'Кількість Done за вибраний період',
-    },
-    {
-      key: 'storyPoints',
-      label: 'SP за період',
-      description: 'Зараховані Story Points',
-    },
-    {
-      key: 'average',
-      label: 'Середній SP на задачу',
-      description: 'SP / кількість закритих задач',
-    },
-    {
-      key: 'executors',
-      label: 'Активні виконавці',
-      description: 'Люди із закритими задачами у періоді',
-    },
-  ]
+  const kpis = computed(() => {
+    const data = reportData.value?.kpi
+
+    return [
+      {
+        key: 'totalTasks',
+        label: 'Усього задач',
+        value: data?.totalTasks,
+        description: 'Кількість задач у вибраному наборі',
+      },
+      {
+        key: 'doneTasks',
+        label: 'Закрито задач',
+        value: data?.doneTasks,
+        description: 'Кількість задач зі статусом Done',
+      },
+      {
+        key: 'completionRate',
+        label: 'Completion Rate',
+        value:
+          data?.completionRate === null || data?.completionRate === undefined
+            ? null
+            : `${formatPercent(data.completionRate)}%`,
+        raw: false,
+        description: 'Частка завершених задач',
+      },
+      {
+        key: 'totalSP',
+        label: 'SP за період',
+        value: data?.totalSP,
+        description: 'Фактично зараховані Story Points',
+      },
+    ]
+  })
+
+  function formatPercent(value) {
+    const number = Number(value)
+
+    if (!Number.isFinite(number)) {
+      return 0
+    }
+
+    const percent = number <= 1 ? number * 100 : number
+
+    return Number(percent.toFixed(1))
+  }
 
   const activeFilterLabels = computed(() => {
     const filters = analytics.value.filters
@@ -642,5 +721,18 @@
     if (weeklyReportsApiReady.value) {
       loadWeeklyReports()
     }
+
+    if (analyticsReportApiReady.value) {
+      loadAnalyticsReport()
+    }
   })
+
+  watch(
+    () => analytics.value.filterVersion,
+    () => {
+      if (analyticsReportApiReady.value) {
+        loadAnalyticsReport()
+      }
+    },
+  )
 </script>
