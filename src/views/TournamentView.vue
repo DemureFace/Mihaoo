@@ -140,6 +140,12 @@
         <GeneratedArtifact v-if="result.card" title="Tournament Card" :content="result.card" />
 
         <GeneratedArtifact v-if="snippets" title="Tournament Snippets" :content="snippets" />
+
+        <GeneratedArtifact
+          v-if="locales"
+          title="MW Localized Tournament Pages"
+          :content="locales"
+        />
       </div>
     </template>
   </GeneratorLayout>
@@ -171,6 +177,7 @@
 
   const result = ref(null)
   const snippets = ref(null)
+  const locales = ref(null)
 
   let requestController = null
 
@@ -263,6 +270,7 @@
 
     result.value = null
     snippets.value = null
+    locales.value = null
     error.value = ''
     loading.value = false
   }
@@ -271,6 +279,7 @@
     error.value = ''
     result.value = null
     snippets.value = null
+    locales.value = null
 
     if (!canGenerate.value) {
       error.value = 'Fill in the task, brand and desktop image URL.'
@@ -303,21 +312,32 @@
         return
       }
 
-      const [generatedResult, generatedSnippets] = await Promise.all([
+      const requests = [
         tournamentTemplatesService.generateNetwork(payload, controller.signal),
 
-        tournamentTemplatesService.generateNetworkSnippets(payload, controller.signal),
-      ])
+        tournamentTemplatesService.generateNetworkSnippetsText(payload, controller.signal),
+      ]
+
+      if (brand.value === 'MW') {
+        requests.push(
+          tournamentTemplatesService.generateNetworkLocalesText(payload, controller.signal),
+        )
+      }
+
+      const [generatedResult, generatedSnippets, generatedLocales = null] =
+        await Promise.all(requests)
 
       result.value = generatedResult
-
       snippets.value = generatedSnippets
+      locales.value = generatedLocales
     } catch (requestError) {
       if (requestError?.code === 'ERR_CANCELED') {
         return
       }
 
-      const message = requestError?.response?.data?.message
+      const response = requestError?.response?.data
+
+      const message = response?.error?.message || response?.message
 
       error.value = Array.isArray(message)
         ? message.join(', ')

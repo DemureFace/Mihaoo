@@ -9,25 +9,28 @@ export const tournamentTemplatesService = {
     return data
   },
 
-  async generateNetworkSnippets(payload, signal) {
-    const { data } = await api.post('/tournament-templates/generate/snippet', payload, {
-      signal,
-    })
-
-    return data
-  },
-
   async generateNetworkText(payload, signal) {
     const { data } = await api.post('/tournament-templates/generate/text', payload, {
       signal,
+      responseType: 'text',
     })
 
     return data
   },
 
-  async generateNetworkLocales(payload, signal) {
-    const { data } = await api.post('/tournament-templates/generate/locales', payload, {
+  async generateNetworkSnippetsText(payload, signal) {
+    const { data } = await api.post('/tournament-templates/generate/snippet/text', payload, {
       signal,
+      responseType: 'text',
+    })
+
+    return data
+  },
+
+  async generateNetworkLocalesText(payload, signal) {
+    const { data } = await api.post('/tournament-templates/generate/locales/text', payload, {
+      signal,
+      responseType: 'text',
     })
 
     return data
@@ -36,6 +39,15 @@ export const tournamentTemplatesService = {
   async generateOrdinary(payload, signal) {
     const { data } = await api.post('/tournament-templates/generate/ordinary', payload, {
       signal,
+    })
+
+    return data
+  },
+
+  async generateOrdinaryText(payload, signal) {
+    const { data } = await api.post('/tournament-templates/generate/ordinary/text', payload, {
+      signal,
+      responseType: 'text',
     })
 
     return data

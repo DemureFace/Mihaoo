@@ -14,10 +14,28 @@
           required
         />
 
+        <BaseSelect
+          v-if="brand !== 'MW'"
+          v-model="segment"
+          id="promo-segment"
+          label="Segment"
+          :options="segmentOptions"
+          required
+        />
+
         <BaseInput
           v-model="imageUrl"
           id="promo-image"
-          label="Image URL"
+          label="Desktop image URL"
+          placeholder="https://..."
+          required
+        />
+
+        <BaseInput
+          v-if="brand === 'SG'"
+          v-model="imageUrlMobile"
+          id="promo-image-mobile"
+          label="Mobile image URL"
           placeholder="https://..."
           required
         />
@@ -142,8 +160,11 @@
 
   const brand = ref('BH')
 
+  const segment = ref('regular')
+
   const input = ref('')
   const imageUrl = ref('')
+  const imageUrlMobile = ref('')
 
   const error = ref('')
   const loading = ref(false)
@@ -151,6 +172,17 @@
   const result = ref(null)
 
   let requestController = null
+
+  const segmentOptions = [
+    {
+      value: 'regular',
+      label: 'Regular',
+    },
+    {
+      value: 'vip',
+      label: 'VIP',
+    },
+  ]
 
   const brandOptions = [
     {
@@ -194,15 +226,18 @@
   })
 
   const canGenerate = computed(() => {
+    const mobileImageValid = brand.value !== 'SG' || Boolean(imageUrlMobile.value.trim())
+
     return (
       input.value.trim().length >= 10 &&
       Boolean(brand.value) &&
       Boolean(imageUrl.value.trim()) &&
+      mobileImageValid &&
       !loading.value
     )
   })
 
-  watch([brand, input, imageUrl], () => {
+  watch([brand, segment, input, imageUrl, imageUrlMobile], () => {
     clearGeneratedResult()
   })
 
@@ -248,13 +283,23 @@
         imageUrl: imageUrl.value.trim(),
       }
 
+      if (brand.value !== 'MW') {
+        payload.segment = segment.value
+      }
+
+      if (brand.value === 'SG') {
+        payload.imageUrlMobile = imageUrlMobile.value.trim()
+      }
+
       result.value = await promoTemplatesService.generate(payload, controller.signal)
     } catch (requestError) {
       if (requestError?.code === 'ERR_CANCELED') {
         return
       }
 
-      const message = requestError?.response?.data?.message
+      const response = requestError?.response?.data
+
+      const message = response?.error?.message || response?.message
 
       error.value = Array.isArray(message)
         ? message.join(', ')
