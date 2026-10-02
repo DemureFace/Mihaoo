@@ -21,7 +21,7 @@
         type="password"
         autocomplete="new-password"
         :error="errors.password"
-        hint="hint="Minimum 8 characters with uppercase, lowercase, number and special character.""
+        hint="Minimum 8 characters with uppercase, lowercase, number and special character."
       />
 
       <div class="flex justify-between mt-4">
