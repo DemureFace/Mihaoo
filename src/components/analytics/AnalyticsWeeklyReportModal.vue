@@ -97,6 +97,12 @@
                   <span class="ml-2 text-xs text-neutral-400">
                     {{ metric.brandCode }}
                   </span>
+                  <span
+                    v-if="metric.isLegacy"
+                    class="ml-2 rounded-full border border-neutral-300 bg-neutral-50 px-2 py-0.5 text-[10px] font-semibold uppercase text-neutral-500"
+                  >
+                    Legacy
+                  </span>
                 </td>
 
                 <td class="px-4 py-2">
@@ -472,7 +478,9 @@
 
     const existingMetrics = report.brandMetrics || report.metrics || []
 
-    brandMetrics.value = brandMetrics.value.map((metric) => {
+    const currentCodes = new Set(brandMetrics.value.map((metric) => metric.brandCode))
+
+    const currentMetrics = brandMetrics.value.map((metric) => {
       const existing = existingMetrics.find((item) => {
         const code = item.brandCode || item.brand
 
@@ -491,6 +499,31 @@
         storyPoints: existing.storyPoints ?? '',
       }
     })
+
+    const legacyMetrics = existingMetrics
+      .map((item) => {
+        const code = item.brandCode || item.brand
+
+        if (!code || currentCodes.has(code)) {
+          return null
+        }
+
+        return {
+          brandCode: code,
+
+          brandLabel:
+            item.brandLabel || item.brandName || store.getters['analytics/brandLabel'](code),
+
+          tasksAmount: item.tasksAmount ?? '',
+
+          storyPoints: item.storyPoints ?? '',
+
+          isLegacy: true,
+        }
+      })
+      .filter(Boolean)
+
+    brandMetrics.value = [...currentMetrics, ...legacyMetrics]
   }
 
   function selectCurrentSprint() {
