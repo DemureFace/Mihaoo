@@ -144,78 +144,56 @@ export const analyticsService = {
   },
 
   async listWeeklyReports(query = {}, signal) {
-  const params = cleanParams({
-    sprintId: query.sprintId,
-    teamMemberId: query.teamMemberId,
-    from: query.from,
-    to: query.to,
-  })
+    const params = cleanParams({
+      sprintId: query.sprintId,
+      teamMemberId: query.teamMemberId,
+      from: query.from,
+      to: query.to,
+    })
 
-  const { data } = await api.get(
-    '/weekly-reports',
-    {
+    const { data } = await api.get('/weekly-reports', {
       params,
       signal,
       timeout: 20000,
-    },
-  )
+    })
 
-  return readItems(data)
-},
+    return readItems(data)
+  },
 
-async getWeeklyReport(id, signal) {
-  if (!id) {
-    throw new Error(
-      'Weekly Report id is required',
-    )
-  }
+  async getWeeklyReport(id, signal) {
+    if (!id) {
+      throw new Error('Weekly Report id is required')
+    }
 
-  const { data } = await api.get(
-    `/weekly-reports/${id}`,
-    {
+    const { data } = await api.get(`/weekly-reports/${id}`, {
       signal,
       timeout: 20000,
-    },
-  )
+    })
 
-  return data
-},
+    return data
+  },
 
-async createWeeklyReport(payload, signal) {
-  const { data } = await api.post(
-    '/weekly-reports',
-    payload,
-    {
+  async createWeeklyReport(payload, signal) {
+    const { data } = await api.post('/weekly-reports', payload, {
       signal,
       timeout: 20000,
-    },
-  )
+    })
 
-  return data
-},
+    return data
+  },
 
-async updateWeeklyReport(
-  id,
-  payload,
-  signal,
-) {
-  if (!id) {
-    throw new Error(
-      'Weekly Report id is required',
-    )
-  }
+  async updateWeeklyReport(id, payload, signal) {
+    if (!id) {
+      throw new Error('Weekly Report id is required')
+    }
 
-  const { data } = await api.patch(
-    `/weekly-reports/${id}`,
-    payload,
-    {
+    const { data } = await api.patch(`/weekly-reports/${id}`, payload, {
       signal,
       timeout: 20000,
-    },
-  )
+    })
 
-  return data
-},
+    return data
+  },
 
   async createTask(payload, signal) {
     const { data } = await api.post('/tasks', payload, {

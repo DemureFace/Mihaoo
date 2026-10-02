@@ -6,9 +6,17 @@
           Analytics
         </p>
 
-        <h2 class="m-0 mt-1 text-2xl font-bold tracking-[-0.02em] text-black">Тижневий звіт</h2>
+        <h2 class="m-0 mt-1 text-2xl font-bold tracking-[-0.02em] text-black">
+          {{ isEdit ? 'Редагування тижневого звіту' : 'Тижневий звіт' }}
+        </h2>
 
-        <p class="mt-1 text-sm text-neutral-500">Заповни результати роботи за вибраний Sprint.</p>
+        <p class="mt-1 text-sm text-neutral-500">
+          {{
+            isEdit
+              ? 'Онови результати роботи за вибраний Sprint.'
+              : 'Заповни результати роботи за вибраний Sprint.'
+          }}
+        </p>
       </header>
 
       <!-- General -->
@@ -20,13 +28,13 @@
             label="Sprint"
             placeholder="Оберіть Sprint"
             :options="sprintOptions"
-            :disabled="sprintsLoading"
+            :disabled="sprintsLoading || isEdit"
             :error="errors.sprintId"
             required
           />
 
           <BaseInput
-            :model-value="currentUser"
+            :model-value="specialistValue"
             id="weekly-report-user"
             label="Specialist"
             disabled
@@ -220,7 +228,9 @@
         <div class="flex gap-2">
           <BaseButton variant="secondary" @click="close">Скасувати</BaseButton>
 
-          <BaseButton variant="primary" @click="prepareReport">Підготувати звіт</BaseButton>
+          <BaseButton variant="primary" @click="prepareReport">
+            {{ isEdit ? 'Оновити звіт' : 'Підготувати звіт' }}
+          </BaseButton>
         </div>
       </footer>
     </div>
@@ -243,6 +253,11 @@
     modelValue: {
       type: Boolean,
       default: false,
+    },
+
+    report: {
+      type: Object,
+      default: null,
     },
   })
 
@@ -282,6 +297,20 @@
 
   const currentUser = computed(() => {
     return store.state.auth.user?.email || 'Current user'
+  })
+
+  const isEdit = computed(() => {
+    return Boolean(props.report)
+  })
+
+  const specialistValue = computed(() => {
+    return (
+      props.report?.specialist?.displayName ||
+      props.report?.teamMember?.displayName ||
+      props.report?.specialistName ||
+      props.report?.specialist ||
+      currentUser.value
+    )
   })
 
   const sprintOptions = computed(() => {
@@ -352,6 +381,10 @@
       await Promise.all([loadSprints(), store.dispatch('analytics/loadReferenceData')])
 
       initializeBrands()
+
+      if (props.report) {
+        populateForm(props.report)
+      }
     },
   )
 
@@ -390,6 +423,40 @@
       tasksAmount: '',
       storyPoints: '',
     }))
+  }
+
+  function populateForm(report) {
+    sprintId.value = report.sprintId || report.sprint?.id || ''
+
+    plannedStoryPoints.value = report.plannedStoryPoints ?? ''
+
+    teamLeadActivitySp.value = report.teamLeadActivitySp ?? ''
+
+    previewTaskSp.value = report.previewTaskSp ?? ''
+
+    vacationSp.value = report.vacationSp ?? ''
+
+    const existingMetrics = report.brandMetrics || report.metrics || []
+
+    brandMetrics.value = brandMetrics.value.map((metric) => {
+      const existing = existingMetrics.find((item) => {
+        const code = item.brandCode || item.brand
+
+        return code === metric.brandCode
+      })
+
+      if (!existing) {
+        return metric
+      }
+
+      return {
+        ...metric,
+
+        tasksAmount: existing.tasksAmount ?? '',
+
+        storyPoints: existing.storyPoints ?? '',
+      }
+    })
   }
 
   function selectCurrentSprint() {
@@ -479,15 +546,23 @@
     }
 
     emit('prepared', payload, {
-      sprintName: selectedSprint.value?.name || `Sprint ${sprintId.value}`,
+      mode: isEdit.value ? 'edit' : 'create',
+
+      reportId: props.report?.id || null,
+
+      sprintName:
+        selectedSprint.value?.name ||
+        props.report?.sprint?.name ||
+        props.report?.sprintName ||
+        `Sprint ${sprintId.value}`,
 
       sprintPeriod: selectedSprint.value
         ? `${formatDate(selectedSprint.value.startDate)} — ${formatDate(
             selectedSprint.value.endDate,
           )}`
-        : '',
+        : props.report?.sprintPeriod || '',
 
-      specialist: currentUser.value,
+      specialist: specialistValue.value,
     })
 
     close()

@@ -11,7 +11,7 @@
           </p>
         </div>
 
-        <BaseButton variant="primary" @click="weeklyReportOpen = true">
+        <BaseButton variant="primary" @click="openNewWeeklyReport">
           <DocumentPlusIcon class="h-4 w-4" />
 
           Заповнити тижневий звіт
@@ -339,20 +339,31 @@
           Preview сформований локально. Збереження підключимо через Weekly Report API.
         </p>
 
-        <BaseButton variant="secondary" size="sm" @click="weeklyReportOpen = true">
-          Заповнити заново
-        </BaseButton>
+        <div class="flex gap-2">
+          <BaseButton variant="secondary" size="sm" @click="openNewWeeklyReport">
+            Новий звіт
+          </BaseButton>
+
+          <BaseButton variant="primary" size="sm" @click="editPreparedReport">
+            Редагувати
+          </BaseButton>
+        </div>
       </footer>
     </section>
 
-    <AnalyticsWeeklyReportModal v-model="weeklyReportOpen" @prepared="handleWeeklyReportPrepared" />
-    
+    <AnalyticsWeeklyReportModal
+      v-model="weeklyReportOpen"
+      :report="weeklyReportEditSource"
+      @prepared="handleWeeklyReportPrepared"
+    />
+
     <AnalyticsWeeklyReportDetailsModal
       v-model="weeklyReportDetailsOpen"
       :report="selectedWeeklyReport"
       :loading="weeklyReportDetailsLoading"
       :error="weeklyReportDetailsError"
       :allow-edit="weeklyReportsApiReady"
+      @edit="handleWeeklyReportEdit"
     />
   </section>
 </template>
@@ -373,6 +384,7 @@
   const analytics = computed(() => store.state.analytics)
 
   const weeklyReportOpen = ref(false)
+  const weeklyReportEditSource = ref(null)
 
   const preparedReport = ref(null)
   const weeklyReports = ref([])
@@ -390,6 +402,37 @@
   const weeklyReportDetailsLoading = ref(false)
 
   const weeklyReportDetailsError = ref('')
+
+  function handleWeeklyReportEdit(report) {
+    weeklyReportDetailsOpen.value = false
+
+    weeklyReportEditSource.value = report
+
+    weeklyReportOpen.value = true
+  }
+
+  function openNewWeeklyReport() {
+    weeklyReportEditSource.value = null
+    weeklyReportOpen.value = true
+  }
+
+  function editPreparedReport() {
+    if (!preparedReport.value) {
+      return
+    }
+
+    weeklyReportEditSource.value = {
+      ...preparedReport.value,
+
+      sprintName: preparedReportMeta.value?.sprintName,
+
+      sprintPeriod: preparedReportMeta.value?.sprintPeriod,
+
+      specialist: preparedReportMeta.value?.specialist,
+    }
+
+    weeklyReportOpen.value = true
+  }
 
   async function handleWeeklyReportOpen(report) {
     selectedWeeklyReport.value = report
