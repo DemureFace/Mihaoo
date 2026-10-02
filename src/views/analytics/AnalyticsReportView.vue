@@ -346,6 +346,14 @@
     </section>
 
     <AnalyticsWeeklyReportModal v-model="weeklyReportOpen" @prepared="handleWeeklyReportPrepared" />
+    
+    <AnalyticsWeeklyReportDetailsModal
+      v-model="weeklyReportDetailsOpen"
+      :report="selectedWeeklyReport"
+      :loading="weeklyReportDetailsLoading"
+      :error="weeklyReportDetailsError"
+      :allow-edit="weeklyReportsApiReady"
+    />
   </section>
 </template>
 
@@ -353,9 +361,11 @@
   import { computed, ref } from 'vue'
   import { useStore } from 'vuex'
   import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
+  import { analyticsService } from '@/services/analytics.service'
 
   import AnalyticsWeeklyReportModal from '@/components/analytics/AnalyticsWeeklyReportModal.vue'
   import AnalyticsWeeklyReportHistory from '@/components/analytics/AnalyticsWeeklyReportHistory.vue'
+  import AnalyticsWeeklyReportDetailsModal from '@/components/analytics/AnalyticsWeeklyReportDetailsModal.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
 
   const store = useStore()
@@ -373,8 +383,37 @@
 
   const weeklyReportsApiReady = ref(false)
 
-  function handleWeeklyReportOpen(report) {
-    console.info('Open Weekly Report:', report.id)
+  const weeklyReportDetailsOpen = ref(false)
+
+  const selectedWeeklyReport = ref(null)
+
+  const weeklyReportDetailsLoading = ref(false)
+
+  const weeklyReportDetailsError = ref('')
+
+  async function handleWeeklyReportOpen(report) {
+    selectedWeeklyReport.value = report
+
+    weeklyReportDetailsError.value = ''
+
+    weeklyReportDetailsOpen.value = true
+
+    if (!weeklyReportsApiReady.value) {
+      return
+    }
+
+    weeklyReportDetailsLoading.value = true
+
+    try {
+      selectedWeeklyReport.value = await analyticsService.getWeeklyReport(report.id)
+    } catch (error) {
+      const response = error?.response?.data
+
+      weeklyReportDetailsError.value =
+        response?.error?.message || response?.message || 'Не вдалося завантажити Weekly Report.'
+    } finally {
+      weeklyReportDetailsLoading.value = false
+    }
   }
   const preparedReportMeta = ref(null)
 
