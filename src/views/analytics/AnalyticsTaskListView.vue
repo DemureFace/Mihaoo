@@ -101,7 +101,7 @@
 
       <!-- Table -->
       <div v-else class="overflow-x-auto" tabindex="0" aria-label="Таблиця задач">
-        <table class="w-full min-w-[1200px] border-collapse text-sm">
+        <table class="w-full min-w-[1300px] border-collapse text-sm">
           <thead>
             <tr>
               <th
@@ -364,12 +364,14 @@
     ['sp', 'SP'],
     ['status', 'Статус'],
     ['reportDate', 'Дата звіту'],
+    ['dueDate', 'Deadline'],
   ]
 
   const sortableColumns = {
     sp: 'storyPoints',
     status: 'status',
     reportDate: 'reportDate',
+    dueDate: 'dueDate',
   }
 
   const numberFormat = new Intl.NumberFormat('uk-UA', {
@@ -428,10 +430,10 @@
       return Number.isFinite(row.sp) ? numberFormat.format(row.sp) : '—'
     }
 
-    if (key === 'reportDate') {
-      // Зберігаємо календарний день API без перерахунку
-      // в локальну часову зону.
-      const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(row.reportDate || '')
+    if (key === 'reportDate' || key === 'dueDate') {
+      const value = row[key]
+
+      const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value || '')
 
       return match ? `${match[3]}.${match[2]}.${match[1]}` : '—'
     }
