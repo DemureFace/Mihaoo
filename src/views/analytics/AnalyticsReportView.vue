@@ -568,7 +568,7 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
   import { useStore } from 'vuex'
   import { useRouter } from 'vue-router'
   import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
@@ -595,6 +595,7 @@
   const reportLoading = ref(false)
 
   const reportError = ref('')
+  let reportController = null
 
   const weeklyReportOpen = ref(false)
   const weeklyReportEditSource = ref(null)
@@ -678,17 +679,43 @@
       return
     }
 
+    reportController?.abort()
+
+    const currentController = new AbortController()
+
+    reportController = currentController
+
     reportLoading.value = true
     reportError.value = ''
 
     try {
-      reportData.value = await analyticsService.getAnalyticsReport(analytics.value.filters)
+      const data = await analyticsService.getAnalyticsReport(
+        analytics.value.filters,
+        currentController.signal,
+      )
+
+      if (currentController.signal.aborted || reportController !== currentController) {
+        return
+      }
+
+      reportData.value = data
     } catch (error) {
+      if (currentController.signal.aborted || error?.code === 'ERR_CANCELED') {
+        return
+      }
+
+      if (reportController !== currentController) {
+        return
+      }
+
       reportData.value = null
 
       reportError.value = getApiErrorMessage(error, 'Не вдалося завантажити Analytics Report.')
     } finally {
-      reportLoading.value = false
+      if (reportController === currentController) {
+        reportController = null
+        reportLoading.value = false
+      }
     }
   }
 
@@ -1043,4 +1070,9 @@
       }
     },
   )
+
+  onBeforeUnmount(() => {
+    reportController?.abort()
+    reportController = null
+  })
 </script>
