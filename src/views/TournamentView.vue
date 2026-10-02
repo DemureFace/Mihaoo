@@ -312,24 +312,28 @@
         return
       }
 
-      const requests = [
-        tournamentTemplatesService.generateNetwork(payload, controller.signal),
-
-        tournamentTemplatesService.generateNetworkSnippetsText(payload, controller.signal),
-      ]
-
-      if (brand.value === 'MW') {
-        requests.push(
-          tournamentTemplatesService.generateNetworkLocalesText(payload, controller.signal),
-        )
-      }
-
-      const [generatedResult, generatedSnippets, generatedLocales = null] =
-        await Promise.all(requests)
+      const generatedResult = await tournamentTemplatesService.generateNetwork(
+        payload,
+        controller.signal,
+      )
 
       result.value = generatedResult
+
+      const generatedSnippets = await tournamentTemplatesService.generateNetworkSnippetsText(
+        payload,
+        controller.signal,
+      )
+
       snippets.value = generatedSnippets
-      locales.value = generatedLocales
+
+      if (brand.value === 'MW') {
+        const generatedLocales = await tournamentTemplatesService.generateNetworkLocalesText(
+          payload,
+          controller.signal,
+        )
+
+        locales.value = generatedLocales
+      }
     } catch (requestError) {
       if (requestError?.code === 'ERR_CANCELED') {
         return
