@@ -11,6 +11,12 @@
           </p>
         </div>
 
+        <BaseButton variant="primary" @click="weeklyReportOpen = true">
+          <DocumentPlusIcon class="h-4 w-4" />
+
+          Заповнити тижневий звіт
+        </BaseButton>
+
         <div class="flex flex-wrap gap-2">
           <span
             v-for="item in activeFilterLabels"
@@ -168,16 +174,38 @@
         </table>
       </div>
     </section>
+    <div
+      v-if="preparedReport"
+      class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+    >
+      Weekly Report сформований коректно. Збереження в БД підключимо після Weekly Report API.
+    </div>
+
+    <AnalyticsWeeklyReportModal v-model="weeklyReportOpen" @prepared="handleWeeklyReportPrepared" />
   </section>
 </template>
 
 <script setup>
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
   import { useStore } from 'vuex'
+  import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
+
+  import AnalyticsWeeklyReportModal from '@/components/analytics/AnalyticsWeeklyReportModal.vue'
+  import BaseButton from '@/components/base/BaseButton.vue'
 
   const store = useStore()
 
   const analytics = computed(() => store.state.analytics)
+
+  const weeklyReportOpen = ref(false)
+
+  const preparedReport = ref(null)
+
+  function handleWeeklyReportPrepared(payload) {
+    preparedReport.value = payload
+
+    console.info('Weekly Report payload:', payload)
+  }
 
   const kpis = [
     {

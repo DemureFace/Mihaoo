@@ -134,6 +134,15 @@ export const analyticsService = {
     return data
   },
 
+  async listSprints(signal) {
+    const { data } = await api.get('/sprints', {
+      signal,
+      timeout: 20000,
+    })
+
+    return Array.isArray(data) ? data : data?.items || []
+  },
+
   async createTask(payload, signal) {
     const { data } = await api.post('/tasks', payload, {
       signal,

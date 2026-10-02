@@ -161,61 +161,37 @@ const router = createRouter({
   },
 })
 
-const CHUNK_RELOAD_KEY =
-  'mihaoo:chunk-reload'
+const CHUNK_RELOAD_KEY = 'mihaoo:chunk-reload'
 
 router.onError((error, to) => {
-  const message =
-    error?.message || String(error)
+  const message = error?.message || String(error)
 
   const isChunkLoadError =
-    message.includes(
-      'Failed to fetch dynamically imported module',
-    ) ||
-    message.includes(
-      'Importing a module script failed',
-    ) ||
-    message.includes(
-      'error loading dynamically imported module',
-    )
+    message.includes('Failed to fetch dynamically imported module') ||
+    message.includes('Importing a module script failed') ||
+    message.includes('error loading dynamically imported module')
 
   if (!isChunkLoadError) {
     return
   }
 
   const target =
-    to?.fullPath ||
-    `${window.location.pathname}${window.location.search}${window.location.hash}`
+    to?.fullPath || `${window.location.pathname}${window.location.search}${window.location.hash}`
 
-  if (
-    sessionStorage.getItem(
-      CHUNK_RELOAD_KEY,
-    ) === target
-  ) {
-    sessionStorage.removeItem(
-      CHUNK_RELOAD_KEY,
-    )
+  if (sessionStorage.getItem(CHUNK_RELOAD_KEY) === target) {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY)
 
     return
   }
 
-  sessionStorage.setItem(
-    CHUNK_RELOAD_KEY,
-    target,
-  )
+  sessionStorage.setItem(CHUNK_RELOAD_KEY, target)
 
   window.location.assign(target)
 })
 
 router.afterEach((to) => {
-  if (
-    sessionStorage.getItem(
-      CHUNK_RELOAD_KEY,
-    ) === to.fullPath
-  ) {
-    sessionStorage.removeItem(
-      CHUNK_RELOAD_KEY,
-    )
+  if (sessionStorage.getItem(CHUNK_RELOAD_KEY) === to.fullPath) {
+    sessionStorage.removeItem(CHUNK_RELOAD_KEY)
   }
 })
 
