@@ -46,7 +46,13 @@
           <tr
             v-for="row in rows"
             :key="rowKey(row)"
-            class="border-b border-neutral-100 last:border-b-0"
+            class="border-b border-neutral-100 transition last:border-b-0"
+            :class="row.filters ? 'cursor-pointer hover:bg-neutral-50' : ''"
+            :tabindex="row.filters ? 0 : undefined"
+            :role="row.filters ? 'button' : undefined"
+            @click="openRow(row)"
+            @keydown.enter="openRow(row)"
+            @keydown.space.prevent="openRow(row)"
           >
             <td class="px-4 py-3">
               <p class="m-0 font-semibold">
@@ -121,6 +127,8 @@
     },
   })
 
+  const emit = defineEmits(['drilldown'])
+
   const maxSp = computed(() => {
     if (!props.rows.length) {
       return 0
@@ -128,6 +136,14 @@
 
     return Math.max(...props.rows.map((row) => Number(row.totalSP) || 0))
   })
+
+  function openRow(row) {
+    if (!row?.filters) {
+      return
+    }
+
+    emit('drilldown', row.filters)
+  }
 
   function barWidth(value) {
     const current = Number(value) || 0
@@ -150,7 +166,9 @@
       return '—'
     }
 
-    return `${Number((number * 100).toFixed(1))}%`
+    const percent = number <= 1 ? number * 100 : number
+
+    return `${Number(percent.toFixed(1))}%`
   }
 
   function rowKey(row) {

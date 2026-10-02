@@ -70,7 +70,15 @@
             <td
               v-for="brand in brands"
               :key="`${rowKey(row)}-${brand}`"
-              class="px-4 py-3 text-right"
+              class="px-4 py-3 text-right transition"
+              :class="
+                cellFilters(row, brand) ? 'cursor-pointer font-semibold hover:bg-neutral-100' : ''
+              "
+              :tabindex="cellFilters(row, brand) ? 0 : undefined"
+              :role="cellFilters(row, brand) ? 'button' : undefined"
+              @click="openCell(row, brand)"
+              @keydown.enter="openCell(row, brand)"
+              @keydown.space.prevent="openCell(row, brand)"
             >
               {{ formatNumber(cellSp(row, brand)) }}
             </td>
@@ -127,28 +135,52 @@
     },
   })
 
+  const emit = defineEmits(['drilldown'])
+
   const store = useStore()
 
   const grandTotal = computed(() => {
     return props.rows.reduce((sum, row) => sum + rowTotal(row), 0)
   })
 
-  function cellSp(row, brand) {
+  function cellData(row, brand) {
     const cells = row.cells || row.values || row.brands || {}
 
     if (Array.isArray(cells)) {
-      const cell = cells.find((item) => item.brand === brand || item.brandCode === brand)
-
-      return Number(cell?.totalSP ?? cell?.storyPoints ?? cell?.value ?? 0)
+      return cells.find((item) => item.brand === brand || item.brandCode === brand)
     }
 
-    const cell = cells[brand]
+    return cells[brand]
+  }
+
+  function cellSp(row, brand) {
+    const cell = cellData(row, brand)
 
     if (typeof cell === 'number' || typeof cell === 'string') {
       return Number(cell) || 0
     }
 
     return Number(cell?.totalSP ?? cell?.storyPoints ?? cell?.value ?? 0)
+  }
+
+  function cellFilters(row, brand) {
+    const cell = cellData(row, brand)
+
+    if (!cell || typeof cell !== 'object') {
+      return null
+    }
+
+    return cell.filters || null
+  }
+
+  function openCell(row, brand) {
+    const filters = cellFilters(row, brand)
+
+    if (!filters) {
+      return
+    }
+
+    emit('drilldown', filters)
   }
 
   function rowTotal(row) {

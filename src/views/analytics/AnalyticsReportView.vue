@@ -134,7 +134,13 @@
               v-for="row in taskTypeRows"
               v-else
               :key="row.taskType"
-              class="border-b border-neutral-100 last:border-b-0"
+              class="border-b border-neutral-100 transition last:border-b-0"
+              :class="row.filters ? 'cursor-pointer hover:bg-neutral-50' : ''"
+              :tabindex="row.filters ? 0 : undefined"
+              :role="row.filters ? 'button' : undefined"
+              @click="row.filters && handleReportDrilldown(row.filters)"
+              @keydown.enter="row.filters && handleReportDrilldown(row.filters)"
+              @keydown.space.prevent="row.filters && handleReportDrilldown(row.filters)"
             >
               <td class="px-4 py-3 font-medium">
                 {{ taskTypeName(row.taskType) }}
@@ -218,7 +224,13 @@
               v-for="row in executorRows"
               v-else
               :key="row.executorId"
-              class="border-b border-neutral-100 last:border-b-0"
+              class="border-b border-neutral-100 transition last:border-b-0"
+              :class="row.filters ? 'cursor-pointer hover:bg-neutral-50' : ''"
+              :tabindex="row.filters ? 0 : undefined"
+              :role="row.filters ? 'button' : undefined"
+              @click="row.filters && handleReportDrilldown(row.filters)"
+              @keydown.enter="row.filters && handleReportDrilldown(row.filters)"
+              @keydown.space.prevent="row.filters && handleReportDrilldown(row.filters)"
             >
               <td class="px-4 py-3">
                 <p class="m-0 font-medium">
@@ -298,7 +310,13 @@
               v-for="row in brandRows"
               v-else
               :key="row.brand"
-              class="border-b border-neutral-100 last:border-b-0"
+              class="border-b border-neutral-100 transition last:border-b-0"
+              :class="row.filters ? 'cursor-pointer hover:bg-neutral-50' : ''"
+              :tabindex="row.filters ? 0 : undefined"
+              :role="row.filters ? 'button' : undefined"
+              @click="row.filters && handleReportDrilldown(row.filters)"
+              @keydown.enter="row.filters && handleReportDrilldown(row.filters)"
+              @keydown.space.prevent="row.filters && handleReportDrilldown(row.filters)"
             >
               <td class="px-4 py-3 font-medium">
                 {{ reportBrandName(row.brand) }}
@@ -349,6 +367,7 @@
       :rows="periodRows"
       :loading="reportLoading"
       :api-ready="analyticsReportApiReady"
+      @drilldown="handleReportDrilldown"
     />
 
     <AnalyticsPeriodBrandPivot
@@ -356,6 +375,7 @@
       :brands="periodBrandCodes"
       :loading="reportLoading"
       :api-ready="analyticsReportApiReady"
+      @drilldown="handleReportDrilldown"
     />
 
     <section
@@ -550,6 +570,7 @@
 <script setup>
   import { computed, onMounted, ref, watch } from 'vue'
   import { useStore } from 'vuex'
+  import { useRouter } from 'vue-router'
   import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
   import { analyticsService } from '@/services/analytics.service'
 
@@ -558,9 +579,12 @@
   import AnalyticsWeeklyReportDetailsModal from '@/components/analytics/AnalyticsWeeklyReportDetailsModal.vue'
   import AnalyticsPeriodDynamics from '@/components/analytics/AnalyticsPeriodDynamics.vue'
   import AnalyticsPeriodBrandPivot from '@/components/analytics/AnalyticsPeriodBrandPivot.vue'
+
   import BaseButton from '@/components/base/BaseButton.vue'
 
   const store = useStore()
+
+  const router = useRouter()
 
   const analytics = computed(() => store.state.analytics)
 
@@ -595,6 +619,43 @@
   const weeklyReportDetailsLoading = ref(false)
 
   const weeklyReportDetailsError = ref('')
+
+  function normalizeReportFilterDate(value) {
+    if (!value) {
+      return ''
+    }
+
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value)) {
+      return value.slice(0, 10)
+    }
+
+    return value
+  }
+
+  function handleReportDrilldown(filters) {
+    if (!filters) {
+      return
+    }
+
+    const nextFilters = {
+      ...analytics.value.filters,
+      ...filters,
+    }
+
+    if (nextFilters.from) {
+      nextFilters.from = normalizeReportFilterDate(nextFilters.from)
+    }
+
+    if (nextFilters.to) {
+      nextFilters.to = normalizeReportFilterDate(nextFilters.to)
+    }
+
+    store.commit('analytics/APPLY_FILTERS', nextFilters)
+
+    router.push({
+      name: 'analytics-tasks',
+    })
+  }
 
   function handleWeeklyReportEdit(report) {
     weeklyReportDetailsOpen.value = false
