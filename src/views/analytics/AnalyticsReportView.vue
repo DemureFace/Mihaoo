@@ -55,6 +55,14 @@
       </article>
     </div>
 
+    <AnalyticsWeeklyReportHistory
+      :reports="weeklyReports"
+      :loading="weeklyReportsLoading"
+      :error="weeklyReportsError"
+      :api-ready="weeklyReportsApiReady"
+      @open="handleWeeklyReportOpen"
+    />
+
     <!-- Task types -->
     <section class="overflow-hidden rounded-[14px] border border-black bg-white">
       <header class="border-b border-neutral-200 px-[18px] py-4">
@@ -174,12 +182,168 @@
         </table>
       </div>
     </section>
-    <div
+    <section
       v-if="preparedReport"
-      class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+      class="overflow-hidden rounded-[14px] border border-black bg-white"
     >
-      Weekly Report сформований коректно. Збереження в БД підключимо після Weekly Report API.
-    </div>
+      <header
+        class="flex flex-col gap-4 border-b border-neutral-200 px-[18px] py-4 sm:flex-row sm:items-start sm:justify-between"
+      >
+        <div>
+          <p class="m-0 text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">
+            Weekly Report Preview
+          </p>
+
+          <h2 class="m-0 mt-1 text-lg font-bold">
+            {{ preparedReportMeta?.sprintName || 'Weekly Report' }}
+          </h2>
+
+          <p class="mt-1 text-sm text-neutral-500">
+            {{ preparedReportMeta?.sprintPeriod }}
+          </p>
+        </div>
+
+        <div class="text-left sm:text-right">
+          <p class="m-0 text-xs text-neutral-400">Specialist</p>
+
+          <p class="mt-1 text-sm font-semibold">
+            {{ preparedReportMeta?.specialist || '—' }}
+          </p>
+        </div>
+      </header>
+
+      <!-- Summary -->
+      <div class="grid grid-cols-2 gap-px bg-neutral-200 lg:grid-cols-4">
+        <article class="bg-white p-4">
+          <p class="m-0 text-xs text-neutral-500">Tasks</p>
+
+          <p class="mt-1 text-2xl font-bold">
+            {{ preparedReport.tasksAmount }}
+          </p>
+        </article>
+
+        <article class="bg-white p-4">
+          <p class="m-0 text-xs text-neutral-500">Done SP</p>
+
+          <p class="mt-1 text-2xl font-bold">
+            {{ formatMetric(preparedReport.doneStoryPoints) }}
+          </p>
+        </article>
+
+        <article class="bg-white p-4">
+          <p class="m-0 text-xs text-neutral-500">Planned SP</p>
+
+          <p class="mt-1 text-2xl font-bold">
+            {{ formatMetric(preparedReport.plannedStoryPoints) }}
+          </p>
+        </article>
+
+        <article class="bg-black p-4 text-white">
+          <p class="m-0 text-xs text-white/60">Performance</p>
+
+          <p class="mt-1 text-2xl font-bold">
+            {{
+              preparedReport.performancePercent !== null
+                ? `${formatMetric(preparedReport.performancePercent)}%`
+                : '—'
+            }}
+          </p>
+        </article>
+      </div>
+
+      <!-- Additional -->
+      <div class="grid grid-cols-1 border-t border-neutral-200 sm:grid-cols-3">
+        <div class="px-4 py-3">
+          <p class="m-0 text-xs text-neutral-500">Team Lead Activity</p>
+
+          <p class="mt-1 font-semibold">
+            {{ formatMetric(preparedReport.teamLeadActivitySp) }}
+            SP
+          </p>
+        </div>
+
+        <div class="border-t border-neutral-200 px-4 py-3 sm:border-l sm:border-t-0">
+          <p class="m-0 text-xs text-neutral-500">Preview Task</p>
+
+          <p class="mt-1 font-semibold">
+            {{ formatMetric(preparedReport.previewTaskSp) }}
+            SP
+          </p>
+        </div>
+
+        <div class="border-t border-neutral-200 px-4 py-3 sm:border-l sm:border-t-0">
+          <p class="m-0 text-xs text-neutral-500">Vacation</p>
+
+          <p class="mt-1 font-semibold">
+            {{ formatMetric(preparedReport.vacationSp) }}
+            SP
+          </p>
+        </div>
+      </div>
+
+      <!-- Brands -->
+      <div class="border-t border-neutral-200">
+        <div class="px-[18px] py-3">
+          <h3 class="m-0 text-sm font-bold">Розподіл по брендах</h3>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[520px] border-collapse text-sm">
+            <thead>
+              <tr class="border-y border-neutral-200 bg-neutral-50">
+                <th class="px-4 py-2.5 text-left text-xs font-semibold text-neutral-500">Brand</th>
+
+                <th class="px-4 py-2.5 text-right text-xs font-semibold text-neutral-500">Tasks</th>
+
+                <th class="px-4 py-2.5 text-right text-xs font-semibold text-neutral-500">SP</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                v-for="metric in preparedReport.brandMetrics"
+                :key="metric.brandCode"
+                class="border-b border-neutral-100 last:border-b-0"
+              >
+                <td class="px-4 py-3 font-medium">
+                  {{ brandName(metric.brandCode) }}
+
+                  <span class="ml-1 text-xs text-neutral-400">
+                    {{ metric.brandCode }}
+                  </span>
+                </td>
+
+                <td class="px-4 py-3 text-right">
+                  {{ metric.tasksAmount }}
+                </td>
+
+                <td class="px-4 py-3 text-right font-semibold">
+                  {{ formatMetric(metric.storyPoints) }}
+                </td>
+              </tr>
+
+              <tr v-if="!preparedReport.brandMetrics?.length">
+                <td colspan="3" class="px-4 py-8 text-center text-neutral-500">
+                  По брендах немає введених даних.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer
+        class="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-200 bg-neutral-50 px-[18px] py-3"
+      >
+        <p class="m-0 text-xs text-neutral-500">
+          Preview сформований локально. Збереження підключимо через Weekly Report API.
+        </p>
+
+        <BaseButton variant="secondary" size="sm" @click="weeklyReportOpen = true">
+          Заповнити заново
+        </BaseButton>
+      </footer>
+    </section>
 
     <AnalyticsWeeklyReportModal v-model="weeklyReportOpen" @prepared="handleWeeklyReportPrepared" />
   </section>
@@ -191,6 +355,7 @@
   import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
 
   import AnalyticsWeeklyReportModal from '@/components/analytics/AnalyticsWeeklyReportModal.vue'
+  import AnalyticsWeeklyReportHistory from '@/components/analytics/AnalyticsWeeklyReportHistory.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
 
   const store = useStore()
@@ -200,11 +365,32 @@
   const weeklyReportOpen = ref(false)
 
   const preparedReport = ref(null)
+  const weeklyReports = ref([])
 
-  function handleWeeklyReportPrepared(payload) {
+  const weeklyReportsLoading = ref(false)
+
+  const weeklyReportsError = ref('')
+
+  const weeklyReportsApiReady = ref(false)
+
+  function handleWeeklyReportOpen(report) {
+    console.info('Open Weekly Report:', report.id)
+  }
+  const preparedReportMeta = ref(null)
+
+  function handleWeeklyReportPrepared(payload, meta) {
     preparedReport.value = payload
+    preparedReportMeta.value = meta
+  }
 
-    console.info('Weekly Report payload:', payload)
+  function formatMetric(value) {
+    return Number(value || 0).toLocaleString('en-US', {
+      maximumFractionDigits: 2,
+    })
+  }
+
+  function brandName(code) {
+    return store.getters['analytics/brandLabel'](code)
   }
 
   const kpis = [

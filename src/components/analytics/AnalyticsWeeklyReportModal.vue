@@ -441,6 +441,10 @@
     return !errors.sprintId && !errors.plannedStoryPoints && !formError.value
   }
 
+  const selectedSprint = computed(() => {
+    return sprints.value.find((sprint) => Number(sprint.id) === Number(sprintId.value))
+  })
+
   function prepareReport() {
     if (!validate()) {
       return
@@ -474,7 +478,17 @@
         .filter((metric) => metric.tasksAmount > 0 || metric.storyPoints > 0),
     }
 
-    emit('prepared', payload)
+    emit('prepared', payload, {
+      sprintName: selectedSprint.value?.name || `Sprint ${sprintId.value}`,
+
+      sprintPeriod: selectedSprint.value
+        ? `${formatDate(selectedSprint.value.startDate)} — ${formatDate(
+            selectedSprint.value.endDate,
+          )}`
+        : '',
+
+      specialist: currentUser.value,
+    })
 
     close()
   }

@@ -143,6 +143,80 @@ export const analyticsService = {
     return Array.isArray(data) ? data : data?.items || []
   },
 
+  async listWeeklyReports(query = {}, signal) {
+  const params = cleanParams({
+    sprintId: query.sprintId,
+    teamMemberId: query.teamMemberId,
+    from: query.from,
+    to: query.to,
+  })
+
+  const { data } = await api.get(
+    '/weekly-reports',
+    {
+      params,
+      signal,
+      timeout: 20000,
+    },
+  )
+
+  return readItems(data)
+},
+
+async getWeeklyReport(id, signal) {
+  if (!id) {
+    throw new Error(
+      'Weekly Report id is required',
+    )
+  }
+
+  const { data } = await api.get(
+    `/weekly-reports/${id}`,
+    {
+      signal,
+      timeout: 20000,
+    },
+  )
+
+  return data
+},
+
+async createWeeklyReport(payload, signal) {
+  const { data } = await api.post(
+    '/weekly-reports',
+    payload,
+    {
+      signal,
+      timeout: 20000,
+    },
+  )
+
+  return data
+},
+
+async updateWeeklyReport(
+  id,
+  payload,
+  signal,
+) {
+  if (!id) {
+    throw new Error(
+      'Weekly Report id is required',
+    )
+  }
+
+  const { data } = await api.patch(
+    `/weekly-reports/${id}`,
+    payload,
+    {
+      signal,
+      timeout: 20000,
+    },
+  )
+
+  return data
+},
+
   async createTask(payload, signal) {
     const { data } = await api.post('/tasks', payload, {
       signal,
