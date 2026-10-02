@@ -60,7 +60,9 @@
       :loading="weeklyReportsLoading"
       :error="weeklyReportsError"
       :api-ready="weeklyReportsApiReady"
+      :retryable="weeklyReportsApiReady"
       @open="handleWeeklyReportOpen"
+      @retry="loadWeeklyReports"
     />
 
     <!-- Task types -->
@@ -354,6 +356,9 @@
     <AnalyticsWeeklyReportModal
       v-model="weeklyReportOpen"
       :report="weeklyReportEditSource"
+      :saving="weeklyReportSaving"
+      :submit-error="weeklyReportSubmitError"
+      :api-ready="weeklyReportsApiReady"
       @prepared="handleWeeklyReportPrepared"
     />
 
@@ -369,7 +374,7 @@
 </template>
 
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, onMounted, ref } from 'vue'
   import { useStore } from 'vuex'
   import { DocumentPlusIcon } from '@heroicons/vue/24/outline'
   import { analyticsService } from '@/services/analytics.service'
@@ -393,7 +398,11 @@
 
   const weeklyReportsError = ref('')
 
-  const weeklyReportsApiReady = ref(false)
+  const weeklyReportSaving = ref(false)
+
+  const weeklyReportSubmitError = ref('')
+
+  const weeklyReportsApiReady = ref(import.meta.env.VITE_WEEKLY_REPORTS_API_READY === 'true')
 
   const weeklyReportDetailsOpen = ref(false)
 
@@ -406,13 +415,24 @@
   function handleWeeklyReportEdit(report) {
     weeklyReportDetailsOpen.value = false
 
+    weeklyReportSubmitError.value = ''
+
     weeklyReportEditSource.value = report
 
     weeklyReportOpen.value = true
   }
 
+  function getApiErrorMessage(error, fallback) {
+    const response = error?.response?.data
+
+    return response?.error?.message || response?.message || fallback
+  }
+
   function openNewWeeklyReport() {
     weeklyReportEditSource.value = null
+
+    weeklyReportSubmitError.value = ''
+
     weeklyReportOpen.value = true
   }
 
@@ -420,6 +440,8 @@
     if (!preparedReport.value) {
       return
     }
+
+    weeklyReportSubmitError.value = ''
 
     weeklyReportEditSource.value = {
       ...preparedReport.value,
@@ -432,6 +454,25 @@
     }
 
     weeklyReportOpen.value = true
+  }
+
+  async function loadWeeklyReports() {
+    if (!weeklyReportsApiReady.value) {
+      return
+    }
+
+    weeklyReportsLoading.value = true
+    weeklyReportsError.value = ''
+
+    try {
+      weeklyReports.value = await analyticsService.listWeeklyReports()
+    } catch (error) {
+      weeklyReports.value = []
+
+      weeklyReportsError.value = getApiErrorMessage(error, 'Не вдалося завантажити Weekly Reports.')
+    } finally {
+      weeklyReportsLoading.value = false
+    }
   }
 
   async function handleWeeklyReportOpen(report) {
@@ -460,9 +501,64 @@
   }
   const preparedReportMeta = ref(null)
 
-  function handleWeeklyReportPrepared(payload, meta) {
-    preparedReport.value = payload
-    preparedReportMeta.value = meta
+  async function handleWeeklyReportPrepared(payload, meta) {
+    weeklyReportSubmitError.value = ''
+
+    // Backend ще не підключений:
+    // просто формуємо локальний Preview.
+    if (!weeklyReportsApiReady.value) {
+      preparedReport.value = payload
+      preparedReportMeta.value = meta
+
+      weeklyReportOpen.value = false
+
+      return
+    }
+
+    weeklyReportSaving.value = true
+
+    try {
+      let savedReport
+
+      if (meta.mode === 'edit' && meta.reportId) {
+        savedReport = await analyticsService.updateWeeklyReport(meta.reportId, payload)
+      } else {
+        savedReport = await analyticsService.createWeeklyReport(payload)
+      }
+
+      preparedReport.value = savedReport
+
+      preparedReportMeta.value = {
+        ...meta,
+
+        mode: 'edit',
+
+        reportId: savedReport?.id || meta.reportId || null,
+
+        sprintName: savedReport?.sprint?.name || savedReport?.sprintName || meta.sprintName,
+
+        specialist:
+          savedReport?.specialist?.displayName ||
+          savedReport?.teamMember?.displayName ||
+          savedReport?.specialistName ||
+          meta.specialist,
+      }
+
+      weeklyReportEditSource.value = null
+
+      weeklyReportOpen.value = false
+
+      await loadWeeklyReports()
+    } catch (error) {
+      weeklyReportSubmitError.value = getApiErrorMessage(
+        error,
+        meta.mode === 'edit'
+          ? 'Не вдалося оновити Weekly Report.'
+          : 'Не вдалося зберегти Weekly Report.',
+      )
+    } finally {
+      weeklyReportSaving.value = false
+    }
   }
 
   function formatMetric(value) {
@@ -540,5 +636,11 @@
     }
 
     return result
+  })
+
+  onMounted(() => {
+    if (weeklyReportsApiReady.value) {
+      loadWeeklyReports()
+    }
   })
 </script>

@@ -219,17 +219,36 @@
       >
         {{ formError }}
       </div>
-
+      <div
+        v-if="submitError"
+        class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {{ submitError }}
+      </div>
       <footer
         class="flex flex-col-reverse gap-3 border-t border-neutral-200 pt-4 sm:flex-row sm:items-center sm:justify-between"
       >
-        <p class="m-0 text-xs text-neutral-500">На цьому етапі дані ще не відправляються в БД.</p>
+        <p class="m-0 text-xs text-neutral-500">
+          {{
+            apiReady
+              ? 'Після підтвердження звіт буде збережено в Analytics DB.'
+              : 'Збереження буде доступне після підключення Weekly Report API.'
+          }}
+        </p>
 
         <div class="flex gap-2">
           <BaseButton variant="secondary" @click="close">Скасувати</BaseButton>
 
-          <BaseButton variant="primary" @click="prepareReport">
-            {{ isEdit ? 'Оновити звіт' : 'Підготувати звіт' }}
+          <BaseButton variant="primary" :loading="saving" :disabled="saving" @click="prepareReport">
+            {{
+              saving
+                ? 'Зберігаємо...'
+                : isEdit
+                  ? 'Оновити звіт'
+                  : apiReady
+                    ? 'Зберегти звіт'
+                    : 'Підготувати звіт'
+            }}
           </BaseButton>
         </div>
       </footer>
@@ -258,6 +277,21 @@
     report: {
       type: Object,
       default: null,
+    },
+
+    saving: {
+      type: Boolean,
+      default: false,
+    },
+
+    submitError: {
+      type: String,
+      default: '',
+    },
+
+    apiReady: {
+      type: Boolean,
+      default: false,
     },
   })
 
@@ -564,8 +598,6 @@
 
       specialist: specialistValue.value,
     })
-
-    close()
   }
 
   function resetForm() {
