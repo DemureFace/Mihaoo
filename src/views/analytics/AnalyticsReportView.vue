@@ -94,7 +94,6 @@
     />
 
     <!-- Task types -->
-    <!-- Task types -->
     <section class="overflow-hidden rounded-[14px] border border-black bg-white">
       <header class="border-b border-neutral-200 px-[18px] py-4">
         <h2 class="m-0 text-lg font-bold">Куди пішла робота</h2>
@@ -346,57 +345,19 @@
       </div>
     </section>
 
-    <!-- Dynamics -->
-    <section class="overflow-hidden rounded-[14px] border border-black bg-white">
-      <header class="border-b border-neutral-200 px-[18px] py-4">
-        <h2 class="m-0 text-lg font-bold">Динаміка</h2>
+    <AnalyticsPeriodDynamics
+      :rows="periodRows"
+      :loading="reportLoading"
+      :api-ready="analyticsReportApiReady"
+    />
 
-        <p class="mt-0.5 text-[13px] text-neutral-500">
-          Зміна кількості виконаних задач і SP у часі
-        </p>
-      </header>
+    <AnalyticsPeriodBrandPivot
+      :rows="periodBrandRows"
+      :brands="periodBrandCodes"
+      :loading="reportLoading"
+      :api-ready="analyticsReportApiReady"
+    />
 
-      <div class="px-[18px] py-12 text-center">
-        <p class="m-0 text-sm font-medium text-black">Графік буде тут</p>
-
-        <p class="mt-1 text-sm text-neutral-500">
-          Підключимо після появи агрегованих даних з backend.
-        </p>
-      </div>
-    </section>
-
-    <!-- Period × brand -->
-    <section class="overflow-hidden rounded-[14px] border border-black bg-white">
-      <header class="border-b border-neutral-200 px-[18px] py-4">
-        <h2 class="m-0 text-lg font-bold">Період × бренд</h2>
-
-        <p class="mt-0.5 text-[13px] text-neutral-500">Розподіл SP між брендами по періодах</p>
-      </header>
-
-      <div class="overflow-x-auto">
-        <table class="w-full min-w-[760px] border-collapse text-sm">
-          <thead>
-            <tr class="border-b border-neutral-200">
-              <th class="px-4 py-3 text-left text-xs text-neutral-500">Період</th>
-
-              <th class="px-4 py-3 text-left text-xs text-neutral-500">Бренд</th>
-
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">Задачі</th>
-
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">SP</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr>
-              <td colspan="4" class="px-4 py-12 text-center text-sm text-neutral-500">
-                Дані ще не підключені.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
     <section
       v-if="preparedReport"
       class="overflow-hidden rounded-[14px] border border-black bg-white"
@@ -595,6 +556,8 @@
   import AnalyticsWeeklyReportModal from '@/components/analytics/AnalyticsWeeklyReportModal.vue'
   import AnalyticsWeeklyReportHistory from '@/components/analytics/AnalyticsWeeklyReportHistory.vue'
   import AnalyticsWeeklyReportDetailsModal from '@/components/analytics/AnalyticsWeeklyReportDetailsModal.vue'
+  import AnalyticsPeriodDynamics from '@/components/analytics/AnalyticsPeriodDynamics.vue'
+  import AnalyticsPeriodBrandPivot from '@/components/analytics/AnalyticsPeriodBrandPivot.vue'
   import BaseButton from '@/components/base/BaseButton.vue'
 
   const store = useStore()
@@ -871,6 +834,62 @@
 
   const brandRows = computed(() => {
     return reportData.value?.brands || []
+  })
+
+  const periodRows = computed(() => {
+    return reportData.value?.periodDynamics || reportData.value?.periods || []
+  })
+
+  const periodBrandPivot = computed(() => {
+    return reportData.value?.periodBrandPivot || reportData.value?.periodBrand || null
+  })
+
+  const periodBrandRows = computed(() => {
+    const pivot = periodBrandPivot.value
+
+    if (!pivot) {
+      return []
+    }
+
+    if (Array.isArray(pivot)) {
+      return pivot
+    }
+
+    return pivot.rows || []
+  })
+
+  const periodBrandCodes = computed(() => {
+    const pivot = periodBrandPivot.value
+
+    if (pivot && !Array.isArray(pivot) && Array.isArray(pivot.brands)) {
+      return pivot.brands.map((brand) =>
+        typeof brand === 'string' ? brand : brand.code || brand.brand,
+      )
+    }
+
+    const codes = new Set()
+
+    periodBrandRows.value.forEach((row) => {
+      const cells = row.cells || row.values || row.brands || {}
+
+      if (Array.isArray(cells)) {
+        cells.forEach((cell) => {
+          const code = cell.brandCode || cell.brand
+
+          if (code) {
+            codes.add(code)
+          }
+        })
+
+        return
+      }
+
+      Object.keys(cells).forEach((code) => {
+        codes.add(code)
+      })
+    })
+
+    return [...codes]
   })
 
   function taskTypeName(code) {
