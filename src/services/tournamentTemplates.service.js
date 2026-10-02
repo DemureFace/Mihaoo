@@ -17,6 +17,14 @@ export const tournamentTemplatesService = {
     return data
   },
 
+  async generateNetworkText(payload, signal) {
+    const { data } = await api.post('/tournament-templates/generate/text', payload, {
+      signal,
+    })
+
+    return data
+  },
+
   async generateNetworkLocales(payload, signal) {
     const { data } = await api.post('/tournament-templates/generate/locales', payload, {
       signal,
