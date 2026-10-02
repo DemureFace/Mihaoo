@@ -94,33 +94,87 @@
     />
 
     <!-- Task types -->
+    <!-- Task types -->
     <section class="overflow-hidden rounded-[14px] border border-black bg-white">
       <header class="border-b border-neutral-200 px-[18px] py-4">
         <h2 class="m-0 text-lg font-bold">Куди пішла робота</h2>
 
         <p class="mt-0.5 text-[13px] text-neutral-500">
-          Розподіл закритих задач і SP за типом задачі
+          Розподіл задач і фактично зарахованих SP за типом задачі
         </p>
       </header>
 
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[620px] border-collapse text-sm">
+        <table class="w-full min-w-[720px] border-collapse text-sm">
           <thead>
-            <tr class="border-b border-neutral-200">
-              <th class="px-4 py-3 text-left text-xs text-neutral-500">Тип задачі</th>
+            <tr class="border-b border-neutral-200 bg-neutral-50">
+              <th class="px-4 py-3 text-left text-xs font-semibold text-neutral-500">Тип задачі</th>
 
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">Задачі</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Tasks</th>
 
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">SP</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Done</th>
 
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">Частка SP</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">
+                Completion
+              </th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">SP</th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Частка SP</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td colspan="4" class="px-4 py-12 text-center text-sm text-neutral-500">
-                Дані ще не підключені.
+            <tr v-if="reportLoading">
+              <td colspan="6" class="px-4 py-10 text-center text-neutral-500">
+                Завантажуємо дані...
+              </td>
+            </tr>
+
+            <tr
+              v-for="row in taskTypeRows"
+              v-else
+              :key="row.taskType"
+              class="border-b border-neutral-100 last:border-b-0"
+            >
+              <td class="px-4 py-3 font-medium">
+                {{ taskTypeName(row.taskType) }}
+
+                <span class="ml-1 text-xs text-neutral-400">
+                  {{ row.taskType }}
+                </span>
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ row.count ?? 0 }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ row.doneCount ?? 0 }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ completionRateLabel(row.completionRate) }}
+              </td>
+
+              <td class="px-4 py-3 text-right font-semibold">
+                {{ formatMetric(row.totalSP) }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ spShareLabel(row.totalSP) }}
+              </td>
+            </tr>
+
+            <tr v-if="!reportLoading && analyticsReportApiReady && !taskTypeRows.length">
+              <td colspan="6" class="px-4 py-10 text-center text-neutral-500">
+                За вибраними фільтрами немає даних.
+              </td>
+            </tr>
+
+            <tr v-if="!analyticsReportApiReady">
+              <td colspan="6" class="px-4 py-10 text-center text-neutral-500">
+                Дані зʼявляться після підключення Analytics Report API.
               </td>
             </tr>
           </tbody>
@@ -133,27 +187,158 @@
       <header class="border-b border-neutral-200 px-[18px] py-4">
         <h2 class="m-0 text-lg font-bold">Виконавці</h2>
 
-        <p class="mt-0.5 text-[13px] text-neutral-500">Закриті задачі та SP по членах команди</p>
+        <p class="mt-0.5 text-[13px] text-neutral-500">Розподіл задач та SP по членах команди</p>
       </header>
 
       <div class="overflow-x-auto">
         <table class="w-full min-w-[720px] border-collapse text-sm">
           <thead>
-            <tr class="border-b border-neutral-200">
-              <th class="px-4 py-3 text-left text-xs text-neutral-500">Виконавець</th>
+            <tr class="border-b border-neutral-200 bg-neutral-50">
+              <th class="px-4 py-3 text-left text-xs font-semibold text-neutral-500">Виконавець</th>
 
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">Задачі</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Tasks</th>
 
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">SP</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Done</th>
 
-              <th class="px-4 py-3 text-right text-xs text-neutral-500">Середній SP</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">
+                Completion
+              </th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">SP</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr>
-              <td colspan="4" class="px-4 py-12 text-center text-sm text-neutral-500">
-                Дані ще не підключені.
+            <tr v-if="reportLoading">
+              <td colspan="5" class="px-4 py-10 text-center text-neutral-500">
+                Завантажуємо дані...
+              </td>
+            </tr>
+
+            <tr
+              v-for="row in executorRows"
+              v-else
+              :key="row.executorId"
+              class="border-b border-neutral-100 last:border-b-0"
+            >
+              <td class="px-4 py-3">
+                <p class="m-0 font-medium">
+                  {{ row.executorName || store.getters['analytics/memberName'](row.executorId) }}
+                </p>
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ row.count ?? 0 }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ row.doneCount ?? 0 }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ completionRateLabel(row.completionRate) }}
+              </td>
+
+              <td class="px-4 py-3 text-right font-semibold">
+                {{ formatMetric(row.totalSP) }}
+              </td>
+            </tr>
+
+            <tr v-if="!reportLoading && analyticsReportApiReady && !executorRows.length">
+              <td colspan="5" class="px-4 py-10 text-center text-neutral-500">
+                За вибраними фільтрами немає даних.
+              </td>
+            </tr>
+
+            <tr v-if="!analyticsReportApiReady">
+              <td colspan="5" class="px-4 py-10 text-center text-neutral-500">
+                Дані зʼявляться після підключення Analytics Report API.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Brands -->
+    <section class="overflow-hidden rounded-[14px] border border-black bg-white">
+      <header class="border-b border-neutral-200 px-[18px] py-4">
+        <h2 class="m-0 text-lg font-bold">Бренди</h2>
+
+        <p class="mt-0.5 text-[13px] text-neutral-500">Розподіл задач та SP між брендами</p>
+      </header>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[720px] border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-neutral-200 bg-neutral-50">
+              <th class="px-4 py-3 text-left text-xs font-semibold text-neutral-500">Brand</th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Tasks</th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Done</th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">
+                Completion
+              </th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">SP</th>
+
+              <th class="px-4 py-3 text-right text-xs font-semibold text-neutral-500">Частка SP</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-if="reportLoading">
+              <td colspan="6" class="px-4 py-10 text-center text-neutral-500">
+                Завантажуємо дані...
+              </td>
+            </tr>
+
+            <tr
+              v-for="row in brandRows"
+              v-else
+              :key="row.brand"
+              class="border-b border-neutral-100 last:border-b-0"
+            >
+              <td class="px-4 py-3 font-medium">
+                {{ reportBrandName(row.brand) }}
+
+                <span class="ml-1 text-xs text-neutral-400">
+                  {{ row.brand }}
+                </span>
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ row.count ?? 0 }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ row.doneCount ?? 0 }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ completionRateLabel(row.completionRate) }}
+              </td>
+
+              <td class="px-4 py-3 text-right font-semibold">
+                {{ formatMetric(row.totalSP) }}
+              </td>
+
+              <td class="px-4 py-3 text-right">
+                {{ spShareLabel(row.totalSP) }}
+              </td>
+            </tr>
+
+            <tr v-if="!reportLoading && analyticsReportApiReady && !brandRows.length">
+              <td colspan="6" class="px-4 py-10 text-center text-neutral-500">
+                За вибраними фільтрами немає даних.
+              </td>
+            </tr>
+
+            <tr v-if="!analyticsReportApiReady">
+              <td colspan="6" class="px-4 py-10 text-center text-neutral-500">
+                Дані зʼявляться після підключення Analytics Report API.
               </td>
             </tr>
           </tbody>
@@ -635,12 +820,14 @@
         label: 'Усього задач',
         value: data?.totalTasks,
         description: 'Кількість задач у вибраному наборі',
+        raw: true,
       },
       {
         key: 'doneTasks',
         label: 'Закрито задач',
         value: data?.doneTasks,
         description: 'Кількість задач зі статусом Done',
+        raw: true,
       },
       {
         key: 'completionRate',
@@ -657,6 +844,7 @@
         label: 'SP за період',
         value: data?.totalSP,
         description: 'Фактично зараховані Story Points',
+        raw: true,
       },
     ]
   })
@@ -671,6 +859,46 @@
     const percent = number <= 1 ? number * 100 : number
 
     return Number(percent.toFixed(1))
+  }
+
+  const taskTypeRows = computed(() => {
+    return reportData.value?.taskTypes || []
+  })
+
+  const executorRows = computed(() => {
+    return reportData.value?.executors || []
+  })
+
+  const brandRows = computed(() => {
+    return reportData.value?.brands || []
+  })
+
+  function taskTypeName(code) {
+    return store.getters['analytics/taskTypeLabel'](code)
+  }
+
+  function reportBrandName(code) {
+    return store.getters['analytics/brandLabel'](code)
+  }
+
+  function completionRateLabel(value) {
+    if (value === null || value === undefined) {
+      return '—'
+    }
+
+    return `${formatPercent(value)}%`
+  }
+
+  function spShareLabel(value) {
+    const total = Number(reportData.value?.kpi?.totalSP) || 0
+
+    const current = Number(value) || 0
+
+    if (total <= 0) {
+      return '—'
+    }
+
+    return `${formatPercent(current / total)}%`
   }
 
   const activeFilterLabels = computed(() => {
