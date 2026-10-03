@@ -166,9 +166,7 @@
       return '—'
     }
 
-    const percent = number <= 1 ? number * 100 : number
-
-    return `${Number(percent.toFixed(1))}%`
+    return `${Number((number * 100).toFixed(1))}%`
   }
 
   function rowKey(row) {

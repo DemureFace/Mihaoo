@@ -596,6 +596,10 @@
 
   const reportError = ref('')
   let reportController = null
+  let weeklyReportsController = null
+  let weeklyReportDetailsController = null
+  let weeklyReportsController = null
+  let weeklyReportDetailsController = null
 
   const weeklyReportOpen = ref(false)
   const weeklyReportEditSource = ref(null)
@@ -671,7 +675,13 @@
   function getApiErrorMessage(error, fallback) {
     const response = error?.response?.data
 
-    return response?.error?.message || response?.message || fallback
+    const message = response?.error?.message || response?.message || error?.message
+
+    if (Array.isArray(message)) {
+      return message.join(', ')
+    }
+
+    return message || fallback
   }
 
   async function loadAnalyticsReport() {
@@ -752,21 +762,46 @@
       return
     }
 
+    weeklyReportsController?.abort()
+
+    const currentController = new AbortController()
+
+    weeklyReportsController = currentController
+
     weeklyReportsLoading.value = true
     weeklyReportsError.value = ''
 
     try {
-      weeklyReports.value = await analyticsService.listWeeklyReports()
+      const reports = await analyticsService.listWeeklyReports({}, currentController.signal)
+
+      if (currentController.signal.aborted || weeklyReportsController !== currentController) {
+        return
+      }
+
+      weeklyReports.value = reports
     } catch (error) {
+      if (currentController.signal.aborted || error?.code === 'ERR_CANCELED') {
+        return
+      }
+
+      if (weeklyReportsController !== currentController) {
+        return
+      }
+
       weeklyReports.value = []
 
       weeklyReportsError.value = getApiErrorMessage(error, 'Не вдалося завантажити Weekly Reports.')
     } finally {
-      weeklyReportsLoading.value = false
+      if (weeklyReportsController === currentController) {
+        weeklyReportsController = null
+        weeklyReportsLoading.value = false
+      }
     }
   }
 
   async function handleWeeklyReportOpen(report) {
+    weeklyReportDetailsController?.abort()
+
     selectedWeeklyReport.value = report
 
     weeklyReportDetailsError.value = ''
@@ -777,17 +812,38 @@
       return
     }
 
+    const currentController = new AbortController()
+
+    weeklyReportDetailsController = currentController
+
     weeklyReportDetailsLoading.value = true
 
     try {
-      selectedWeeklyReport.value = await analyticsService.getWeeklyReport(report.id)
-    } catch (error) {
-      const response = error?.response?.data
+      const details = await analyticsService.getWeeklyReport(report.id, currentController.signal)
 
-      weeklyReportDetailsError.value =
-        response?.error?.message || response?.message || 'Не вдалося завантажити Weekly Report.'
+      if (currentController.signal.aborted || weeklyReportDetailsController !== currentController) {
+        return
+      }
+
+      selectedWeeklyReport.value = details
+    } catch (error) {
+      if (currentController.signal.aborted || error?.code === 'ERR_CANCELED') {
+        return
+      }
+
+      if (weeklyReportDetailsController !== currentController) {
+        return
+      }
+
+      weeklyReportDetailsError.value = getApiErrorMessage(
+        error,
+        'Не вдалося завантажити Weekly Report.',
+      )
     } finally {
-      weeklyReportDetailsLoading.value = false
+      if (weeklyReportDetailsController === currentController) {
+        weeklyReportDetailsController = null
+        weeklyReportDetailsLoading.value = false
+      }
     }
   }
   const preparedReportMeta = ref(null)
@@ -900,16 +956,14 @@
     ]
   })
 
-  function formatPercent(value) {
+  function formatRate(value) {
     const number = Number(value)
 
     if (!Number.isFinite(number)) {
       return 0
     }
 
-    const percent = number <= 1 ? number * 100 : number
-
-    return Number(percent.toFixed(1))
+    return Number((number * 100).toFixed(1))
   }
 
   const taskTypeRows = computed(() => {
@@ -993,7 +1047,7 @@
       return '—'
     }
 
-    return `${formatPercent(value)}%`
+    return `${formatRate(value)}%`
   }
 
   function spShareLabel(value) {
@@ -1005,7 +1059,7 @@
       return '—'
     }
 
-    return `${formatPercent(current / total)}%`
+    return `${formatRate(current / total)}%`
   }
 
   const activeFilterLabels = computed(() => {
@@ -1071,8 +1125,35 @@
     },
   )
 
+  watch(weeklyReportDetailsOpen, (isOpen) => {
+    if (isOpen) {
+      return
+    }
+
+    weeklyReportDetailsController?.abort()
+    weeklyReportDetailsController = null
+
+    weeklyReportDetailsLoading.value = false
+  })
+
+  watch(weeklyReportDetailsOpen, (isOpen) => {
+    if (isOpen) {
+      return
+    }
+
+    weeklyReportDetailsController?.abort()
+
+    weeklyReportDetailsController = null
+    weeklyReportDetailsLoading.value = false
+  })
+
   onBeforeUnmount(() => {
     reportController?.abort()
+    weeklyReportsController?.abort()
+    weeklyReportDetailsController?.abort()
+
     reportController = null
+    weeklyReportsController = null
+    weeklyReportDetailsController = null
   })
 </script>

@@ -263,7 +263,7 @@
 </template>
 
 <script setup>
-  import { computed, reactive, ref, watch } from 'vue'
+  import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue'
 
   import { useStore } from 'vuex'
 
@@ -320,6 +320,9 @@
 
   const formError = ref('')
 
+  let sprintsController = null
+  let modalOpenRequestId = 0
+
   const errors = reactive({
     sprintId: '',
     plannedStoryPoints: '',
@@ -344,21 +347,59 @@
   })
 
   const specialistValue = computed(() => {
+    const specialist = props.report?.specialist
+
+    if (typeof specialist === 'string') {
+      return specialist
+    }
+
     return (
-      props.report?.specialist?.displayName ||
+      specialist?.displayName ||
       props.report?.teamMember?.displayName ||
       props.report?.specialistName ||
-      props.report?.specialist ||
       currentUser.value
     )
   })
 
   const sprintOptions = computed(() => {
-    return sprints.value.map((sprint) => ({
+    const options = sprints.value.map((sprint) => ({
       value: sprint.id,
 
       label: `${sprint.name} · ${formatDate(sprint.startDate)} — ${formatDate(sprint.endDate)}`,
     }))
+
+    if (!props.report) {
+      return options
+    }
+
+    const reportSprintId = props.report.sprintId || props.report.sprint?.id
+
+    if (!reportSprintId) {
+      return options
+    }
+
+    const alreadyExists = options.some((option) => Number(option.value) === Number(reportSprintId))
+
+    if (alreadyExists) {
+      return options
+    }
+
+    const name = props.report.sprint?.name || props.report.sprintName || `Sprint ${reportSprintId}`
+
+    const start = props.report.sprint?.startDate || props.report.startDate
+
+    const end = props.report.sprint?.endDate || props.report.endDate
+
+    const period = start && end ? ` · ${formatDate(start)} — ${formatDate(end)}` : ''
+
+    return [
+      {
+        value: reportSprintId,
+        label: `${name}${period}`,
+      },
+
+      ...options,
+    ]
   })
 
   const totalTasks = computed(() => {
@@ -412,13 +453,25 @@
   watch(
     () => props.modelValue,
     async (value) => {
+      modalOpenRequestId += 1
+
+      const requestId = modalOpenRequestId
+
       if (!value) {
+        sprintsController?.abort()
+        sprintsController = null
+        sprintsLoading.value = false
+
         return
       }
 
       resetForm()
 
       await Promise.all([loadSprints(), store.dispatch('analytics/loadReferenceData')])
+
+      if (requestId !== modalOpenRequestId || !props.modelValue) {
+        return
+      }
 
       initializeBrands()
 
@@ -438,19 +491,42 @@
   )
 
   async function loadSprints() {
+    sprintsController?.abort()
+
+    const currentController = new AbortController()
+
+    sprintsController = currentController
+
     sprintsLoading.value = true
     sprintsError.value = ''
 
     try {
-      sprints.value = await analyticsService.listSprints()
+      const result = await analyticsService.listSprints(currentController.signal)
+
+      if (currentController.signal.aborted || sprintsController !== currentController) {
+        return
+      }
+
+      sprints.value = result
 
       selectCurrentSprint()
-    } catch {
+    } catch (error) {
+      if (currentController.signal.aborted || error?.code === 'ERR_CANCELED') {
+        return
+      }
+
+      if (sprintsController !== currentController) {
+        return
+      }
+
       sprints.value = []
 
       sprintsError.value = 'Не вдалося завантажити Sprint.'
     } finally {
-      sprintsLoading.value = false
+      if (sprintsController === currentController) {
+        sprintsController = null
+        sprintsLoading.value = false
+      }
     }
   }
 
@@ -497,6 +573,8 @@
         tasksAmount: existing.tasksAmount ?? '',
 
         storyPoints: existing.storyPoints ?? '',
+
+        isPersisted: true,
       }
     })
 
@@ -519,6 +597,7 @@
           storyPoints: item.storyPoints ?? '',
 
           isLegacy: true,
+          isPersisted: true,
         }
       })
       .filter(Boolean)
@@ -559,6 +638,22 @@
       errors.plannedStoryPoints = 'Вкажи Planned SP.'
     }
 
+    const hasInvalidTasks = brandMetrics.value.some((metric) => {
+      const value = metric.tasksAmount
+
+      if (value === '' || value === null || value === undefined) {
+        return false
+      }
+
+      const number = Number(value)
+
+      return !Number.isFinite(number) || !Number.isInteger(number)
+    })
+
+    if (hasInvalidTasks) {
+      formError.value = 'Tasks має бути цілим числом.'
+    }
+
     const hasNegativeValue =
       brandMetrics.value.some(
         (metric) => toNumber(metric.tasksAmount) < 0 || toNumber(metric.storyPoints) < 0,
@@ -568,7 +663,7 @@
       toNumber(vacationSp.value) < 0 ||
       toNumber(plannedStoryPoints.value) < 0
 
-    if (hasNegativeValue) {
+    if (hasNegativeValue && !formError.value) {
       formError.value = 'Значення не можуть бути відʼємними.'
     }
 
@@ -692,4 +787,11 @@
       year: 'numeric',
     }).format(date)
   }
+
+  onBeforeUnmount(() => {
+    modalOpenRequestId += 1
+
+    sprintsController?.abort()
+    sprintsController = null
+  })
 </script>
