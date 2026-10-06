@@ -1,0 +1,1062 @@
+{
+  "date": "2026-10-06T15:50:16.896Z",
+  "revision": "9f8818206b45a8659848235867de6ac8fb48a660",
+  "diffSHA256": "b311fc164c92e28eb5ea0c0d55fa26f312370d37527bdcd77df4b128fac3c088",
+  "dirty": "M docs/integration/evidence/contracts.json\n M src/assets/tailwind.css\n M src/components/Login.vue\n M src/components/SignUp.vue\n M src/components/TheHeader.vue\n M src/components/base/BaseButton.vue\n M src/components/base/BaseInput.vue\n M src/store/modules/auth/state.js\n M src/utils/mapFile.js\n M src/views/ChecklistDetailView.vue\n M src/views/DashboardView.vue\n M src/views/NewsView.vue\n?? docs/product/\n?? docs/responsive/evidence/product/\n?? scripts/verify-product.mjs\n?? src/data/productUpdates.js",
+  "browser": "150.0.7871.115",
+  "engine": "Chromium / installed Chrome, headless",
+  "os": "darwin 25.6.0 arm64",
+  "DPR": 1,
+  "zoom": "100% (visualViewport.scale=1); no real browser zoom asserted",
+  "dataSource": "isolated fixture, external traffic intercepted",
+  "results": [
+    {
+      "name": "/analytics/tasks 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Navigation boundary 1023/1024/1025 and desktop collapse",
+      "status": "PASS"
+    },
+    {
+      "name": "Drawer focus, Tab loop, Escape and same-route dismissal",
+      "status": "PASS"
+    },
+    {
+      "name": "Filters validation, apply/reset and local table keyboard scroll",
+      "status": "PASS"
+    },
+    {
+      "name": "Task CSV download fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal resize preserves input, controls fit and close reachable",
+      "status": "PASS"
+    },
+    {
+      "name": "Task details opens from native keyboard button",
+      "status": "PASS"
+    },
+    {
+      "name": "Failed create retains input, prevents duplicate submit and allows retry",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form local preview, no API-ready flags enabled",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Promo generation and copy fixture; resize retains source text",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner inspect fixture and contained results",
+      "status": "PASS"
+    },
+    {
+      "name": "Tasks empty state",
+      "status": "PASS"
+    },
+    {
+      "name": "Tasks error state",
+      "status": "PASS"
+    },
+    {
+      "name": "Nested dialogs: topmost Escape, shared scroll lock, focus and native step",
+      "status": "PASS"
+    },
+    {
+      "name": "Drawer plus dialog ownership and KeepAlive deactivation cleanup",
+      "status": "PASS"
+    },
+    {
+      "name": "Other standard breakpoint boundaries and narrow landscape",
+      "status": "PASS"
+    },
+    {
+      "name": "DPR 2 emulated viewport (not real Retina)",
+      "status": "PASS"
+    },
+    {
+      "name": "Shared layout width policy and mobile control sizing",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Analytics 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Promo / Tournament 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Checklists 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Banner Export 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 320x568",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 375x667",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 390x844",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 768x1024",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase Maps 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Showcase container widths and isolated interactions",
+      "status": "PASS"
+    },
+    {
+      "name": "No unexpected external requests",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime JavaScript errors",
+      "status": "PASS"
+    }
+  ],
+  "unverified": [
+    "Real Safari/iPhone and virtual keyboard",
+    "Real backend/API integration",
+    "200% native browser zoom",
+    "Real Retina monitor"
+  ],
+  "runtimeErrors": [],
+  "unexpected": []
+}

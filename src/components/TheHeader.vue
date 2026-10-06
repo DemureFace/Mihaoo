@@ -28,7 +28,7 @@
       </BaseButton>
 
       <div class="flex items-center gap-2">
-        <img src="/src/assets/images/logo.png" width="28" height="28" alt="Mihaoo" />
+        <img :src="logoUrl" width="28" height="28" alt="Mihaoo" />
 
         <h1 class="hidden text-xl font-bold sm:block">Mihaoo</h1>
       </div>
@@ -86,6 +86,7 @@
 
 <script setup>
   import { computed, ref, watch } from 'vue'
+  import logoUrl from '@/assets/images/logo.png'
 
   import { useStore } from 'vuex'
 

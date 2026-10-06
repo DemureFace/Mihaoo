@@ -1432,6 +1432,27 @@ Update the checkpoint below after implementation, not merely after planning. Kee
 
 ### Current checkpoint — actual local batch, 2026-10-06
 
+**Latest batch: product QA + Dashboard/News**, baseline `main` / `9f88182`, clean before batch.
+Owner screenshots exposed global button CSS cascade defects. Moved native defaults into base layer and added explicit plain/link/ghost hover utilities; sidebar hover contrast and auth link borders now tested.
+Password field reserves toggle space; accessible Show/Hide, inline auth loading and duplicate-submit guards.
+Forgot Password dead control replaced by honest administrator guidance (no reset API).
+Signup hint corrected, logo changed to Vite asset import.
+Fixed plain checklist mark-all and KeepAlive Escape cleanup, corrupt cached-user bootstrap, invalid Maps import root/metadata.
+
+Dashboard now has six module links, local-only counts, updates and workflow guidance.
+News has four curated frontend notes, search/category/details/empty reset; clearly not a live news API or deployment report.
+New data: `src/data/productUpdates.js`. No fabricated team KPI/backend health.
+
+Final evidence: 9 product PASS, 7 contract fixture PASS, 260 responsive PASS, 11 production-preview route smoke PASS.
+ESLint/build/scoped Prettier PASS; bundle >500kB warning remains.
+Evidence/report: `docs/product/TEST_REPORT.md`, `docs/product/evidence/`, `docs/responsive/evidence/product/results.json`.
+Production preview at 127.0.0.1:4173 is local only, not deployed.
+No backend/dependency/flag changes or commit/push/deploy.
+Live auth success/roles/DB writes/Figma/translation and real Safari/iPhone/keyboard/zoom remain unverified.
+Detailed residual domain/editor/canvas scenarios are explicitly listed in the report.
+Next coherent batch: approved staging test account/DB + real auth/permissions/persistence, then deeper checklist group editor and Maps canvas tests.
+Earlier checkpoints below are historical.
+
 **Latest batch: backend alignment.** Owner supplied `DemureFace/MihaooBackend`; this replaces the historical backend repository name for current work.
 Frontend baseline `6b9c4d5`, backend checkout `6ef33fb`, both main/clean before batch.
 Backend read-only; no fetch/deploy/schema/data operations. Frontend changes remain uncommitted.

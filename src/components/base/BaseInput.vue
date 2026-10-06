@@ -30,7 +30,10 @@
             .join(' ') || undefined
         "
         class="min-w-0 max-w-full w-full rounded-lg border bg-white px-3 py-2 text-base sm:text-sm text-black outline-none transition placeholder:text-neutral-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
-        :class="error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20'"
+        :class="[
+          error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20',
+          type === 'password' ? 'pr-20 min-h-12' : '',
+        ]"
         @input="onInput"
       />
 
@@ -39,7 +42,9 @@
         type="button"
         variant="ghost"
         size="sm"
-        class="absolute right-1 top-1/2 -translate-y-1/2"
+        class="absolute inset-y-0 right-1 my-auto h-11 min-w-16 px-2"
+        :aria-label="showPassword ? 'Hide password' : 'Show password'"
+        :aria-pressed="showPassword"
         @click="showPassword = !showPassword"
       >
         {{ showPassword ? 'Hide' : 'Show' }}

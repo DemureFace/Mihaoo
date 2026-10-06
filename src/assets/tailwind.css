@@ -89,19 +89,27 @@ label {
   color: black;
 }
 
-button {
-  font-weight: 500;
-  border-radius: 8px;
-  border: 1px solid black;
-  color: black;
-  background: white;
-  transition: all 0.3s ease-in-out;
-}
+/* Legacy native controls keep defaults; utility-based Base variants take precedence. */
+@layer base {
+  button {
+    font-weight: 500;
+    border-radius: 8px;
+    border: 1px solid black;
+    color: black;
+    background: white;
+    transition:
+      color 0.2s,
+      background-color 0.2s,
+      border-color 0.2s;
+  }
 
-button:hover {
-  color: white;
-  background-color: black;
-  border-color: black;
+  @media (hover: hover) {
+    button:not(:disabled):hover {
+      color: white;
+      background-color: black;
+      border-color: black;
+    }
+  }
 }
 
 a {

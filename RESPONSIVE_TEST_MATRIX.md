@@ -8,7 +8,25 @@ Chromium headless, isolated fixtures.
 Читайте разом з `AGENTS.md`, `CODEX_HANDOFF.md`,
 [GUIDELINES](docs/responsive/GUIDELINES.md) і [PATTERNS](docs/responsive/PATTERNS.md).
 
-## Backend alignment — актуальний batch
+## Product QA / Dashboard / News — актуальний batch
+
+Baseline `9f88182`, main, clean перед змінами.
+9 product scenarios PASS, 7 contract fixture scenarios PASS, 260 responsive PASS.
+Production preview: 11 маршрутів smoke PASS, logo asset, auth guards, 320/1440 bounds і Login/Escape.
+[Продуктовий звіт](docs/product/TEST_REPORT.md),
+[Product results](docs/product/evidence/results.json),
+[Built smoke](docs/product/evidence/build-smoke.json),
+[Responsive results](docs/responsive/evidence/product/results.json).
+
+Виправлено global button cascade/hover contrast, auth link/password controls,
+duplicate submit, production logo, checklist mark-all/KeepAlive Escape,
+corrupt user cache та Maps import validation.
+Dashboard: робочі модулі й реальні локальні counts. News: curated frontend notes із search/category/details;
+не live API або deployment feed.
+ESLint, scoped formatting і build PASS; bundle warning залишається.
+Live backend/real-device/повна domain/editor/canvas certification не заявляється; прогалини у звіті.
+
+## Backend alignment — попередній batch
 
 Frontend baseline `6b9c4d5`; backend `DemureFace/MihaooBackend` checkout `6ef33fb`.
 Фінальний responsive regression: **260 PASS / 0 FAIL** після інтеграційних змін.
