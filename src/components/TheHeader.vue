@@ -35,6 +35,8 @@
     </div>
 
     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+      <SystemHealthIndicator />
+
       <template v-if="isAuthenticated">
         <div
           class="hidden items-center gap-2 rounded-lg border border-black/10 bg-white px-3 py-1.5 sm:flex"
@@ -103,8 +105,10 @@
 
   import BaseButton from '@/components/base/BaseButton.vue'
   import BaseModal from '@/components/base/BaseModal.vue'
+
   import Login from '@/components/Login.vue'
   import SignUp from '@/components/SignUp.vue'
+  import SystemHealthIndicator from '@/components/SystemHealthIndicator.vue'
 
   import { LOGOUT_ACTION } from '@/store/storeconstants'
 
