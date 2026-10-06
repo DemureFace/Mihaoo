@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getApiErrorMessage } from './apiError'
 
 export const AUTH_EXPIRED_EVENT = 'auth:expired'
 
@@ -25,12 +26,29 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
 
-  (error) => {
-    const isUnauthorized = error.response?.status === 401
+  async (error) => {
+    if (error.response?.data instanceof Blob) {
+      try {
+        error.response.data = JSON.parse(await error.response.data.text())
+      } catch {
+        // A non-JSON error body must not hide the original HTTP failure.
+      }
+    }
+    error.message = getApiErrorMessage(error)
+    error.status = error.response?.status
+    error.data = error.response?.data
 
-    const hadAccessToken = Boolean(localStorage.getItem('accessToken'))
+    const currentToken = localStorage.getItem('accessToken')
+    const requestToken = error.config?.headers?.Authorization
+    const requestPath = (error.config?.url || '').split('?')[0]
+    const isAuthAttempt = ['/auth/login', '/auth/register'].includes(requestPath)
 
-    if (isUnauthorized && hadAccessToken) {
+    if (
+      error.response?.status === 401 &&
+      currentToken &&
+      requestToken === `Bearer ${currentToken}` &&
+      !isAuthAttempt
+    ) {
       clearStoredAuth()
 
       window.dispatchEvent(new CustomEvent(AUTH_EXPIRED_EVENT))

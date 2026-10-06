@@ -26,6 +26,7 @@
         @remove="onDelete(cl)"
       />
     </div>
+    <ServerChecklists />
     <BaseModal v-model="showEditor" aria-label="Редактор чекліста">
       <ChecklistEditor v-model="showEditor" :value="editing" @save="onSave" />
     </BaseModal>
@@ -42,6 +43,7 @@
   import { ref, computed } from 'vue'
   import BaseModal from '@/components/base/BaseModal.vue'
   import ChecklistCard from '@/components/ChecklistCard.vue'
+  import ServerChecklists from '@/components/ServerChecklists.vue'
   import ChecklistEditor from '@/components/ChecklistEditor.vue'
   import { getLastFilledAt } from '@/lib/storage'
   import { useChecklists } from '@/composables/useChecklists'

@@ -253,13 +253,14 @@
         </div>
       </div>
 
-      <a
-        v-if="job.status === 'completed' && job.downloadUrl"
-        :href="job.downloadUrl"
-        class="mt-4 inline-flex rounded bg-green-600 px-4 py-2 text-white"
+      <BaseButton
+        v-if="job.status === 'completed'"
+        class="mt-4"
+        :loading="isDownloading"
+        @click="downloadZip"
       >
         Download ZIP
-      </a>
+      </BaseButton>
 
       <div v-if="job.status === 'failed'" class="mt-4 text-red-500">
         {{ job.error || 'Export failed' }}
@@ -338,9 +339,11 @@
 
   import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
 
-  import { computed, onBeforeUnmount, reactive, ref } from 'vue'
+  import { computed, onActivated, onDeactivated, onBeforeUnmount, reactive, ref } from 'vue'
+  import { saveBlob } from '@/services/apiError'
   import {
     createBannerExport,
+    downloadBannerExport,
     getBannerExport,
     getBannerExportManifest,
     inspectBannerExport,
@@ -420,6 +423,22 @@
   const manifest = ref(null)
   const isInspecting = ref(false)
   const isExporting = ref(false)
+  const isDownloading = ref(false)
+  let active = true
+  let pollingController = null
+
+  async function downloadZip() {
+    if (isDownloading.value || !job.value?.id) return
+    isDownloading.value = true
+    try {
+      const result = await downloadBannerExport(job.value.id)
+      saveBlob(result.blob, result.filename)
+    } catch (err) {
+      error.value = err.message || 'Failed to download ZIP'
+    } finally {
+      isDownloading.value = false
+    }
+  }
 
   const cooldownSeconds = ref(0)
 
@@ -486,6 +505,7 @@
   })
 
   async function loadBanners() {
+    clearPolling()
     error.value = ''
     job.value = null
     manifest.value = null
@@ -517,7 +537,9 @@
       const isFigmaRateLimit = err?.status === 429 || message.toLowerCase().includes('rate limit')
 
       if (isFigmaRateLimit) {
-        startCooldown(err?.data?.retryAfterSeconds || 15 * 60)
+        startCooldown(
+          err?.data?.error?.details?.retryAfterSeconds || err?.data?.retryAfterSeconds || 15 * 60,
+        )
       }
     } finally {
       isInspecting.value = false
@@ -576,6 +598,8 @@
   }
 
   async function startExport() {
+    if (isExporting.value) return
+    clearPolling()
     error.value = ''
     job.value = null
     manifest.value = null
@@ -593,45 +617,51 @@
 
   function startPolling(jobId) {
     clearPolling()
-
-    pollingTimer = window.setInterval(async () => {
+    if (!active) return
+    const controller = new AbortController()
+    pollingController = controller
+    async function poll() {
       try {
-        const updatedJob = await getBannerExport(jobId)
+        const updatedJob = await getBannerExport(jobId, controller.signal)
+        if (!active || controller.signal.aborted || pollingController !== controller) return
         job.value = updatedJob
-
         if (updatedJob.status === 'completed') {
           isExporting.value = false
-          await loadManifest(updatedJob.id)
+          await loadManifest(updatedJob.id, controller.signal)
+          if (pollingController === controller) clearPolling()
+          return
+        }
+        if (updatedJob.status === 'failed') {
+          isExporting.value = false
+          if (updatedJob.retryAfterSeconds) startCooldown(updatedJob.retryAfterSeconds)
           clearPolling()
           return
         }
-
-        if (updatedJob.status === 'failed') {
-          isExporting.value = false
-
-          if (updatedJob.retryAfterSeconds) {
-            startCooldown(updatedJob.retryAfterSeconds)
-          }
-
-          clearPolling()
-        }
+        pollingTimer = window.setTimeout(poll, 1500)
       } catch (err) {
+        if (controller.signal.aborted) return
         error.value = err.message || 'Failed to check export status'
         isExporting.value = false
         clearPolling()
       }
-    }, 1500)
+    }
+    poll()
   }
-  async function loadManifest(jobId) {
+  async function loadManifest(jobId, signal) {
     try {
-      manifest.value = await getBannerExportManifest(jobId)
+      const result = await getBannerExportManifest(jobId, signal)
+      if (!signal?.aborted && job.value?.id === jobId) manifest.value = result
     } catch (err) {
-      console.warn('Failed to load export manifest:', err)
+      if (!signal?.aborted && job.value?.id === jobId) {
+        error.value = err.message || 'Failed to load export manifest'
+      }
     }
   }
   function clearPolling() {
+    pollingController?.abort()
+    pollingController = null
     if (pollingTimer) {
-      window.clearInterval(pollingTimer)
+      window.clearTimeout(pollingTimer)
       pollingTimer = null
     }
   }
@@ -658,6 +688,17 @@
       cooldownTimer = null
     }
   }
+
+  onActivated(() => {
+    active = true
+    if (job.value && !['completed', 'failed'].includes(job.value.status)) {
+      startPolling(job.value.id)
+    }
+  })
+  onDeactivated(() => {
+    active = false
+    clearPolling()
+  })
 
   onBeforeUnmount(() => {
     clearPolling()

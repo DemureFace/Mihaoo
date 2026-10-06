@@ -8,7 +8,25 @@ Chromium headless, isolated fixtures.
 Читайте разом з `AGENTS.md`, `CODEX_HANDOFF.md`,
 [GUIDELINES](docs/responsive/GUIDELINES.md) і [PATTERNS](docs/responsive/PATTERNS.md).
 
-## Галерея — актуальний follow-up
+## Backend alignment — актуальний batch
+
+Frontend baseline `6b9c4d5`; backend `DemureFace/MihaooBackend` checkout `6ef33fb`.
+Фінальний responsive regression: **260 PASS / 0 FAIL** після інтеграційних змін.
+[Результати](docs/responsive/evidence/integration/results.json).
+Contract/UI fixture scenarios: **7 PASS / 0 FAIL**,
+[contracts.json](docs/integration/evidence/contracts.json).
+Заповнені серверні Checklists/Currency перевірено на 320/768/1440/3840px.
+ESLint, scoped Prettier і build PASS; chunk-size warning залишається.
+
+Підключено JWT Banner/ZIP, виправлено Tasks envelope, Auth і shared reference loading,
+додано явний Currency backend mode та окремий Server Checklists block.
+[Карта контрактів і backend-задачі](docs/integration/BACKEND_ALIGNMENT.md).
+
+Live API/DB **BLOCKED**: safe local backend/account не запущено.
+Fixtures не підтверджують CORS, production auth/persistence або Figma/translation.
+Backend не змінено; flags/dependencies/lockfile не змінено; commit/push/deploy не виконано.
+
+## Галерея — попередній follow-up
 
 Маршрут `/responsive-showcase`, пункт **Responsive**.
 Повний regression після додавання галереї: **260 PASS / 0 FAIL**.

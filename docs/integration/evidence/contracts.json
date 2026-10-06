@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-06T14:53:59.820Z",
+  "browser": "150.0.7871.115",
+  "dataSource": "isolated contract fixtures based on backend 6ef33fb; no live API",
+  "results": [
+    {
+      "name": "Service contracts, auth/error lifecycle and Signup backend policy",
+      "status": "PASS"
+    },
+    {
+      "name": "Concurrent reference data dispatches await one shared request",
+      "status": "PASS"
+    },
+    {
+      "name": "Server checklists list and explicit completion payload, local definitions preserved",
+      "status": "PASS"
+    },
+    {
+      "name": "Currency explicit server mode, response envelope and visible errors without local fallback",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner inspect/create/poll and authenticated ZIP download",
+      "status": "PASS"
+    },
+    {
+      "name": "No unexpected external requests",
+      "status": "PASS"
+    },
+    {
+      "name": "No runtime JavaScript errors",
+      "status": "PASS"
+    }
+  ],
+  "runtimeErrors": []
+}

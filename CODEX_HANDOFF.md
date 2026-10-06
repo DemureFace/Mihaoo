@@ -1432,6 +1432,30 @@ Update the checkpoint below after implementation, not merely after planning. Kee
 
 ### Current checkpoint — actual local batch, 2026-10-06
 
+**Latest batch: backend alignment.** Owner supplied `DemureFace/MihaooBackend`; this replaces the historical backend repository name for current work.
+Frontend baseline `6b9c4d5`, backend checkout `6ef33fb`, both main/clean before batch.
+Backend read-only; no fetch/deploy/schema/data operations. Frontend changes remain uncommitted.
+
+Implemented:
+- Tasks `{data,total}` envelope and comma-separated multi-filter serialization; strict Sprint responses.
+- Shared API JSON/Blob error normalization and token-aware 401; failed Login/stale response does not clear a newer session.
+- Signup policy matches RegisterDto; profile network/502 outage preserves JWT.
+- Shared reference/member dispatches await one in-flight request.
+- Banner JWT inspect/create/poll/manifest/ZIP, authenticated Blob download, sequential polling, cached-view cleanup and stale manifest guard.
+- Explicit backend Currency mode without replacing local Content/Data/Snippet.
+- Separate server Checklists load/fill/completion UI; local definitions/progress preserved.
+
+Verified on final code: 7 PASS / 0 FAIL contract fixture scenarios and 260 PASS / 0 FAIL responsive regression; no runtime JS errors/unexpected API requests.
+Scoped Prettier, ESLint, build PASS; main chunk >500kB warning remains.
+Evidence: `docs/integration/evidence/contracts.json`, `docs/responsive/evidence/integration/results.json`.
+Contracts, scope limits and small backend tasks: `docs/integration/BACKEND_ALIGNMENT.md`.
+
+BLOCKED: live API/DB integration; local backend services not running, no safe test account/DB confirmed.
+Fixtures are not production readiness. Report/Weekly flags unchanged; Maps/News endpoints absent.
+Checklist server CRUD/history and full local migration not implemented; admin/parser expansion not part of batch.
+Next: approved local/staging disposable test environment, real auth/read/write/export acceptance.
+Commit/push/deploy not performed. Earlier checkpoints below are historical.
+
 **Latest follow-up — interactive showcase:** `/responsive-showcase`, sidebar **Responsive**.
 Added `ResponsiveShowcaseView.vue`, lazy route and sidebar entry; all existing guards unchanged.
 Five clearly labelled synthetic examples: Analytics, Promo/Tournament, Checklists, Banner Export, Maps.
