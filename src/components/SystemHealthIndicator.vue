@@ -6,7 +6,7 @@
       size="sm"
       class="relative min-h-11 min-w-11"
       :aria-label="headerLabel"
-      @click="openAndWake"
+      @click="openAndCheck"
     >
       <ServerStackIcon class="h-5 w-5" />
 
@@ -92,11 +92,13 @@
         <div class="flex flex-wrap items-center justify-between gap-3 text-xs text-neutral-500">
           <span>
             Online:
+
             <strong class="text-black">{{ onlineCount }}/{{ services.length }}</strong>
           </span>
 
           <span v-if="lastCheckedAt">
             Last check:
+
             {{ formattedLastChecked }}
           </span>
         </div>
@@ -112,8 +114,8 @@
         </div>
 
         <p class="text-xs leading-5 text-neutral-500">
-          Status check сам по собі може запустити cold start сервісу. До першої перевірки Mihaoo не
-          робить background polling, щоб не тримати Render постійно активним.
+          Status check виконує один health request до кожного сервісу. Wake Backend запускає
+          перевірку повторно, поки сервіси прокидаються після Render cold start.
         </p>
       </div>
     </BaseModal>
@@ -140,7 +142,9 @@
   const health = ref(null)
 
   const checking = ref(false)
+
   const waking = ref(false)
+
   const wakeFinished = ref(false)
 
   const lastCheckedAt = ref(null)
@@ -157,10 +161,6 @@
         status = 'waking'
       } else if (apiStatus === 'error') {
         status = 'unavailable'
-      }
-
-      if (service.key === 'gateway' && health.value && !health.value.reachable) {
-        status = waking.value ? 'waking' : 'unavailable'
       }
 
       return {
@@ -197,8 +197,11 @@
   const indicatorClass = computed(() => {
     return {
       'not-checked': 'bg-neutral-400',
+
       waking: 'bg-amber-500 animate-pulse',
+
       online: 'bg-green-500',
+
       unavailable: 'bg-red-500',
     }[headerStatus.value]
   })
@@ -229,17 +232,18 @@
 
   function recordHealth(result) {
     health.value = result
+
     lastCheckedAt.value = new Date()
   }
 
-  async function openAndWake() {
+  async function openAndCheck() {
     modalOpen.value = true
 
-    if (waking.value) {
+    if (checking.value || waking.value) {
       return
     }
 
-    await wakeBackend()
+    await checkStatus()
   }
 
   async function checkStatus() {
@@ -248,6 +252,7 @@
     }
 
     checking.value = true
+
     wakeFinished.value = false
 
     try {
@@ -260,11 +265,12 @@
   }
 
   async function wakeBackend() {
-    if (waking.value) {
+    if (waking.value || checking.value) {
       return
     }
 
     waking.value = true
+
     wakeFinished.value = false
 
     try {
@@ -277,6 +283,7 @@
       }
     } finally {
       waking.value = false
+
       wakeFinished.value = true
     }
   }
@@ -284,8 +291,11 @@
   function serviceStatusLabel(status) {
     return {
       'not-checked': 'Not checked',
+
       online: 'Online',
+
       waking: 'Waking…',
+
       unavailable: 'No response',
     }[status]
   }
@@ -293,8 +303,11 @@
   function serviceStatusClass(status) {
     return {
       'not-checked': 'bg-neutral-400',
+
       online: 'bg-green-500',
+
       waking: 'bg-amber-500 animate-pulse',
+
       unavailable: 'bg-red-500',
     }[status]
   }
@@ -302,8 +315,11 @@
   function serviceTextClass(status) {
     return {
       'not-checked': 'text-neutral-500',
+
       online: 'text-green-700',
+
       waking: 'text-amber-700',
+
       unavailable: 'text-red-700',
     }[status]
   }

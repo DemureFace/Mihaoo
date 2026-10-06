@@ -1,37 +1,34 @@
-import api from './api'
-
 export const CORE_SERVICES = [
   {
     key: 'gateway',
     label: 'Gateway',
-    wakeUrl: 'https://mihaoo-gateway.onrender.com/health',
   },
   {
     key: 'auth-service',
     label: 'Auth',
-    wakeUrl: 'https://mihaoo-auth.onrender.com/health',
   },
   {
     key: 'bonus-service',
     label: 'Bonus',
-    wakeUrl: 'https://mihaoo-bonus.onrender.com/health',
   },
   {
     key: 'tournament-service',
     label: 'Tournament',
-    wakeUrl: 'https://mihaoo-tournament.onrender.com/health',
   },
   {
     key: 'analytics-service',
     label: 'Analytics',
-    wakeUrl: 'https://mihaoo-analytics.onrender.com/health',
   },
 ]
 
-const CHECK_TIMEOUT = 60_000
+const HEALTH_ENDPOINT =
+  '/.netlify/functions/backend-health'
+
+const CHECK_TIMEOUT = 15_000
+
 const WAKE_TIMEOUT = 180_000
+
 const WAKE_INTERVAL = 5_000
-const DIRECT_WAKE_INTERVAL = 15_000
 
 function wait(ms) {
   return new Promise((resolve) => {
@@ -39,96 +36,132 @@ function wait(ms) {
   })
 }
 
-function normalizeResponse(response) {
+function createUnavailableHealth() {
+  return {
+    reachable: false,
+
+    timestamp: new Date().toISOString(),
+
+    services: Object.fromEntries(
+      CORE_SERVICES.map(({ key }) => [
+        key,
+        'error',
+      ]),
+    ),
+  }
+}
+
+function normalizeResponse(data) {
+  const services = {}
+
+  CORE_SERVICES.forEach(({ key }) => {
+    services[key] =
+      data?.services?.[key] === 'ok'
+        ? 'ok'
+        : 'error'
+  })
+
   return {
     reachable: true,
 
     timestamp:
-      response.data?.timestamp ||
+      data?.timestamp ||
       new Date().toISOString(),
 
-    services: response.data?.services || {
-      gateway: 'ok',
-    },
+    services,
+  }
+}
+
+async function requestSystemHealth(
+  method = 'GET',
+) {
+  const controller = new AbortController()
+
+  const timeoutId = window.setTimeout(() => {
+    controller.abort()
+  }, CHECK_TIMEOUT)
+
+  try {
+    const response = await fetch(
+      HEALTH_ENDPOINT,
+      {
+        method,
+
+        headers: {
+          Accept: 'application/json',
+        },
+
+        cache: 'no-store',
+
+        signal: controller.signal,
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error(
+        `Backend health request failed: ${response.status}`,
+      )
+    }
+
+    const data = await response.json()
+
+    return normalizeResponse(data)
+  } catch {
+    return createUnavailableHealth()
+  } finally {
+    window.clearTimeout(timeoutId)
   }
 }
 
 export async function getSystemHealth() {
-  try {
-    const response = await api.get('/health/system', {
-      timeout: CHECK_TIMEOUT,
-
-      validateStatus: (status) =>
-        status === 200 || status === 503,
-    })
-
-    return normalizeResponse(response)
-  } catch {
-    return {
-      reachable: false,
-
-      timestamp: new Date().toISOString(),
-
-      services: {
-        gateway: 'error',
-      },
-    }
-  }
+  return requestSystemHealth('GET')
 }
 
-export function areCoreServicesOnline(health) {
+export function areCoreServicesOnline(
+  health,
+) {
   return CORE_SERVICES.every(
     ({ key }) =>
       health?.services?.[key] === 'ok',
   )
 }
 
-function knockService(service) {
-  if (!service.wakeUrl) {
-    return
-  }
-
-  // no-cors важливий:
-  // нам не потрібен response body.
-  // Нам потрібно лише доставити GET до Render,
-  // щоб запустити cold start.
-  void fetch(service.wakeUrl, {
-    method: 'GET',
-    mode: 'no-cors',
-    cache: 'no-store',
-  }).catch(() => {
-    // Status перевіряємо через Gateway.
-    // Помилка direct request тут не є
-    // остаточним health result.
-  })
-}
-
-export function knockAllServices() {
-  CORE_SERVICES.forEach(knockService)
-}
-
 export async function wakeSystem({
   onUpdate,
+
   timeout = WAKE_TIMEOUT,
+
   interval = WAKE_INTERVAL,
 } = {}) {
   const startedAt = Date.now()
 
-  let lastDirectWakeAt = 0
-  let health = null
+  /*
+   * POST запускає server-side requests
+   * з Netlify до Render.
+   *
+   * Якщо Render service sleeping,
+   * цей request запускає cold start.
+   */
+  let health =
+    await requestSystemHealth('POST')
 
-  while (Date.now() - startedAt < timeout) {
-    const now = Date.now()
+  onUpdate?.(health)
 
-    // Напряму будимо Render services.
-    if (
-      now - lastDirectWakeAt >=
-      DIRECT_WAKE_INTERVAL
-    ) {
-      knockAllServices()
-
-      lastDirectWakeAt = now
+  if (areCoreServicesOnline(health)) {
+    return {
+      success: true,
+      health,
     }
+  }
+
+  /*
+   * Після wake request продовжуємо
+   * перевіряти статус раз на 5 секунд.
+   */
+  while (
+    Date.now() - startedAt < timeout
+  ) {
+    await wait(interval)
 
     health = await getSystemHealth()
 
@@ -140,8 +173,6 @@ export async function wakeSystem({
         health,
       }
     }
-
-    await wait(interval)
   }
 
   return {
