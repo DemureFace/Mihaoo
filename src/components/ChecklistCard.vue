@@ -1,5 +1,5 @@
 <template>
-  <article class="border rounded-2xl p-4 flex flex-col gap-2">
+  <article class="min-w-0 [overflow-wrap:anywhere] border rounded-2xl p-4 flex flex-col gap-2">
     <h3 class="text-lg font-semibold">{{ checklist.title }}</h3>
     <p class="text-sm text-gray-600">{{ checklist.description }}</p>
 
@@ -10,15 +10,19 @@
 
     <p class="text-xs text-gray-500">Усього пунктів: {{ totalItems }}</p>
 
-    <div class="mt-3 flex gap-2">
-      <button class="border rounded px-3 py-1" @click="open">Відкрити</button>
-      <button class="border rounded px-3 py-1" @click="edit">Редагувати</button>
-      <button class="border rounded px-3 py-1" @click="remove">Видалити</button>
-    </div>
+    <BaseActionBar class="mt-auto pt-3">
+      <BaseButton class="border rounded px-3 py-1" @click="open">Відкрити</BaseButton>
+      <BaseButton class="border rounded px-3 py-1" @click="edit">Редагувати</BaseButton>
+      <BaseButton class="border rounded px-3 py-1" @click="remove">Видалити</BaseButton>
+    </BaseActionBar>
   </article>
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
+  import BaseButton from '@/components/base/BaseButton.vue'
+
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { getLastFilledAt } from '@/lib/storage'
@@ -27,6 +31,7 @@
     checklist: { type: Object, required: true },
   })
 
+  const emit = defineEmits(['edit', 'remove'])
   const router = useRouter()
 
   // 👉 Нормалізація: перетворюємо і старі .items, і нові .sections у плоский список leaf-пунктів
@@ -60,10 +65,10 @@
     router.push({ name: 'checklist-detail', params: { slug: props.checklist.slug } })
   }
   function edit() {
-    // якийсь твій emit / навігація в редактор
+    emit('edit')
   }
   function remove() {
-    // emit('remove', props.checklist.slug) або твоя логіка
+    emit('remove')
   }
 
   function fmt(iso) {

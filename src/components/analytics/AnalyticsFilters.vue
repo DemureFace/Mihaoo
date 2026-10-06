@@ -1,7 +1,7 @@
 <template>
   <section class="@container mb-4 min-w-0 rounded-[14px] border border-black bg-white sm:mb-[18px]">
     <div
-      class="flex flex-col gap-3 border-b border-neutral-200 p-3 sm:p-4 @min-[900px]:flex-row @min-[900px]:items-center"
+      class="flex flex-col gap-3 border-b border-neutral-200 p-3 sm:p-4 @4xl:flex-row @4xl:items-center"
     >
       <div class="flex min-w-0 flex-wrap gap-2">
         <BaseButton
@@ -24,15 +24,13 @@
           Увесь час
         </BaseButton>
       </div>
-      <div
-        class="flex w-full flex-wrap gap-2 @min-[900px]:ml-auto @min-[900px]:w-auto @min-[900px]:shrink-0"
-      >
-        <BaseButton class="min-h-11 flex-1 @min-[900px]:flex-none" @click="resetFilters">
+      <div class="flex w-full flex-wrap gap-2 @4xl:ml-auto @4xl:w-auto @4xl:shrink-0">
+        <BaseButton class="min-h-11 flex-1 @4xl:flex-none" @click="resetFilters">
           Скинути
         </BaseButton>
 
         <BaseButton
-          class="min-h-11 flex-1 @min-[900px]:flex-none"
+          class="min-h-11 flex-1 @4xl:flex-none"
           variant="primary"
           :disabled="Boolean(dateError)"
           @click="applyFilters"
@@ -43,7 +41,7 @@
     </div>
 
     <div
-      class="grid min-w-0 grid-cols-1 gap-3 p-3 sm:p-4 @min-[480px]:grid-cols-2 @min-[800px]:grid-cols-3 @min-[1100px]:grid-cols-4 @min-[1600px]:grid-cols-5 [&>label]:min-w-0 [&_input]:min-w-0 [&_select]:min-w-0"
+      class="grid min-w-0 grid-cols-1 gap-3 p-3 sm:p-4 @lg:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4 @7xl:grid-cols-5"
     >
       <BaseInput
         v-model="draft.search"
@@ -51,7 +49,7 @@
         label="Пошук"
         type="search"
         placeholder="Назва або Jira"
-        class="@min-[480px]:col-span-2"
+        class="@lg:col-span-2"
       />
 
       <div

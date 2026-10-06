@@ -29,12 +29,13 @@
     ref="sidebar"
     :inert="isMobile && !mobileSidebarOpen"
     :aria-hidden="isMobile && !mobileSidebarOpen"
-    @keydown.esc="closeMobileSidebar"
+    @keydown.esc.stop="closeMobileSidebar"
+    @keydown.tab="trapSidebarFocus"
   >
     <SideBar :collapsed="!isMobile && isCollapsed" @navigate="closeMobileSidebar" />
   </aside>
 
-  <main :class="mainClasses">
+  <main :class="mainClasses" :inert="isMobile && mobileSidebarOpen">
     <div :class="contentClasses">
       <RouterView v-slot="{ Component, route }">
         <Transition name="fade" mode="out-in">
@@ -94,10 +95,6 @@
 
   const showLoading = computed(() => store.state.showLoading)
 
-  const isSpecial = computed(() => {
-    return route.name === 'home' || route.name === 'news'
-  })
-
   const sidebarClasses = computed(() => [
     'fixed left-0 top-14 z-40 h-[calc(100dvh-3.5rem)] bg-surface-primary',
     'transition-[width,transform] duration-300 ease-in-out',
@@ -116,18 +113,10 @@
 
     !isMobile.value ? (isCollapsed.value ? 'ml-16' : 'ml-56') : 'ml-0',
 
-    isSpecial.value
-      ? 'h-dvh p-0'
-      : ['px-3 pb-3 pt-[70px]', 'sm:px-4 sm:pb-4', 'lg:px-6 lg:pb-6', '2xl:px-8 2xl:pb-8'],
+    'px-3 pb-3 pt-[70px] sm:px-4 sm:pb-4 lg:px-6 lg:pb-6 2xl:px-8 2xl:pb-8',
   ])
 
-  const contentClasses = computed(() => {
-    if (isSpecial.value) {
-      return 'w-full'
-    }
-
-    return 'mx-auto w-full max-w-[1920px]'
-  })
+  const contentClasses = 'mx-auto min-w-0 w-full max-w-[1920px]'
 
   function toggleSidebar() {
     if (isMobile.value) {
@@ -141,6 +130,22 @@
 
   function closeMobileSidebar() {
     mobileSidebarOpen.value = false
+  }
+
+  function trapSidebarFocus(event) {
+    if (!isMobile.value || !mobileSidebarOpen.value) return
+    const buttons = Array.from(sidebar.value.querySelectorAll('button, a[href]')).filter(
+      (element) => !element.disabled && element.getClientRects().length,
+    )
+    const first = buttons[0]
+    const last = buttons.at(-1)
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last?.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first?.focus()
+    }
   }
 
   function syncViewport(event) {

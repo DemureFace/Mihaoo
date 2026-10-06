@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="wrap min-w-0 rounded-2xl p-3 sm:p-5 [overflow-wrap:anywhere]">
     <header class="top">
       <h1>Calendar — Rewards & Rules</h1>
 
@@ -33,7 +33,7 @@
       </div>
     </header>
 
-    <main class="grid">
+    <BaseFormGrid>
       <section class="card">
         <h2>Days</h2>
 
@@ -67,11 +67,13 @@
         </div>
         <textarea class="ta" rows="10" readonly :value="outTR" />
       </section>
-    </main>
+    </BaseFormGrid>
   </div>
 </template>
 
 <script setup>
+  import BaseFormGrid from '@/components/base/BaseFormGrid.vue'
+
   import { computed, ref, watch } from 'vue'
 
   /* ---------- storage ---------- */
@@ -386,11 +388,8 @@
   .wrap {
     min-height: 100vh;
     background: #f6f7fb;
-    padding: 20px;
   }
   .top {
-    position: sticky;
-    top: 0;
     background: #f6f7fb;
     padding-bottom: 14px;
     z-index: 5;
@@ -411,7 +410,7 @@
     gap: 6px;
   }
   select {
-    height: 38px;
+    min-height: 44px;
     border: 1px solid #d7dbe7;
     border-radius: 10px;
     padding: 0 10px;
@@ -429,7 +428,7 @@
     margin-left: auto;
   }
   .chip {
-    height: 34px;
+    min-height: 44px;
     border-radius: 999px;
     border: 1px solid #d7dbe7;
     background: #fff;
@@ -441,16 +440,6 @@
     background: #111827;
     color: #fff;
     border-color: #111827;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  @media (max-width: 980px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
   }
   .card {
     background: #fff;
@@ -483,7 +472,7 @@
       monospace;
   }
   .btn {
-    height: 34px;
+    min-height: 44px;
     border-radius: 10px;
     border: 1px solid #d7dbe7;
     background: #fff;

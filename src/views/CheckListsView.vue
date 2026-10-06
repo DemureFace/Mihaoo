@@ -1,44 +1,44 @@
 <template>
-  <section>
-    <div class="mb-4 flex items-center justify-between gap-3">
+  <section class="min-w-0 space-y-4">
+    <header class="space-y-3">
       <h2 class="text-xl font-semibold">Мої чеклісти</h2>
-
-      <div class="flex items-center gap-2 text-sm">
-        <button class="btn" @click="toggleSort">
-          {{ sortBy === 'recent' ? 'Сортувати за створенням' : 'Сортувати за активністю' }}
-        </button>
-        <input
+      <BaseActionBar>
+        <BaseInput
           v-model="q"
+          id="checklist-search"
           type="search"
+          label="Пошук чеклістів"
           placeholder="Пошук…"
-          class="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm outline-none transition placeholder:text-gray-400"
+          class="sm:max-w-sm"
         />
-        <button class="btn bg-gray-900 text-white" @click="openCreate">+ Новий</button>
-      </div>
+        <BaseButton @click="toggleSort">
+          {{ sortBy === 'recent' ? 'Сортувати за створенням' : 'Сортувати за активністю' }}
+        </BaseButton>
+        <BaseButton variant="primary" @click="openCreate">+ Новий</BaseButton>
+      </BaseActionBar>
+    </header>
+    <div class="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <ChecklistCard
+        v-for="cl in filtered"
+        :key="cl.slug"
+        :checklist="cl"
+        @edit="openEdit(cl)"
+        @remove="onDelete(cl)"
+      />
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-      <div v-for="cl in filtered" :key="cl.slug" class="relative">
-        <ChecklistCard :checklist="cl" />
-        <div class="absolute top-2 right-2 flex gap-1">
-          <button class="px-2 py-1 text-xs border rounded bg-white" @click.stop="openEdit(cl)">
-            Редагувати
-          </button>
-          <button class="px-2 py-1 text-xs border rounded bg-white" @click.stop="onDelete(cl)">
-            Видалити
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Модалка -->
-    <BaseModal v-model="showEditor">
+    <BaseModal v-model="showEditor" aria-label="Редактор чекліста">
       <ChecklistEditor v-model="showEditor" :value="editing" @save="onSave" />
     </BaseModal>
   </section>
 </template>
 
 <script setup>
+  import BaseInput from '@/components/base/BaseInput.vue'
+
+  import BaseButton from '@/components/base/BaseButton.vue'
+
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
   import { ref, computed } from 'vue'
   import BaseModal from '@/components/base/BaseModal.vue'
   import ChecklistCard from '@/components/ChecklistCard.vue'
@@ -106,21 +106,3 @@
     sortBy.value = sortBy.value === 'recent' ? 'created' : 'recent'
   }
 </script>
-
-<style scoped>
-  .grid {
-    display: grid;
-    gap: 16px;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 0.5rem 0.75rem;
-    background: #fff;
-  }
-  .btn:hover {
-    background: black;
-  }
-</style>

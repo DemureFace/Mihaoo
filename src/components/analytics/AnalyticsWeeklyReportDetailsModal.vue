@@ -1,7 +1,7 @@
 <template>
   <BaseModal v-model="open" size="lg">
-    <div class="space-y-6">
-      <header class="pr-10">
+    <div class="min-w-0 space-y-6">
+      <header class="min-w-0">
         <p class="m-0 text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">
           Weekly Report
         </p>
@@ -49,7 +49,7 @@
         <section>
           <h3 class="m-0 mb-3 text-base font-bold">Підсумок</h3>
 
-          <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <article class="rounded-xl border border-black/10 bg-neutral-50 p-3">
               <p class="m-0 text-xs text-neutral-500">Tasks</p>
 
@@ -124,7 +124,7 @@
             <h3 class="m-0 text-base font-bold">Розподіл по брендах</h3>
           </header>
 
-          <div class="overflow-x-auto">
+          <BaseTableScroll label="Дані звіту">
             <table class="w-full min-w-[520px] border-collapse text-sm">
               <thead>
                 <tr class="border-b border-neutral-200 bg-neutral-50">
@@ -166,7 +166,7 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </BaseTableScroll>
         </section>
 
         <footer class="flex flex-wrap justify-end gap-2 border-t border-neutral-200 pt-4">
@@ -182,6 +182,8 @@
 </template>
 
 <script setup>
+  import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
+
   import { computed } from 'vue'
   import { useStore } from 'vuex'
 

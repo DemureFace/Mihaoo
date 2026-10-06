@@ -28,7 +28,7 @@
 
       <template v-else-if="task">
         <!-- Header -->
-        <header class="border-b border-neutral-200 pb-5 pr-10">
+        <header class="border-b border-neutral-200 pb-5">
           <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="min-w-0">
               <div class="flex flex-wrap items-center gap-2">
@@ -50,7 +50,7 @@
               </h2>
             </div>
 
-            <div class="flex items-center gap-2">
+            <BaseActionBar>
               <BaseButton
                 v-if="!editing"
                 size="sm"
@@ -65,7 +65,7 @@
               </BaseButton>
 
               <BaseButton v-else size="sm" @click="cancelEditing">Скасувати</BaseButton>
-            </div>
+            </BaseActionBar>
           </div>
         </header>
 
@@ -94,7 +94,7 @@
                 <h3 class="text-sm font-bold">Бренди</h3>
               </header>
 
-              <div class="overflow-x-auto">
+              <BaseTableScroll label="Дані звіту">
                 <table class="w-full min-w-[650px] border-collapse text-sm">
                   <thead>
                     <tr class="border-b border-neutral-200">
@@ -117,7 +117,7 @@
                       @click="selectBrand(brandRow.id)"
                     >
                       <td class="px-4 py-3">
-                        <div class="flex items-center gap-2">
+                        <BaseActionBar>
                           <span
                             class="rounded-full border border-black px-2.5 py-0.5 text-xs font-semibold"
                           >
@@ -127,7 +127,7 @@
                           <span v-if="brandRow.deletedAt" class="text-xs font-medium text-red-600">
                             Видалено
                           </span>
-                        </div>
+                        </BaseActionBar>
                       </td>
 
                       <td class="px-4 py-3">
@@ -149,7 +149,7 @@
                     </tr>
                   </tbody>
                 </table>
-              </div>
+              </BaseTableScroll>
             </section>
 
             <!-- Comments -->
@@ -383,13 +383,13 @@
           <!-- Brand row fields -->
           <section class="rounded-xl border border-neutral-200">
             <header class="border-b border-neutral-200 bg-neutral-50 px-4 py-3">
-              <div class="flex items-center gap-2">
+              <BaseActionBar>
                 <h3 class="text-sm font-bold">Рядок бренду</h3>
 
                 <span class="rounded-full border border-black px-2.5 py-0.5 text-xs font-semibold">
                   {{ formatBrand(selectedBrand?.brand) }}
                 </span>
-              </div>
+              </BaseActionBar>
 
               <p class="mt-1 text-xs text-neutral-500">
                 Зміни застосуються тільки до вибраного бренду.
@@ -447,7 +447,7 @@
             Рядок зникне з Task List, але його можна буде відновити пізніше.
           </p>
 
-          <div class="mt-4 flex justify-end gap-2">
+          <div class="mt-4 flex flex-wrap justify-end gap-2">
             <BaseButton
               size="sm"
               :disabled="rowActionLoading"
@@ -475,6 +475,10 @@
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
+  import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
+
   import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue'
 
   import { useStore } from 'vuex'

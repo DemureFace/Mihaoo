@@ -1,8 +1,8 @@
 <template>
   <article
-    class="bg-white border border-black/10 rounded-2xl p-5 flex flex-col gap-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+    class="min-w-0 [overflow-wrap:anywhere] bg-white border border-black/10 rounded-2xl p-4 flex flex-col gap-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
   >
-    <div class="flex items-start justify-between gap-4">
+    <div class="flex flex-wrap items-start justify-between gap-4">
       <div>
         <span
           class="inline-flex px-2.5 py-1 rounded-full bg-black/5 text-xs font-semibold uppercase"
@@ -26,7 +26,7 @@
 
     <div class="text-xs text-black/50">Updated {{ formattedDate }}</div>
 
-    <div class="mt-auto flex items-center gap-2">
+    <BaseActionBar class="mt-auto">
       <BaseButton class="px-3 py-2" @click="$emit('open', map)">Open</BaseButton>
 
       <BaseButton class="px-3 py-2" @click="$emit('duplicate', map)">Duplicate</BaseButton>
@@ -38,11 +38,13 @@
       >
         Delete
       </button>
-    </div>
+    </BaseActionBar>
   </article>
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
   import { computed } from 'vue'
   import BaseButton from '@/components/base/BaseButton.vue'
 

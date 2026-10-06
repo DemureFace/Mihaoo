@@ -1,6 +1,6 @@
 <template>
   <label
-    class="inline-flex cursor-pointer items-start gap-2"
+    class="inline-flex min-h-11 min-w-0 cursor-pointer items-start gap-2"
     :class="disabled ? 'cursor-not-allowed opacity-50' : ''"
   >
     <input
@@ -12,7 +12,10 @@
       @change="onChange"
     />
 
-    <span v-if="$slots.default || label" class="text-sm text-black">
+    <span
+      v-if="$slots.default || label"
+      class="min-w-0 [overflow-wrap:anywhere] text-sm text-black"
+    >
       <slot>
         {{ label }}
       </slot>

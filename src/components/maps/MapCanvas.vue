@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full h-full bg-white rounded-2xl overflow-hidden border border-black/10"
+    class="min-w-0 w-full h-full bg-white rounded-2xl overflow-hidden border border-black/10"
     @dragover.prevent="handleDragOver"
     @drop.prevent="handleDrop"
   >
@@ -25,7 +25,7 @@
 
       <Background :gap="20" :size="1" />
 
-      <MiniMap pannable zoomable />
+      <MiniMap class="hidden sm:block" pannable zoomable />
 
       <Controls />
     </VueFlow>

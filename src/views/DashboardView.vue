@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-full">
+  <div class="relative min-h-[calc(100dvh-7rem)] w-full">
     <div class="scene soon">
       <div class="sky">
         <div class="sun"></div>

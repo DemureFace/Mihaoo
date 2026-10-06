@@ -20,7 +20,7 @@
       За вибраними фільтрами немає даних.
     </div>
 
-    <div v-else class="overflow-x-auto">
+    <BaseTableScroll v-else label="Дані звіту">
       <table class="w-full min-w-[900px] border-collapse text-sm">
         <thead>
           <tr class="border-b border-neutral-200 bg-neutral-50">
@@ -103,11 +103,13 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </BaseTableScroll>
   </section>
 </template>
 
 <script setup>
+  import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
+
   import { computed } from 'vue'
 
   const props = defineProps({

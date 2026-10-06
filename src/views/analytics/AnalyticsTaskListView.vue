@@ -13,7 +13,7 @@
         </p>
       </div>
 
-      <div class="ml-auto flex items-center gap-2">
+      <BaseActionBar class="ml-auto">
         <BaseButton :loading="analytics.loading" @click="reload()">Оновити</BaseButton>
 
         <BaseButton
@@ -25,7 +25,7 @@
         </BaseButton>
 
         <BaseButton variant="primary" @click="openCreateTask">+ Нова задача</BaseButton>
-      </div>
+      </BaseActionBar>
     </header>
     <div
       v-if="exportError"
@@ -213,7 +213,7 @@
           </span>
         </template>
 
-        <div class="ml-auto flex items-center gap-2">
+        <BaseActionBar class="ml-auto">
           <BaseButton
             size="sm"
             :disabled="analytics.loading || analytics.page === 1"
@@ -236,7 +236,7 @@
           >
             ›
           </BaseButton>
-        </div>
+        </BaseActionBar>
       </footer>
     </template>
   </section>
@@ -255,6 +255,8 @@
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
   import { computed, ref, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
   import { useStore } from 'vuex'
   import { analyticsService } from '@/services/analytics.service'

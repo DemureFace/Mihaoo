@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="mx-auto min-w-0 w-full max-w-4xl space-y-6 [overflow-wrap:anywhere]">
     <div>
       <h1 class="text-2xl font-semibold">Banner Export</h1>
       <p class="text-sm opacity-70">
@@ -8,7 +8,7 @@
     </div>
 
     <section class="grid gap-4 max-w-4xl rounded border p-4">
-      <label class="grid gap-1">
+      <label class="grid min-w-0 gap-1">
         <span class="text-sm font-medium">Campaign ID</span>
         <input
           v-model="form.campaignId"
@@ -17,7 +17,7 @@
         />
       </label>
 
-      <label class="grid gap-1">
+      <label class="grid min-w-0 gap-1">
         <span class="text-sm font-medium">Figma URL</span>
         <textarea
           v-model="form.figmaUrl"
@@ -30,7 +30,7 @@
       </label>
 
       <div class="flex flex-wrap gap-3">
-        <button
+        <BaseButton
           class="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
           :disabled="isInspecting || isRateLimited || !form.figmaUrl"
           @click="loadBanners"
@@ -42,25 +42,25 @@
                 ? `Try again in ${retryCountdownLabel}`
                 : 'Load banners'
           }}
-        </button>
+        </BaseButton>
 
-        <button
+        <BaseButton
           v-if="detectedBanners.length"
           class="rounded border px-4 py-2"
           type="button"
           @click="selectAllBanners"
         >
           Select all
-        </button>
+        </BaseButton>
 
-        <button
+        <BaseButton
           v-if="detectedBanners.length"
           class="rounded border px-4 py-2"
           type="button"
           @click="clearSelectedBanners"
         >
           Clear
-        </button>
+        </BaseButton>
       </div>
     </section>
 
@@ -93,8 +93,8 @@
           </p>
         </div>
 
-        <div class="flex gap-3 flex-wrap items-center">
-          <label class="grid gap-1">
+        <div class="flex min-w-0 gap-3 flex-wrap items-center [&>label]:w-full sm:[&>label]:w-auto">
+          <label class="grid min-w-0 gap-1">
             <span class="text-sm font-medium">Filter by type</span>
             <select v-model="bannerTypeFilter" class="rounded border px-3 py-2 bg-transparent">
               <option v-for="type in availableTypes" :key="type" :value="type">
@@ -103,7 +103,7 @@
             </select>
           </label>
 
-          <label class="grid gap-1">
+          <label class="grid min-w-0 gap-1">
             <span class="text-sm font-medium">Quality preset</span>
             <select v-model="selectedPreset" class="rounded border px-3 py-2 bg-transparent">
               <option v-for="(preset, key) in QUALITY_PRESETS" :key="key" :value="key">
@@ -111,7 +111,7 @@
               </option>
             </select>
           </label>
-          <label class="grid gap-1">
+          <label class="grid min-w-0 gap-1">
             <span class="text-sm font-medium">Scale for selected</span>
             <select v-model.number="bulkScale" class="rounded border px-3 py-2 bg-transparent">
               <option v-for="scale in SCALE_OPTIONS" :key="scale" :value="scale">
@@ -120,19 +120,19 @@
             </select>
           </label>
 
-          <button
+          <BaseButton
             class="rounded border px-4 py-2 disabled:opacity-50"
             type="button"
             :disabled="selectedCount === 0"
             @click="applyScaleToSelectedBanners"
           >
             Apply scale to selected
-          </button>
+          </BaseButton>
         </div>
       </div>
 
       <div class="grid">
-        <label class="grid gap-1">
+        <label class="grid min-w-0 gap-1">
           <span class="text-sm font-medium">Search banners</span>
           <input
             v-model="bannerSearch"
@@ -147,8 +147,8 @@
         Showing {{ filteredBanners.length }} of {{ detectedBanners.length }} elements
       </p>
 
-      <div class="overflow-auto rounded border">
-        <table class="w-full text-sm">
+      <BaseTableScroll label="Банери" class="rounded border">
+        <table class="w-full min-w-[640px] text-sm">
           <thead>
             <tr class="border-b text-left">
               <th class="p-3 w-12">Use</th>
@@ -199,7 +199,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
 
       <div class="grid gap-3 rounded border p-3">
         <div class="text-sm font-medium">Formats</div>
@@ -222,7 +222,7 @@
         </div>
       </div>
 
-      <button
+      <BaseButton
         class="w-full rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
         :disabled="
           isExporting || isRateLimited || selectedCount === 0 || selectedFormats.length === 0
@@ -236,7 +236,7 @@
               ? `Try again in ${retryCountdownLabel}`
               : 'Export selected banners'
         }}
-      </button>
+      </BaseButton>
     </section>
 
     <section v-if="job" class="max-w-4xl rounded border p-4">
@@ -274,8 +274,8 @@
         <p class="text-sm opacity-70">File size comparison for exported banners.</p>
       </div>
 
-      <div class="overflow-auto rounded border">
-        <table class="w-full text-sm">
+      <BaseTableScroll label="Банери" class="rounded border">
+        <table class="w-full min-w-[640px] text-sm">
           <thead>
             <tr class="border-b text-left">
               <th class="p-3">Banner</th>
@@ -318,7 +318,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
     </section>
 
     <div v-if="error" class="max-w-4xl rounded border border-red-500 p-4 text-red-500">
@@ -334,6 +334,10 @@
 </template>
 
 <script setup>
+  import BaseButton from '@/components/base/BaseButton.vue'
+
+  import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
+
   import { computed, onBeforeUnmount, reactive, ref } from 'vue'
   import {
     createBannerExport,

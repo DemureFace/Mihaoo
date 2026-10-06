@@ -1,42 +1,45 @@
 <template>
-  <form class="space-y-3" @submit.prevent="onSubmit">
-    <div>
-      <label class="block text-sm mb-1">Назва</label>
-      <input v-model="form.title" required class="w-full border rounded-lg px-3 py-2" />
-    </div>
-
-    <div>
-      <label class="block text-sm mb-1">Опис</label>
-      <textarea v-model="form.description" rows="2" class="w-full border rounded-lg px-3 py-2" />
-    </div>
-
-    <div>
-      <label class="block text-sm mb-1">Пункти</label>
-      <div class="space-y-2">
-        <div v-for="(it, idx) in form.items" :key="it.id" class="flex gap-2">
-          <input
-            v-model="it.text"
-            class="flex-1 border rounded-lg px-3 py-2"
-            placeholder="Текст пункту"
-          />
-          <button type="button" class="border rounded px-2" @click="removeItem(idx)">−</button>
-        </div>
-        <button type="button" class="border rounded px-3 py-1" @click="addItem">
-          Додати пункт
-        </button>
+  <form class="min-w-0 space-y-4" @submit.prevent="onSubmit">
+    <BaseInput v-model="form.title" id="checklist-title" label="Назва" required />
+    <BaseTextarea v-model="form.description" id="checklist-description" label="Опис" :rows="2" />
+    <div class="min-w-0 space-y-2">
+      <h3 class="text-sm font-semibold">Пункти</h3>
+      <div v-for="(it, idx) in form.items" :key="it.id" class="flex min-w-0 items-end gap-2">
+        <BaseInput
+          v-model="it.text"
+          :id="`checklist-item-${it.id}`"
+          :label="`Пункт ${idx + 1}`"
+          placeholder="Текст пункту"
+          class="flex-1"
+        />
+        <BaseButton
+          type="button"
+          :aria-label="`Видалити пункт ${idx + 1}`"
+          @click="removeItem(idx)"
+        >
+          −
+        </BaseButton>
       </div>
+      <BaseButton type="button" @click="addItem">Додати пункт</BaseButton>
     </div>
-
-    <footer class="flex justify-end gap-2 pt-2">
-      <button type="button" class="border rounded px-3 py-1" @click="onCancel">Скасувати</button>
-      <button type="submit" class="border rounded px-3 py-1 bg-gray-900 text-white">
+    <BaseActionBar class="justify-end pt-2">
+      <BaseButton type="button" @click="onCancel">Скасувати</BaseButton>
+      <BaseButton type="submit" variant="primary">
         {{ isEdit ? 'Зберегти' : 'Створити' }}
-      </button>
-    </footer>
+      </BaseButton>
+    </BaseActionBar>
   </form>
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
+  import BaseButton from '@/components/base/BaseButton.vue'
+
+  import BaseTextarea from '@/components/base/BaseTextarea.vue'
+
+  import BaseInput from '@/components/base/BaseInput.vue'
+
   import { reactive, computed, watchEffect } from 'vue'
   import { generateSlug } from '@/lib/checklistsRepo'
 

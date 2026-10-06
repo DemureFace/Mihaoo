@@ -1,7 +1,7 @@
 <template>
   <BaseModal v-model="isOpen" size="xl">
-    <form class="space-y-5" @submit.prevent="submit">
-      <header class="border-b border-neutral-200 pb-5 pr-10">
+    <form class="min-w-0 space-y-5" @submit.prevent="submit">
+      <header class="border-b border-neutral-200 pb-5">
         <h2 class="text-2xl font-bold tracking-[-0.02em] text-black">
           {{ isDuplicate ? 'Створити схожу задачу' : 'Нова задача' }}
         </h2>
@@ -124,7 +124,7 @@
               Спочатку оберіть платформу.
             </div>
 
-            <div v-else class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div v-else class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
               <div
                 v-for="brand in brandOptions"
                 :key="brand.value"

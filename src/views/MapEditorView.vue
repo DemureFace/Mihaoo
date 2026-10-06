@@ -1,20 +1,21 @@
 <template>
-  <section v-if="map" class="flex flex-col gap-4 h-[calc(100vh-7rem)] min-h-[650px]">
+  <section v-if="map" class="min-w-0 flex flex-col gap-4 xl:h-[calc(100dvh-7rem)] xl:min-h-[650px]">
     <!-- Header -->
-    <div class="flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
+    <div class="flex min-w-0 flex-wrap items-center justify-between gap-4">
+      <div class="flex min-w-0 flex-1 items-center gap-3">
         <button type="button" class="p-2 rounded-xl hover:bg-black/5" @click="goBack">
           <ArrowLeftIcon class="w-5 h-5" />
         </button>
 
-        <div>
+        <div class="min-w-0 flex-1">
           <input
             v-model="title"
-            class="bg-transparent text-xl font-bold outline-none"
+            aria-label="Map title"
+            class="w-full min-w-0 bg-transparent text-xl font-bold outline-none"
             @input="markChanged"
           />
 
-          <div class="mt-0.5 flex items-center gap-2 text-xs text-black/40">
+          <div class="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-black/40">
             <span>
               {{ nodes.length }}
               nodes
@@ -66,20 +67,22 @@
     />
 
     <!-- Workspace -->
-    <div class="flex-1 min-h-0 flex gap-4">
+    <div class="min-w-0 flex-1 min-h-0 flex flex-col gap-4 xl:flex-row">
       <MapNodePalette @add-node="handleAddNode" />
 
-      <MapCanvas
-        ref="canvasRef"
-        v-model:nodes="nodes"
-        v-model:edges="edges"
-        @connect="handleConnect"
-        @drop-node="handleDropNode"
-        @select-node="selectNode"
-        @select-edge="selectEdge"
-        @clear-selection="clearSelection"
-        @node-drag-stop="handleNodeDragStop"
-      />
+      <div class="min-w-0 h-[60dvh] min-h-80 xl:h-full xl:min-h-0 xl:flex-1">
+        <MapCanvas
+          ref="canvasRef"
+          v-model:nodes="nodes"
+          v-model:edges="edges"
+          @connect="handleConnect"
+          @drop-node="handleDropNode"
+          @select-node="selectNode"
+          @select-edge="selectEdge"
+          @clear-selection="clearSelection"
+          @node-drag-stop="handleNodeDragStop"
+        />
+      </div>
 
       <MapPropertiesPanel
         :node="selectedNode"

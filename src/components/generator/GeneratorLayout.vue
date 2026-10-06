@@ -1,7 +1,7 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl space-y-6">
+  <section class="mx-auto min-w-0 w-full max-w-6xl space-y-6 [overflow-wrap:anywhere]">
     <header
-      class="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+      class="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-6 sm:flex-row sm:items-center sm:justify-between"
     >
       <div>
         <div class="mb-2 flex items-center gap-2">
@@ -28,11 +28,11 @@
       </div>
     </header>
 
-    <div class="rounded-2xl border border-black/10 bg-white p-5 shadow-sm sm:p-6">
+    <div class="rounded-2xl border border-black/10 min-w-0 bg-white p-3 shadow-sm sm:p-6">
       <slot />
     </div>
 
-    <section v-if="showResults && $slots.result" class="space-y-4">
+    <section v-if="showResults && $slots.result" class="min-w-0 space-y-4">
       <div>
         <h2 class="text-lg font-bold text-black">Generated content</h2>
 

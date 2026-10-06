@@ -1,5 +1,5 @@
 <template>
-  <label class="flex w-full flex-col gap-1.5">
+  <label class="flex min-w-0 w-full flex-col gap-1.5">
     <span v-if="label" class="text-xs font-semibold text-neutral-500">
       {{ label }}
 
@@ -15,7 +15,7 @@
       :disabled="disabled"
       :required="required"
       :readonly="readonly"
-      class="w-full rounded-lg border bg-white px-3 py-2 text-sm text-black outline-none transition placeholder:text-neutral-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
+      class="min-w-0 max-w-full w-full rounded-lg border bg-white px-3 py-2 text-base sm:text-sm text-black outline-none transition placeholder:text-neutral-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
       :class="[
         error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20',
 

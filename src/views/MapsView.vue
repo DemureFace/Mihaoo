@@ -1,7 +1,7 @@
 <template>
-  <section class="flex flex-col gap-6">
+  <section class="min-w-0 flex flex-col gap-6">
     <!-- Header -->
-    <div class="flex items-start justify-between gap-6">
+    <div class="flex flex-wrap items-start justify-between gap-3">
       <div>
         <h1 class="text-3xl font-bold">Maps</h1>
 
@@ -18,8 +18,10 @@
     </div>
 
     <!-- Toolbar -->
-    <div class="flex items-center gap-3 bg-white rounded-2xl border border-black/10 p-3">
-      <div class="relative flex-1 max-w-md">
+    <div
+      class="flex min-w-0 flex-wrap items-center gap-3 bg-white rounded-2xl border border-black/10 p-3"
+    >
+      <div class="relative min-w-0 w-full sm:flex-1 sm:max-w-md">
         <MagnifyingGlassIcon
           class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-black/30"
         />

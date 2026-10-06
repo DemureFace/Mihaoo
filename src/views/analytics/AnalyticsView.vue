@@ -1,5 +1,5 @@
 <template>
-  <section class="w-full min-w-0 [&>section]:min-w-0">
+  <section class="w-full min-w-0">
     <header class="mb-4 sm:mb-[18px]">
       <h1 class="m-0 text-2xl font-bold tracking-[-0.02em] text-black sm:text-3xl">Аналітика</h1>
 
@@ -10,9 +10,7 @@
 
     <AnalyticsFilters />
 
-    <div class="min-w-0 [&>section>header>div]:min-w-0 [&>section>header>div:last-child]:flex-wrap">
-      <RouterView />
-    </div>
+    <RouterView />
   </section>
 </template>
 
