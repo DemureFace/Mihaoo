@@ -16,6 +16,7 @@
   <Transition name="sidebar-overlay">
     <button
       v-if="isMobile && mobileSidebarOpen"
+      ref="sidebarBackdrop"
       type="button"
       class="fixed inset-x-0 bottom-0 top-14 z-30 rounded-none border-0 bg-black/30 hover:bg-black/30 lg:hidden"
       aria-label="Close navigation"
@@ -29,13 +30,15 @@
     ref="sidebar"
     :inert="isMobile && !mobileSidebarOpen"
     :aria-hidden="isMobile && !mobileSidebarOpen"
-    @keydown.esc.stop="closeMobileSidebar"
-    @keydown.tab="trapSidebarFocus"
+    :role="isMobile ? 'dialog' : undefined"
+    :aria-modal="isMobile && mobileSidebarOpen ? true : undefined"
+    aria-label="Main navigation"
+    tabindex="-1"
   >
     <SideBar :collapsed="!isMobile && isCollapsed" @navigate="closeMobileSidebar" />
   </aside>
 
-  <main :class="mainClasses" :inert="isMobile && mobileSidebarOpen">
+  <main :class="mainClasses">
     <div :class="contentClasses">
       <RouterView v-slot="{ Component, route }">
         <Transition name="fade" mode="out-in">
@@ -63,11 +66,13 @@
 </template>
 
 <script setup>
-  import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+  import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
   import { useRoute, useRouter } from 'vue-router'
 
   import { useStore } from 'vuex'
+
+  import { useModalLayer } from '@/composables/useModalLayer'
 
   import Loader from '@/components/base/BaseLoader.vue'
   import Preloader from '@/components/Preloader.vue'
@@ -88,7 +93,14 @@
 
   const mobileSidebarOpen = ref(false)
   const sidebar = ref(null)
-  let sidebarTrigger = null
+  const sidebarBackdrop = ref(null)
+  useModalLayer({
+    open: mobileSidebarOpen,
+    surface: sidebar,
+    backdrop: sidebarBackdrop,
+    close: closeMobileSidebar,
+    extraElements: () => [document.querySelector('[aria-controls="app-sidebar"]')].filter(Boolean),
+  })
 
   let mobileMediaQuery = null
   let handlingAuthExpired = false
@@ -116,7 +128,10 @@
     'px-3 pb-3 pt-[70px] sm:px-4 sm:pb-4 lg:px-6 lg:pb-6 2xl:px-8 2xl:pb-8',
   ])
 
-  const contentClasses = 'mx-auto min-w-0 w-full max-w-[1920px]'
+  const contentClasses = computed(() => [
+    'mx-auto min-w-0 w-full',
+    ['map-view', 'map-edit'].includes(route.name) ? '' : 'max-w-[1920px]',
+  ])
 
   function toggleSidebar() {
     if (isMobile.value) {
@@ -130,22 +145,6 @@
 
   function closeMobileSidebar() {
     mobileSidebarOpen.value = false
-  }
-
-  function trapSidebarFocus(event) {
-    if (!isMobile.value || !mobileSidebarOpen.value) return
-    const buttons = Array.from(sidebar.value.querySelectorAll('button, a[href]')).filter(
-      (element) => !element.disabled && element.getClientRects().length,
-    )
-    const first = buttons[0]
-    const last = buttons.at(-1)
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault()
-      last?.focus()
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault()
-      first?.focus()
-    }
   }
 
   function syncViewport(event) {
@@ -194,19 +193,6 @@
     },
   )
 
-  watch(mobileSidebarOpen, async (isOpen) => {
-    document.documentElement.style.overflow = isOpen ? 'hidden' : ''
-
-    if (isOpen) {
-      sidebarTrigger = document.activeElement
-      await nextTick()
-      if (mobileSidebarOpen.value) sidebar.value?.querySelector('button')?.focus()
-    } else {
-      sidebarTrigger?.focus()
-      sidebarTrigger = null
-    }
-  })
-
   onMounted(async () => {
     mobileMediaQuery = window.matchMedia('(max-width: 1023px)')
 
@@ -220,8 +206,6 @@
   })
 
   onBeforeUnmount(() => {
-    document.documentElement.style.overflow = ''
-
     mobileMediaQuery?.removeEventListener('change', syncViewport)
 
     window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)

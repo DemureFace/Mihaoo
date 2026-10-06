@@ -1,5 +1,5 @@
 <template>
-  <label class="flex min-w-0 w-full flex-col gap-1.5">
+  <label :class="$attrs.class" :style="$attrs.style" class="flex min-w-0 w-full flex-col gap-1.5">
     <span v-if="label" class="text-xs font-semibold text-neutral-500">
       {{ label }}
 
@@ -7,6 +7,11 @@
     </span>
 
     <textarea
+      v-bind="
+        Object.fromEntries(
+          Object.entries($attrs).filter(([key]) => !['class', 'style'].includes(key)),
+        )
+      "
       :id="id"
       :name="name"
       :value="modelValue"
@@ -35,6 +40,7 @@
 </template>
 
 <script setup>
+  defineOptions({ inheritAttrs: false })
   import { computed } from 'vue'
 
   const props = defineProps({

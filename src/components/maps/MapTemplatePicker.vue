@@ -1,5 +1,5 @@
 <template>
-  <BaseModal v-model="open">
+  <BaseModal aria-label="Create Map" v-model="open">
     <div>
       <div>
         <h2 class="text-xl font-bold">Create Map</h2>

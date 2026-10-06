@@ -70,7 +70,10 @@
       </BaseButton>
     </div>
 
-    <BaseModal v-model="modalActive">
+    <BaseModal
+      v-model="modalActive"
+      :aria-label="currentModalComponent === 'signup' ? 'Register' : 'Login'"
+    >
       <component
         :is="modalComponent"
         v-if="modalComponent"

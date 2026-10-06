@@ -1,5 +1,5 @@
 <template>
-  <BaseModal v-model="isOpen" size="xl">
+  <BaseModal aria-label="Деталі задачі" v-model="isOpen" size="xl">
     <div class="min-h-[320px]">
       <div v-if="loading" class="flex min-h-[320px] items-center justify-center">
         <div class="flex items-center gap-3 text-sm text-neutral-500">

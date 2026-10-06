@@ -1,5 +1,5 @@
 <template>
-  <label class="flex min-w-0 w-full flex-col gap-1.5">
+  <label :class="$attrs.class" :style="$attrs.style" class="flex min-w-0 w-full flex-col gap-1.5">
     <span v-if="label" class="text-xs font-semibold text-neutral-500">
       {{ label }}
 
@@ -7,6 +7,11 @@
     </span>
 
     <select
+      v-bind="
+        Object.fromEntries(
+          Object.entries($attrs).filter(([key]) => !['class', 'style'].includes(key)),
+        )
+      "
       :id="id"
       :value="modelValue"
       :disabled="disabled"
@@ -31,6 +36,7 @@
 </template>
 
 <script setup>
+  defineOptions({ inheritAttrs: false })
   defineProps({
     modelValue: {
       type: [String, Number],

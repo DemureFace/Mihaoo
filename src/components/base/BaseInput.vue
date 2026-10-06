@@ -1,5 +1,5 @@
 <template>
-  <label class="flex min-w-0 w-full flex-col gap-1.5">
+  <label :class="$attrs.class" :style="$attrs.style" class="flex min-w-0 w-full flex-col gap-1.5">
     <span v-if="label" class="text-xs font-semibold text-neutral-500">
       {{ label }}
 
@@ -8,6 +8,11 @@
 
     <div class="relative min-w-0">
       <input
+        v-bind="
+          Object.fromEntries(
+            Object.entries($attrs).filter(([key]) => !['class', 'style'].includes(key)),
+          )
+        "
         :id="id"
         :name="name"
         :type="resolvedType"
@@ -48,6 +53,7 @@
 </template>
 
 <script setup>
+  defineOptions({ inheritAttrs: false })
   import { computed, ref } from 'vue'
 
   import BaseButton from '@/components/base/BaseButton.vue'

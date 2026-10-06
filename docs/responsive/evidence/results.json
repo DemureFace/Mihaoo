@@ -1,0 +1,903 @@
+{
+  "date": "2026-10-06",
+  "revision": "e97bd8669c5c2d8f74fe4a2d7dfaa3493e82b11c",
+  "diffSHA256": "0f36b1653e55ca67bdaf349e7b27b218261b155354d521bb791f8e60b537b444",
+  "dirty": "M src/App.vue\n M src/components/TheHeader.vue\n M src/components/analytics/AnalyticsTaskCreateModal.vue\n M src/components/analytics/AnalyticsTaskDetailsModal.vue\n M src/components/analytics/AnalyticsWeeklyReportDetailsModal.vue\n M src/components/analytics/AnalyticsWeeklyReportModal.vue\n M src/components/base/BaseInput.vue\n M src/components/base/BaseModal.vue\n M src/components/base/BaseSelect.vue\n M src/components/base/BaseTextarea.vue\n M src/components/maps/MapSettingsModal.vue\n M src/components/maps/MapTemplatePicker.vue\n M src/views/analytics/AnalyticsTaskListView.vue\n?? docs/\n?? scripts/\n?? src/composables/useModalLayer.js\n?? tests/",
+  "browser": "150.0.7871.115",
+  "engine": "Chromium / installed Chrome, headless",
+  "os": "darwin 25.6.0 arm64",
+  "DPR": 1,
+  "zoom": "100% (visualViewport.scale=1); no real browser zoom asserted",
+  "dataSource": "isolated fixture, external traffic intercepted",
+  "results": [
+    {
+      "name": "/analytics/tasks 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/tasks 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/tasks 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/tasks 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/tasks 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/tasks 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/report 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/report 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/report 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/analytics/report 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/analytics/report 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/tournaments 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/tournaments 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/tournaments 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/tournaments 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/tournaments 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/promo 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/promo 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/promo 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/promo 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/promo 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists/responsive-fixture 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists/responsive-fixture 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists/responsive-fixture 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/checklists/responsive-fixture 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/banner-export 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/banner-export 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/banner-export 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/banner-export 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/banner-export 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/maps/responsive-fixture/edit 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/dashboard 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/dashboard 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/dashboard 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/dashboard 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/dashboard 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/home 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/home 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/home 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/home 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/home 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/news 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/news 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/news 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/news 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/news 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/calendar 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/calendar 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/calendar 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/calendar 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/calendar 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/currency-converter 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/currency-converter 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/currency-converter 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "/currency-converter 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "/currency-converter 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Navigation boundary 1023/1024/1025 and desktop collapse",
+      "status": "PASS"
+    },
+    {
+      "name": "Drawer focus, Tab loop, Escape and same-route dismissal",
+      "status": "PASS"
+    },
+    {
+      "name": "Filters validation, apply/reset and local table keyboard scroll",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Task CSV download fixture",
+      "status": "FAIL",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'tasks.csv'\n- 'fixture.csv'\n"
+    },
+    {
+      "name": "Task create modal 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Task create modal 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Task create modal 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Task create modal 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Task create modal 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Task create modal resize preserves input, controls fit and close reachable",
+      "status": "FAIL",
+      "error": "{\"width\":844,\"scroll\":844,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Weekly form 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Weekly form 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Weekly form 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Weekly form 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Weekly form 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Weekly form local preview, no API-ready flags enabled",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Generated promo 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Generated promo 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Generated promo 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Generated promo 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Generated promo 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Generated promo 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Promo generation and copy fixture; resize retains source text",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 320x568",
+      "status": "FAIL",
+      "error": "{\"width\":320,\"scroll\":320,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Banner results 375x667",
+      "status": "FAIL",
+      "error": "{\"width\":375,\"scroll\":375,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Banner results 390x844",
+      "status": "FAIL",
+      "error": "{\"width\":390,\"scroll\":390,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Banner results 768x1024",
+      "status": "FAIL",
+      "error": "{\"width\":768,\"scroll\":768,\"overflowing\":[\"NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease\"]}\n+ actual - expected\n\n+ [\n+   'NAV:bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease'\n+ ]\n- []\n"
+    },
+    {
+      "name": "Banner results 1024x768",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1280x800",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1440x900",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 1920x1080",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 2560x1440",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner results 3840x2160",
+      "status": "PASS"
+    },
+    {
+      "name": "Banner inspect fixture and contained results",
+      "status": "PASS"
+    },
+    {
+      "name": "Tasks empty state",
+      "status": "FAIL",
+      "error": "locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Нічого не знайдено', { exact: true }) to be visible\u001b[22m\n"
+    },
+    {
+      "name": "Tasks error state",
+      "status": "PASS"
+    }
+  ],
+  "unverified": [
+    "Real Safari/iPhone and virtual keyboard",
+    "Real backend/API integration",
+    "200% native browser zoom",
+    "Real Retina monitor"
+  ],
+  "runtimeErrors": [],
+  "unexpected": []
+}

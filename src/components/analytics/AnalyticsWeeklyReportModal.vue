@@ -1,5 +1,5 @@
 <template>
-  <BaseModal v-model="open" size="xl">
+  <BaseModal aria-label="Тижневий звіт" v-model="open" size="xl">
     <div class="min-w-0 space-y-6">
       <header class="min-w-0">
         <p class="m-0 text-xs font-semibold uppercase tracking-[0.12em] text-neutral-400">

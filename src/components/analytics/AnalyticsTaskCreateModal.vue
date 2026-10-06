@@ -1,5 +1,5 @@
 <template>
-  <BaseModal v-model="isOpen" size="xl">
+  <BaseModal aria-label="Створення задачі" v-model="isOpen" size="xl">
     <form class="min-w-0 space-y-5" @submit.prevent="submit">
       <header class="border-b border-neutral-200 pb-5">
         <h2 class="text-2xl font-bold tracking-[-0.02em] text-black">
