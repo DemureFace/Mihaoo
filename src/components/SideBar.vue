@@ -1,8 +1,9 @@
 <template>
   <nav
+    aria-label="Main navigation"
     :class="[
-      'bg-surface-primary h-full p-4 flex flex-col gap-2 transition-all duration-300 ease-in-out',
-      collapsed ? 'w-16' : 'w-56',
+      'bg-surface-primary h-full w-full overflow-y-auto overscroll-contain flex flex-col gap-2 transition-all duration-300 ease-in-out',
+      collapsed ? 'p-2' : 'p-3',
     ]"
   >
     <ul class="flex flex-col gap-2 list-none m-0 p-0">
@@ -14,11 +15,14 @@
         <!-- Основна таба -->
         <BaseButton
           variant="plain"
-          class="flex w-full items-center gap-2 rounded-lg transition-all duration-300 ease-in-out"
+          class="flex min-h-11 w-full items-center gap-2 rounded-lg transition-all duration-300 ease-in-out"
           :class="[
             isTabActive(tab) ? 'active' : '',
             collapsed ? 'p-1 justify-center' : 'px-3 py-1.5',
           ]"
+          :aria-label="collapsed ? tab.label : undefined"
+          :title="collapsed ? tab.label : undefined"
+          :aria-expanded="tab.children && !collapsed ? openDropdown === tab.value : undefined"
           @click="handleClick(tab)"
         >
           <!-- Іконка -->
@@ -62,7 +66,7 @@
               <BaseButton
                 variant="plain"
                 size="sm"
-                class="w-full box-border justify-start rounded-md border border-black bg-white px-3 py-1.5 text-left transition-all duration-200 hover:bg-black/5"
+                class="min-h-11 w-full box-border justify-start rounded-md border border-black bg-white px-3 py-1.5 text-left transition-all duration-200 hover:bg-black/5"
                 :class="isChildActive(child) ? 'font-bold text-black' : 'text-black'"
                 @click.stop="handleChildClick(child)"
               >
@@ -95,6 +99,8 @@
   const props = defineProps({
     collapsed: { type: Boolean, default: false },
   })
+
+  const emit = defineEmits(['navigate'])
 
   const router = useRouter()
   const route = useRoute()
@@ -196,6 +202,7 @@
       if (props.collapsed) {
         const target = tab.children.find((child) => route.path === child.path) ?? tab.children[0]
 
+        emit('navigate')
         router.push(target.path)
         bounce(tab.value)
 
@@ -212,12 +219,15 @@
     bounce(tab.value)
 
     if (tab.path) {
+      emit('navigate')
       router.push(tab.path)
     }
   }
 
   function handleChildClick(child) {
     // Якщо цей child вже відкритий — нічого не робимо
+    emit('navigate')
+
     if (route.path === child.path) return
 
     if (child.path) {
@@ -255,8 +265,10 @@
     transition: all 0.3s ease;
   }
 
-  li:hover {
-    animation: push-button 2s linear infinite;
+  @media (hover: hover) {
+    li:hover {
+      animation: push-button 2s linear infinite;
+    }
   }
 
   @keyframes push-button {

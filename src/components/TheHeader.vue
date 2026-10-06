@@ -1,16 +1,28 @@
 <template>
   <header
-    class="flex h-14 items-center justify-between border-b border-black/10 bg-surface-primary px-4 text-dark"
+    class="flex h-14 items-center justify-between border-b border-black/10 bg-surface-primary px-3 text-dark sm:px-4"
   >
-    <div class="flex items-center">
+    <div class="flex min-w-0 items-center">
       <BaseButton
         type="button"
         variant="plain"
-        class="mr-4 p-2"
-        aria-label="Toggle sidebar"
+        class="mr-2 min-h-11 min-w-11 shrink-0 p-2 sm:mr-4"
+        aria-controls="app-sidebar"
+        :aria-expanded="props.mobile ? props.sidebarOpen : !props.collapsed"
+        :aria-label="
+          props.mobile
+            ? props.sidebarOpen
+              ? 'Close navigation'
+              : 'Open navigation'
+            : 'Toggle sidebar'
+        "
         @click="emit('toggle-sidebar')"
       >
-        <ChevronDoubleLeftIcon v-if="!props.collapsed" class="h-6 w-6" />
+        <Bars3Icon v-if="props.mobile && !props.sidebarOpen" class="h-6 w-6" />
+
+        <XMarkIcon v-else-if="props.mobile" class="h-6 w-6" />
+
+        <ChevronDoubleLeftIcon v-else-if="!props.collapsed" class="h-6 w-6" />
 
         <ChevronDoubleRightIcon v-else class="h-6 w-6" />
       </BaseButton>
@@ -18,30 +30,42 @@
       <div class="flex items-center gap-2">
         <img src="/src/assets/images/logo.png" width="28" height="28" alt="Mihaoo" />
 
-        <h1 class="text-xl font-bold">Mihaoo</h1>
+        <h1 class="hidden text-xl font-bold sm:block">Mihaoo</h1>
       </div>
     </div>
 
-    <div class="flex items-center gap-3">
+    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
       <template v-if="isAuthenticated">
         <div
           class="hidden items-center gap-2 rounded-lg border border-black/10 bg-white px-3 py-1.5 sm:flex"
         >
           <UserCircleIcon class="h-5 w-5 text-neutral-500" />
 
-          <span class="max-w-56 truncate text-sm font-medium text-black">
+          <span class="max-w-40 truncate lg:max-w-56 text-sm font-medium text-black">
             {{ user.email }}
           </span>
         </div>
 
-        <BaseButton size="sm" variant="secondary" @click="handleLogout">
+        <BaseButton
+          size="sm"
+          variant="secondary"
+          class="min-h-11 min-w-11"
+          aria-label="Logout"
+          @click="handleLogout"
+        >
           <ArrowRightStartOnRectangleIcon class="h-4 w-4" />
 
           <span class="hidden sm:inline">Logout</span>
         </BaseButton>
       </template>
 
-      <BaseButton v-else size="sm" variant="primary" @click="openAuthModal('login')">
+      <BaseButton
+        v-else
+        size="sm"
+        variant="primary"
+        class="min-h-11"
+        @click="openAuthModal('login')"
+      >
         Login
       </BaseButton>
     </div>
@@ -69,6 +93,8 @@
     ChevronDoubleLeftIcon,
     ChevronDoubleRightIcon,
     UserCircleIcon,
+    Bars3Icon,
+    XMarkIcon,
   } from '@heroicons/vue/24/outline'
 
   import BaseButton from '@/components/base/BaseButton.vue'
@@ -80,6 +106,16 @@
 
   const props = defineProps({
     collapsed: {
+      type: Boolean,
+      default: false,
+    },
+
+    mobile: {
+      type: Boolean,
+      default: false,
+    },
+
+    sidebarOpen: {
       type: Boolean,
       default: false,
     },

@@ -1,48 +1,62 @@
 <template>
-  <section
-    class="sticky top-[70px] z-30 mb-[18px] overflow-hidden rounded-[14px] border border-black bg-white"
-  >
-    <div class="flex items-center gap-2 border-b border-neutral-200 p-4">
-      <BaseButton
-        v-for="preset in presets"
-        :key="preset.value"
-        size="sm"
-        :variant="activePreset === preset.value ? 'primary' : 'secondary'"
-        @click="setPreset(preset.value)"
+  <section class="@container mb-4 min-w-0 rounded-[14px] border border-black bg-white sm:mb-[18px]">
+    <div
+      class="flex flex-col gap-3 border-b border-neutral-200 p-3 sm:p-4 @min-[900px]:flex-row @min-[900px]:items-center"
+    >
+      <div class="flex min-w-0 flex-wrap gap-2">
+        <BaseButton
+          v-for="preset in presets"
+          :key="preset.value"
+          class="min-h-11"
+          size="sm"
+          :variant="activePreset === preset.value ? 'primary' : 'secondary'"
+          @click="setPreset(preset.value)"
+        >
+          {{ preset.label }}
+        </BaseButton>
+
+        <BaseButton
+          class="min-h-11"
+          size="sm"
+          :variant="!draft.from && !draft.to ? 'primary' : 'secondary'"
+          @click="clearPeriod"
+        >
+          Увесь час
+        </BaseButton>
+      </div>
+      <div
+        class="flex w-full flex-wrap gap-2 @min-[900px]:ml-auto @min-[900px]:w-auto @min-[900px]:shrink-0"
       >
-        {{ preset.label }}
-      </BaseButton>
+        <BaseButton class="min-h-11 flex-1 @min-[900px]:flex-none" @click="resetFilters">
+          Скинути
+        </BaseButton>
 
-      <BaseButton
-        size="sm"
-        :variant="!draft.from && !draft.to ? 'primary' : 'secondary'"
-        @click="clearPeriod"
-      >
-        Увесь час
-      </BaseButton>
-
-      <div class="ml-auto flex gap-2">
-        <BaseButton @click="resetFilters">Скинути</BaseButton>
-
-        <BaseButton variant="primary" :disabled="Boolean(dateError)" @click="applyFilters">
+        <BaseButton
+          class="min-h-11 flex-1 @min-[900px]:flex-none"
+          variant="primary"
+          :disabled="Boolean(dateError)"
+          @click="applyFilters"
+        >
           Застосувати
         </BaseButton>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div
+      class="grid min-w-0 grid-cols-1 gap-3 p-3 sm:p-4 @min-[480px]:grid-cols-2 @min-[800px]:grid-cols-3 @min-[1100px]:grid-cols-4 @min-[1600px]:grid-cols-5 [&>label]:min-w-0 [&_input]:min-w-0 [&_select]:min-w-0"
+    >
       <BaseInput
         v-model="draft.search"
         id="analytics-search"
         label="Пошук"
         type="search"
         placeholder="Назва або Jira"
-        class="sm:col-span-2"
+        class="@min-[480px]:col-span-2"
       />
 
       <div
         v-if="analytics.referenceDataError"
-        class="border-t border-neutral-200 bg-amber-50 px-4 py-3 text-xs text-amber-800"
+        class="col-span-full break-words rounded-lg bg-amber-50 p-3 text-xs text-amber-800"
       >
         {{ analytics.referenceDataError }}
       </div>

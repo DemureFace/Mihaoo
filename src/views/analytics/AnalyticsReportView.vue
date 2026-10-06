@@ -598,8 +598,6 @@
   let reportController = null
   let weeklyReportsController = null
   let weeklyReportDetailsController = null
-  let weeklyReportsController = null
-  let weeklyReportDetailsController = null
 
   const weeklyReportOpen = ref(false)
   const weeklyReportEditSource = ref(null)
@@ -942,7 +940,7 @@
         value:
           data?.completionRate === null || data?.completionRate === undefined
             ? null
-            : `${formatPercent(data.completionRate)}%`,
+            : `${formatRate(data.completionRate)}%`,
         raw: false,
         description: 'Частка завершених задач',
       },
@@ -1124,17 +1122,6 @@
       }
     },
   )
-
-  watch(weeklyReportDetailsOpen, (isOpen) => {
-    if (isOpen) {
-      return
-    }
-
-    weeklyReportDetailsController?.abort()
-    weeklyReportDetailsController = null
-
-    weeklyReportDetailsLoading.value = false
-  })
 
   watch(weeklyReportDetailsOpen, (isOpen) => {
     if (isOpen) {

@@ -1,16 +1,18 @@
 <template>
-  <section class="min-w-0 px-4 py-5 md:px-7 md:py-6">
-    <header class="mb-[18px]">
-      <h1 class="m-0 text-3xl font-bold tracking-[-0.02em] text-black">Аналітика</h1>
+  <section class="w-full min-w-0 [&>section]:min-w-0">
+    <header class="mb-4 sm:mb-[18px]">
+      <h1 class="m-0 text-2xl font-bold tracking-[-0.02em] text-black sm:text-3xl">Аналітика</h1>
 
-      <p class="mt-1 text-sm text-neutral-500">
+      <p class="mt-1 break-words text-sm text-neutral-500">
         {{ subtitle }}
       </p>
     </header>
 
     <AnalyticsFilters />
 
-    <RouterView />
+    <div class="min-w-0 [&>section>header>div]:min-w-0 [&>section>header>div:last-child]:flex-wrap">
+      <RouterView />
+    </div>
   </section>
 </template>
 
