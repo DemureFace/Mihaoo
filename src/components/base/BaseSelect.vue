@@ -16,6 +16,11 @@
       :value="modelValue"
       :disabled="disabled"
       :required="required"
+      :aria-invalid="Boolean(error)"
+      :aria-describedby="
+        [$attrs['aria-describedby'], error ? `${id}-error` : null].filter(Boolean).join(' ') ||
+        undefined
+      "
       class="min-w-0 max-w-full w-full rounded-lg border bg-white px-3 py-2 text-base sm:text-sm text-black outline-none transition focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
       :class="error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20'"
       @change="onChange"
@@ -29,7 +34,7 @@
       </option>
     </select>
 
-    <span v-if="error" class="text-xs font-medium text-red-600">
+    <span v-if="error" :id="`${id}-error`" class="text-xs font-medium text-red-600">
       {{ error }}
     </span>
   </label>

@@ -111,6 +111,12 @@ const routes = [
   },
 
   {
+    path: '/responsive-showcase',
+    name: 'responsive-showcase',
+    component: () => import('@/views/ResponsiveShowcaseView.vue'),
+  },
+
+  {
     path: '/analytics',
     component: () => import('@/views/analytics/AnalyticsView.vue'),
 

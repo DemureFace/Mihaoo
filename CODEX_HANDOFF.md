@@ -4,6 +4,12 @@ _Revision 2: 2026-10-06. Original project handoff retained; provenance clarified
 
 Read this file together with `AGENTS.md` before making changes.
 
+**Local checkpoint updated 2026-10-06:** section 39 contains actual local results on
+`main` / `222d89e385456db25ab27f691482137469d4457d` plus this batch's uncommitted diff.
+Earlier “current” descriptions are historical unless confirmed there.
+The test matrix is at repository root: `RESPONSIVE_TEST_MATRIX.md`.
+Implementation documentation: `docs/responsive/GUIDELINES.md` and `docs/responsive/PATTERNS.md`.
+
 This document preserves the decisions, architecture, current implementation state, constraints and next steps needed to continue Mihaoo safely.
 
 ---
@@ -1424,19 +1430,60 @@ Git commit/push: not performed unless explicitly requested
 
 Update the checkpoint below after implementation, not merely after planning. Keep detailed logs/screenshots in the test matrix or an existing project evidence location; do not append secrets or massive terminal dumps here.
 
-### Current checkpoint - fill from actual local work
+### Current checkpoint — actual local batch, 2026-10-06
 
-| Item                                         | Status at handoff revision 2                                  |
-| -------------------------------------------- | ------------------------------------------------------------- |
-| Current local branch, commit and dirty state | Not inspected in this revision                                |
-| Duplicate controllers / stale formatter      | Reported in historical snapshot; verify whether fixed locally |
-| Shared responsive shell                      | Proposed; local implementation unverified                     |
-| Drawer/modal keyboard and scroll behavior    | Verification required                                         |
-| Analytics responsive use                     | Verification required                                         |
-| Second module using shared patterns          | Pending verification                                          |
-| Browser matrix                               | NOT RUN by the handoff author                                 |
-| Dedicated report APIs / SQL execution        | Unverified here; preserve flags until confirmed               |
-| Confluence publication                       | Pending; no page ID or URL confirmed                          |
+**Latest follow-up — interactive showcase:** `/responsive-showcase`, sidebar **Responsive**.
+Added `ResponsiveShowcaseView.vue`, lazy route and sidebar entry; all existing guards unchanged.
+Five clearly labelled synthetic examples: Analytics, Promo/Tournament, Checklists, Banner Export, Maps.
+Uses shared Base controls, real GeneratedArtifact and MapCard; no feature API calls or storage writes.
+Container widths 375/768/available are not device emulation. Modals follow real viewport.
+
+Latest full harness: **260 PASS / 0 FAIL**, evidence `docs/responsive/evidence/showcase/results.json`.
+Includes 50 showcase viewport checks and local interactions (task create/filter/details, Copy, checklist reset, format selection, Maps notice).
+Screenshots: `showcase-desktop.png`, `showcase-maps-320.png` in that directory.
+Separate unauthenticated check: PASS, no API requests, unchanged localStorage; global font styles were blocked.
+Scoped Prettier, ESLint and build PASS; existing chunk-size warning remains.
+Prior batch changes preserved, no commit/push/deploy. The table below records the preceding 209-check batch.
+Next: owner visual review of gallery and real Safari/mobile-keyboard acceptance.
+
+| Item | Current status |
+| --- | --- |
+| Baseline | `main`, `222d89e385456db25ab27f691482137469d4457d`; clean before batch; changes below remain uncommitted |
+| Duplicate controllers / stale formatter | Already fixed in baseline; not reapplied |
+| Shared responsive shell | Already implemented; navigation boundary 1024px, normal content cap 1920px, Maps view/editor wide mode |
+| Drawer/modal keyboard and scroll behavior | PASS in isolated Chromium fixtures: focus, Tab, topmost Escape, shared lock, resize/same-route dismissal, KeepAlive overlay cleanup |
+| Analytics responsive use | PASS for tested task list, create/details UI, CSV, error/empty, weekly local preview; aggregate report API data and real writes not verified |
+| Reuse in other modules | Shared patterns used in Promo/Tournament, Checklists, Banner Export, Maps; viewport bounds and selected fixture interactions PASS |
+| Browser matrix | 209 PASS / 0 FAIL; 15 routes × 10 CSS viewports plus modal/result matrices and interaction scenarios |
+| Evidence | `docs/responsive/evidence/2026-10-06/results.json` and four screenshots; revision + code diff hash recorded |
+| Quality tools | Scoped installed Prettier, ESLint check-only and `npm run build` PASS; Vite warns main chunk >500kB |
+| Dedicated report APIs / SQL execution | Unverified; feature flags not changed, no database/backend work |
+| Confluence | Documentation prepared in repository; owner explicitly chose to publish personally; publication NOT RUN, no page ID/URL |
+
+Completed in this batch:
+- BaseInput preserves caller descriptions and links hints/errors; BaseSelect/BaseTextarea now expose error associations and invalid state.
+- GeneratorLayout badges wrap and children shrink without removing content.
+- Browser harness waits for actual transition detachment (same expected assertions), isolates overlay scenarios and records real run time.
+- Added ARIA, wide-container/mobile sizing regression checks and expanded synthetic form fixture.
+- Added `docs/responsive/GUIDELINES.md` and `PATTERNS.md`; root context pointer corrected in AGENTS.
+- Updated root matrix with explicit fixture scope and remaining gaps.
+
+Historical evidence `docs/responsive/evidence/results.json` (119 PASS / 81 FAIL, previous dirty tree) remains unchanged and is not the current result.
+Fresh baseline initially produced 206 PASS / 2 FAIL: isolated reproduction confirmed transition timing in the test and cascading fixture state, not a broken modal ownership implementation.
+An added resize check exposed a transient JS/CSS navigation mismatch; the test now waits for mode synchronization, and generator badge containment was hardened. Final run passes all 209 checks.
+
+Locally verified environment: installed Chrome 150.0.7871.115, Chromium headless, macOS Darwin 25.6.0 arm64, DPR 1 and emulated DPR 2, scale 1. Playwright 1.56.1 installed in a temporary tools directory with approval; project dependencies/lockfile unchanged. No real API requests/writes were used; fixtures intercepted traffic.
+
+Pending / unverified:
+- Real Safari/iPhone, virtual keyboard, native 200% browser zoom, actual Retina hardware.
+- Full aggregate report rendering with a confirmed contract, real API integration, permissions and persistence.
+- Domain risks: persisted 0/0 weekly metrics, falsy pivot codes, missing edit identity, numeric/date semantics; intentionally not modified as responsive side effects.
+- Feature-owned polling/read cleanup in other cached views needs a separate lifecycle batch; shared overlays are covered.
+- Publication in Confluence remains the owner's action.
+
+Next coherent batch: real Safari/iPhone + native zoom acceptance using safe test data, then record evidence and Confluence page URL. Handle any confirmed domain defects separately from layout.
+
+Commit / push / deploy: not performed.
 
 ---
 

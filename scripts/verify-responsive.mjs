@@ -326,8 +326,21 @@ try {
     async () => {
       await page.getByRole('button', { name: 'Open first', exact: true }).click()
       assert.equal(await page.locator('#step-field').getAttribute('step'), '0.1')
+      assert.equal(
+        await page.locator('#step-field').getAttribute('aria-describedby'),
+        'field-context step-field-hint',
+      )
+      for (const id of ['error-select', 'error-textarea']) {
+        assert.equal(await page.locator(`#${id}`).getAttribute('aria-invalid'), 'true')
+        assert.equal(
+          await page.locator(`#${id}`).getAttribute('aria-describedby'),
+          `field-context ${id}-error`,
+        )
+        assert(await page.locator(`#${id}-error`).isVisible())
+      }
       await page.getByRole('button', { name: 'Open second', exact: true }).click()
       await page.keyboard.press('Escape')
+      await page.getByRole('dialog', { name: 'Second', exact: true }).waitFor({ state: 'detached' })
       assert.equal(await page.getByRole('dialog', { name: 'Second', exact: true }).count(), 0)
       assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden')
       assert(
@@ -336,9 +349,11 @@ try {
           .evaluate((e) => e === document.activeElement),
       )
       await page.keyboard.press('Escape')
+      await page.getByRole('dialog', { name: 'First', exact: true }).waitFor({ state: 'detached' })
       assert.equal(await page.evaluate(() => document.body.style.overflow), '')
     },
   )
+  await go('/tests/responsive/overlays.html')
   await check('Drawer plus dialog ownership and KeepAlive deactivation cleanup', async () => {
     await page.getByRole('button', { name: 'Open fixture drawer', exact: true }).click()
     await page
@@ -346,8 +361,10 @@ try {
       .getByRole('button', { name: 'Open first', exact: true })
       .click()
     await page.keyboard.press('Escape')
+    await page.getByRole('dialog', { name: 'First', exact: true }).waitFor({ state: 'detached' })
     assert.equal(await page.evaluate(() => document.body.style.overflow), 'hidden')
     await page.keyboard.press('Escape')
+    await page.getByRole('dialog', { name: 'Fixture drawer' }).waitFor({ state: 'detached' })
     assert.equal(await page.evaluate(() => document.body.style.overflow), '')
     await page.getByRole('button', { name: 'Open first', exact: true }).click()
     // Simulate route-driven deactivation, rather than clicking an inert background control.
@@ -356,7 +373,7 @@ try {
         .querySelector('#deactivate')
         .dispatchEvent(new MouseEvent('click', { bubbles: true })),
     )
-    await page.waitForTimeout(50)
+    await page.getByRole('dialog').waitFor({ state: 'detached' })
     assert.equal(await page.getByRole('dialog').count(), 0)
     assert.equal(await page.evaluate(() => document.body.style.overflow), '')
   })
@@ -398,6 +415,99 @@ try {
       await retina.close()
     }
   })
+  await check('Shared layout width policy and mobile control sizing', async () => {
+    await go('/promo')
+    await page.setViewportSize({ width: 3840, height: 2160 })
+    assert(
+      await page
+        .locator('main > div')
+        .evaluate((element) => element.getBoundingClientRect().width <= 1920),
+    )
+    await page.setViewportSize({ width: 320, height: 568 })
+    await page.waitForFunction(
+      () => getComputedStyle(document.querySelector('main')).marginLeft === '0px',
+    )
+    assert.equal(
+      await page.locator('#promo-task').evaluate((element) => getComputedStyle(element).fontSize),
+      '16px',
+    )
+    const generate = page.getByRole('button', { name: 'Generate promo', exact: true })
+    assert(await generate.evaluate((element) => element.getBoundingClientRect().height >= 44))
+    await bounds()
+    await go('/maps/responsive-fixture/edit')
+    await page.setViewportSize({ width: 3840, height: 2160 })
+    assert(
+      await page
+        .locator('main > div')
+        .evaluate((element) => element.getBoundingClientRect().width > 1920),
+    )
+    await bounds()
+  })
+  await go('/responsive-showcase')
+  const moduleNavigation = page.getByRole('navigation', { name: 'Приклади модулів' })
+  for (const module of ['Analytics', 'Promo / Tournament', 'Checklists', 'Banner Export', 'Maps']) {
+    await moduleNavigation.getByRole('button', { name: module, exact: true }).click()
+    await matrix(`Showcase ${module}`)
+  }
+  await check('Showcase container widths and isolated interactions', async () => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await moduleNavigation.getByRole('button', { name: 'Analytics', exact: true }).click()
+    await page.getByRole('button', { name: 'Вузький · 375', exact: true }).click()
+    await page.waitForFunction(
+      () =>
+        document.querySelector('[data-testid="showcase-preview"]').getBoundingClientRect().width ===
+        375,
+    )
+    assert.equal(
+      await page
+        .getByTestId('showcase-preview')
+        .evaluate((element) => element.getBoundingClientRect().width),
+      375,
+    )
+    await page.getByRole('button', { name: '+ Demo задача', exact: true }).click()
+    await page.locator('#showcase-task-title').fill('Showcase test task')
+    await page.setViewportSize({ width: 320, height: 568 })
+    assert.equal(await page.locator('#showcase-task-title').inputValue(), 'Showcase test task')
+    await page.getByRole('button', { name: 'Додати до demo', exact: true }).click()
+    await page.getByRole('dialog').waitFor({ state: 'detached' })
+    await page.locator('#showcase-search').fill('Showcase test task')
+    assert.equal(
+      await page.locator('[aria-label="Демонстраційна таблиця задач"] tbody tr').count(),
+      1,
+    )
+    await page.getByRole('button', { name: 'Деталі', exact: true }).click()
+    await page.getByRole('dialog', { name: 'Деталі демонстраційної задачі' }).waitFor()
+    await bounds()
+    await page.keyboard.press('Escape')
+    await page.getByRole('dialog').waitFor({ state: 'detached' })
+    await moduleNavigation.getByRole('button', { name: 'Promo / Tournament', exact: true }).click()
+    await page.getByRole('button', { name: 'Показати demo результат', exact: true }).click()
+    await page.getByRole('button', { name: 'Copy', exact: true }).click()
+    assert((await page.evaluate(() => navigator.clipboard.readText())).includes('data-demo="true"'))
+    await bounds()
+    await moduleNavigation.getByRole('button', { name: 'Checklists', exact: true }).click()
+    await page.getByRole('checkbox').first().check()
+    await page.waitForFunction(() => document.querySelector('progress').value === 1)
+    assert.equal(await page.getByRole('progressbar').getAttribute('value'), '1')
+    await page.getByRole('button', { name: 'Скинути demo', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('progress').value === 0)
+    assert.equal(await page.getByRole('progressbar').getAttribute('value'), '0')
+    await moduleNavigation.getByRole('button', { name: 'Banner Export', exact: true }).click()
+    await page.locator('#showcase-format').selectOption('png')
+    assert(
+      (await page.locator('[aria-label="Демонстраційні банери"]').textContent()).includes('png'),
+    )
+    await moduleNavigation.getByRole('button', { name: 'Maps', exact: true }).click()
+    await page.getByRole('button', { name: 'Delete', exact: true }).click()
+    await page.getByRole('status').filter({ hasText: 'жодні карти не видалено' }).waitFor()
+    await bounds()
+    await page.screenshot({ path: path.join(output, 'showcase-maps-320.png'), fullPage: true })
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await moduleNavigation.getByRole('button', { name: 'Analytics', exact: true }).click()
+    await page.getByRole('button', { name: 'На всю ширину', exact: true }).click()
+    await page.locator('#showcase-search').fill('')
+    await page.screenshot({ path: path.join(output, 'showcase-desktop.png'), fullPage: true })
+  })
   await check('No unexpected external requests', () => assert.deepEqual(unexpected, []))
   await check('No runtime JavaScript errors', () => assert.deepEqual(runtimeErrors, []))
 } finally {
@@ -409,7 +519,7 @@ try {
   const hash = createHash('sha256').update(diff)
   for (const file of untracked) hash.update(file).update(await fs.readFile(file))
   const report = {
-    date: '2026-10-06',
+    date: new Date().toISOString(),
     revision: git('rev-parse', 'HEAD'),
     diffSHA256: hash.digest('hex'),
     dirty: git('status', '--short'),

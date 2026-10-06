@@ -20,6 +20,12 @@
       :disabled="disabled"
       :required="required"
       :readonly="readonly"
+      :aria-invalid="Boolean(error)"
+      :aria-describedby="
+        [$attrs['aria-describedby'], error ? `${id}-error` : hint ? `${id}-hint` : null]
+          .filter(Boolean)
+          .join(' ') || undefined
+      "
       class="min-w-0 max-w-full w-full rounded-lg border bg-white px-3 py-2 text-base sm:text-sm text-black outline-none transition placeholder:text-neutral-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
       :class="[
         error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20',
@@ -29,11 +35,11 @@
       @input="onInput"
     />
 
-    <span v-if="hint && !error" class="text-xs text-neutral-500">
+    <span v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-neutral-500">
       {{ hint }}
     </span>
 
-    <span v-if="error" class="text-xs font-medium text-red-600">
+    <span v-if="error" :id="`${id}-error`" class="text-xs font-medium text-red-600">
       {{ error }}
     </span>
   </label>

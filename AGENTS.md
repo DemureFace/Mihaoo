@@ -2,7 +2,7 @@ Mihaoo Development Rules
 Revision 2 - 2026-10-06. Project working rules, not a completion report.
 Required context
 
-- At the start of a Mihaoo work session, read docs/CODEX_HANDOFF.md, especially its status/provenance section. Before responsive implementation or review, also read docs/RESPONSIVE_TEST_MATRIX.md.
+- At the start of a Mihaoo work session, read CODEX_HANDOFF.md at the repository root, especially its status/provenance section and current checkpoint. Before responsive implementation or review, also read RESPONSIVE_TEST_MATRIX.md at the repository root. Implementation guidelines and reusable examples are in docs/responsive/GUIDELINES.md and docs/responsive/PATTERNS.md.
 - Follow applicable repository and directory-level agent instructions. Do not assume an arbitrary handoff filename is automatically loaded; read the referenced documents explicitly.
 - Answer the owner in Ukrainian. Preserve the current language of existing UI labels unless translation is requested.
   Scope

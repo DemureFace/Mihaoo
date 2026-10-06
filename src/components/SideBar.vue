@@ -92,6 +92,7 @@
     ChevronDownIcon,
     PhotoIcon,
     MapIcon,
+    ComputerDesktopIcon,
   } from '@heroicons/vue/24/outline'
 
   import BaseButton from '@/components/base/BaseButton.vue'
@@ -183,6 +184,12 @@
           path: '/analytics/report',
         },
       ],
+    },
+    {
+      label: 'Responsive',
+      value: 'responsive-showcase',
+      icon: ComputerDesktopIcon,
+      path: '/responsive-showcase',
     },
   ]
 

@@ -1,138 +1,199 @@
 # Mihaoo Responsive Test Matrix
 
-_Revision 2 companion - 2026-10-06. Proposed acceptance plan and blank evidence log._
+Актуалізовано: 2026-10-06. Початковий план revision 2 збережено як основу acceptance.
+Актуальний follow-up: **260 PASS / 0 FAIL**; попередній batch: 209 PASS / 0 FAIL.
+Chromium headless, isolated fixtures.
+Це не production/API integration або сертифікація реальних пристроїв.
 
-**No application checks were executed while creating this template. All listed tests start as NOT RUN.**
-Read alongside `AGENTS.md` and `CODEX_HANDOFF.md`. This adds verification detail to the responsive OKR; it does not change the product scope or authorize production writes.
+Читайте разом з `AGENTS.md`, `CODEX_HANDOFF.md`,
+[GUIDELINES](docs/responsive/GUIDELINES.md) і [PATTERNS](docs/responsive/PATTERNS.md).
+
+## Галерея — актуальний follow-up
+
+Маршрут `/responsive-showcase`, пункт **Responsive**.
+Повний regression після додавання галереї: **260 PASS / 0 FAIL**.
+Попередній 209-check run нижче збережено як окремий історичний batch.
+
+- Evidence: [showcase/results.json](docs/responsive/evidence/showcase/results.json).
+- Screenshots: [desktop](docs/responsive/evidence/showcase/showcase-desktop.png), [Maps 320](docs/responsive/evidence/showcase/showcase-maps-320.png).
+- П’ять прикладів × 10 viewport: Analytics, Promo/Tournament, Checklists, Banner Export, Maps — 50 PASS.
+- Interaction PASS: preview 375px, draft після resize, локальна задача/фільтр/деталі, CMS Copy, checklist/reset, формат банерів, безпечна Maps delete-дія.
+- Окрема перевірка без токена: PASS; API-запитів немає, localStorage незмінний. Global font styles `/css2` блокувалися як assets, не API.
+- Chrome/OS/DPR/zoom та diff hash — у JSON; fixtures і real-device обмеження ті самі.
+- Scoped Prettier, ESLint і build PASS; chunk-size warning залишається.
+- Галерея не є backend integration і не замінює робочі модулі.
+- Додано view, route/sidebar entry і тести; попередні незакомічені зміни збережено.
 
 ## 1. Evidence rules
 
-Use only these statuses: `NOT RUN`, `PASS`, `FAIL`, `BLOCKED`.
+Статуси: `NOT RUN`, `PASS`, `FAIL`, `BLOCKED`.
 
-- PASS requires an actually executed check and an observable result.
-- A failing prerequisite is BLOCKED for downstream checks, not PASS.
-- Record code revision plus the relevant uncommitted-diff state: a commit alone does not describe a dirty local tree.
-- Record browser/version, OS, viewport width/height, device pixel ratio (DPR), browser zoom, and real-device vs emulation.
-- Mark the data source: `real test API`, `isolated fixture`, or `UI without API`.
-- Do not include tokens, credentials, private task descriptions or unredacted personal information in shared evidence.
-- Add screenshot/log paths only after files actually exist. Keep screenshots outside AGENTS.md.
+- PASS означає реально виконану перевірку в зазначеному scope.
+- Fixture PASS не є real API PASS.
+- Записувати revision + diff, browser/version, OS, CSS viewport, DPR, zoom, emulation/device.
+- Не включати credentials, персональні дані чи приватні task descriptions.
+- Screenshot/log path має вказувати на фактичний файл.
+- Page bounds не доводять доступність кожної дії або відсутність clipped content.
+- Заборонені production writes заради responsive screenshots.
 
-## 2. Viewport matrix
+## 2. Попередній batch — 209 перевірок
 
-All dimensions below are **CSS viewport sizes**, not inferred physical display resolution.
-A physical 4K/Retina/scaled monitor may expose a smaller CSS viewport. Test wide layout and high-DPR rendering separately. Record observed viewport/DPR/zoom on the actual Mac; do not derive them solely from a monitor label.
+| Поле           | Фактичний результат                                                                                                                                                                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Час завершення | 2026-10-06T13:39:48.071Z                                                                                                                                                                                                                                                         |
+| Baseline       | `main`, `222d89e385456db25ab27f691482137469d4457d`; clean перед batch                                                                                                                                                                                                            |
+| Код            | Baseline + uncommitted changes BaseInput/Select/Textarea, GeneratorLayout, harness/fixture; точний diff SHA256 у JSON                                                                                                                                                            |
+| Browser        | Chrome 150.0.7871.115, Chromium headless                                                                                                                                                                                                                                         |
+| OS             | macOS, Darwin 25.6.0 arm64                                                                                                                                                                                                                                                       |
+| DPR            | 1; окремий emulated DPR 2 context                                                                                                                                                                                                                                                |
+| Zoom           | visualViewport.scale=1; native 200% browser zoom НЕ перевірено                                                                                                                                                                                                                   |
+| Data source    | isolated fixtures; зовнішні запити перехоплено/заблоковано                                                                                                                                                                                                                       |
+| Результат      | 209 PASS, 0 FAIL, 0 runtime JS errors, 0 unexpected external requests                                                                                                                                                                                                            |
+| Evidence       | [results.json](docs/responsive/evidence/2026-10-06/results.json)                                                                                                                                                                                                                 |
+| Screenshots    | [tasks-320](docs/responsive/evidence/2026-10-06/tasks-320.png), [maps-320](docs/responsive/evidence/2026-10-06/maps-320.png), [weekly-preview-390](docs/responsive/evidence/2026-10-06/weekly-preview-390.png), [tasks-dpr2](docs/responsive/evidence/2026-10-06/tasks-dpr2.png) |
 
-| Case | CSS viewport                                | Intended coverage                                             | Status  |
-| ---- | ------------------------------------------- | ------------------------------------------------------------- | ------- |
-| V01  | 320 x 568                                   | Narrow phone layout                                           | NOT RUN |
-| V02  | 375 x 667                                   | Small phone layout                                            | NOT RUN |
-| V03  | 390 x 844                                   | Modern phone layout                                           | NOT RUN |
-| V04  | 768 x 1024                                  | Tablet / navigation boundary                                  | NOT RUN |
-| V05  | 1024 x 768                                  | Tablet landscape / compact desktop                            | NOT RUN |
-| V06  | 1280 x 800                                  | Laptop                                                        | NOT RUN |
-| V07  | 1440 x 900                                  | Desktop baseline                                              | NOT RUN |
-| V08  | 1920 x 1080                                 | Full HD-sized viewport                                        | NOT RUN |
-| V09  | 2560 x 1440                                 | Wide/QHD-sized viewport                                       | NOT RUN |
-| V10  | 3840 x 2160                                 | 4K-wide CSS viewport                                          | NOT RUN |
-| V11  | 767/768/769px widths, height 900            | CSS/JS navigation boundary agreement                          | NOT RUN |
-| V12  | Actual viewport, DPR 2 where available      | Retina/scaled display behavior                                | NOT RUN |
-| V13  | 1440 x 900 baseline, then 200% browser zoom | Reflow and accessible controls; record resulting CSS viewport | NOT RUN |
-| V14  | 844 x 390                                   | Narrow landscape / limited vertical space                     | NOT RUN |
+Playwright 1.56.1 встановлено з дозволу в окремий тимчасовий tools-каталог.
+Project package.json/lockfile не змінено. Тестові HTML/Vue fixtures не є production routes.
 
-Also test immediately below/at/above other breakpoints actually used in the changed components. If the repository uses a different navigation boundary, update V11 to that boundary and record why.
+Історичний `docs/responsive/evidence/results.json` має 119 PASS / 81 FAIL для попередньої dirty revision; це **не поточний стан**.
+Fresh baseline: 206 PASS / 2 FAIL. Два FAIL були відтворені як передчасна DOM-перевірка під час leave-transition та cascading state. Очікувану поведінку тестів не послаблено: тепер очікується фактичне від’єднання DOM і сценарії ізольовані.
+Доданий resize check спочатку виявив перехідний overflow; generator badges отримали wrapping/containment, перевірка чекає JS/CSS navigation synchronization. Фінальний результат вище.
 
-Browser plan: Chromium and Safari on the owner's Mac where available. If only a browser engine/emulator is available, name it accurately and keep unavailable real-device checks BLOCKED/NOT RUN. No claim of complete browser certification follows from this plan.
+## 3. Viewport matrix
 
-## 3. Route coverage
+Усі розміри — **CSS viewport**, не фізична роздільна здатність монітора.
 
-Inspect current router names/casing before using these recorded paths. Run safe visual/interaction checks on changed modules, with narrow and desktop regression checks after shared changes.
+| Case | CSS viewport               | Scope                                           | Status  |
+| ---- | -------------------------- | ----------------------------------------------- | ------- |
+| V01  | 320 × 568                  | 15 routes + форми/результати                    | PASS    |
+| V02  | 375 × 667                  | 15 routes + форми/результати                    | PASS    |
+| V03  | 390 × 844                  | 15 routes + форми/результати                    | PASS    |
+| V04  | 768 × 1024                 | 15 routes; drawer mode                          | PASS    |
+| V05  | 1024 × 768                 | 15 routes; desktop mode                         | PASS    |
+| V06  | 1280 × 800                 | 15 routes + форми/результати                    | PASS    |
+| V07  | 1440 × 900                 | 15 routes + форми/результати                    | PASS    |
+| V08  | 1920 × 1080                | 15 routes + форми/результати                    | PASS    |
+| V09  | 2560 × 1440                | 15 routes + форми/результати                    | PASS    |
+| V10  | 3840 × 2160                | 15 routes; normal cap і Maps wide mode          | PASS    |
+| V11  | 1023/1024/1025 × 900       | Navigation boundary, collapse, drawer resize    | PASS    |
+| V12  | 1440 × 900, DPR 2 emulated | Task layout; не реальний Retina                 | PASS    |
+| V13  | Native 200% browser zoom   | Немає real-browser zoom evidence                | NOT RUN |
+| V14  | 844 × 390                  | Task list bounds, task create form bounds/close | PASS    |
 
-| Module                                  | Recorded route                            | Batch                       | Status  |
-| --------------------------------------- | ----------------------------------------- | --------------------------- | ------- |
-| Global shell / header / navigation      | Across all accessible routes              | 1                           | NOT RUN |
-| Analytics Task List                     | /analytics/tasks                          | 1-2                         | NOT RUN |
-| Analytics Report and weekly-report form | /analytics/report                         | 1-2                         | NOT RUN |
-| Tournament generator                    | /tournaments                              | 3 / second reusable example | NOT RUN |
-| Promo generator                         | /promo                                    | 3                           | NOT RUN |
-| Checklists                              | /checklists and an existing detail route  | 4                           | NOT RUN |
-| Banner Export                           | /banner-export                            | 4                           | NOT RUN |
-| Maps                                    | /maps and an accessible view/editor route | 5                           | NOT RUN |
-| Dashboard / home                        | /dashboard, /home                         | Regression / later pages    | NOT RUN |
-| News / calendar / currency converter    | Verify current routes                     | Later pages                 | NOT RUN |
+Navigation boundary актуалізовано з історичної пропозиції 768px до фактичного `lg=1024px`.
+Додаткові bounds: 639/640/641, 767/768/769, 1279/1280/1281, 1535/1536/1537 — PASS для Task List.
+Реальний Safari, iPhone, Retina та клавіатура не підтверджені цим Chromium run.
 
-Protected routes may require an approved test account. Do not count a login redirect as testing the protected page. A fixture-based UI pass is not a backend integration pass.
+## 4. Route coverage
 
-## 4. Acceptance scenarios
+Для кожного маршруту нижче виконано 10 viewport bounds перевірок.
+Повна інтеграція business-flow не випливає з bounds PASS.
+
+| Module             | Route                            | Status / scope                                                      |
+| ------------------ | -------------------------------- | ------------------------------------------------------------------- |
+| Analytics Tasks    | `/analytics/tasks`               | PASS; populated/empty/error, selected interactions                  |
+| Analytics Report   | `/analytics/report`              | PASS; API-disabled UI + weekly local preview, не aggregate API data |
+| Tournament         | `/tournaments`                   | PASS; initial UI bounds, не реальна генерація                       |
+| Promo              | `/promo`                         | PASS; initial/generated fixture, copy, draft retention              |
+| Checklists         | `/checklists`                    | PASS; local synthetic list bounds                                   |
+| Checklist detail   | `/checklists/responsive-fixture` | PASS; local synthetic detail bounds                                 |
+| Banner Export      | `/banner-export`                 | PASS; initial + inspect fixture bounds                              |
+| Maps list          | `/maps`                          | PASS; local synthetic list bounds                                   |
+| Map view           | `/maps/responsive-fixture`       | PASS; canvas containment                                            |
+| Map editor         | `/maps/responsive-fixture/edit`  | PASS; canvas containment, wide mode                                 |
+| Dashboard          | `/dashboard`                     | PASS; bounds                                                        |
+| Home               | `/home`                          | PASS; fixture auth, bounds                                          |
+| News               | `/news`                          | PASS; current UI bounds                                             |
+| Calendar           | `/calendar`                      | PASS; current UI bounds                                             |
+| Currency converter | `/currency-converter`            | PASS; current UI bounds                                             |
+
+## 5. Acceptance scenarios
 
 ### Shared shell
 
-| ID  | Action / state                                                       | Expected result                                                                               | Status  |
-| --- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------- |
-| S01 | Open each changed route at V01, V03 and V07                          | Header and main controls visible; no unintended document horizontal overflow                  | NOT RUN |
-| S02 | Inspect a dense table or long generated code                         | Overflow stays in the local table/code container; all content remains reachable               | NOT RUN |
-| S03 | Resize V11 with drawer open and with sidebar collapsed               | One correct navigation mode; no stale backdrop, lock or width offset                          | NOT RUN |
-| S04 | Open mobile navigation, navigate, select current route, press Escape | Dismissal works; appropriate focus recovery; no hidden focusable links                        | NOT RUN |
-| S05 | Tab/Shift+Tab with modal navigation open                             | Focus stays within active modal surface; underlying page not interactive                      | NOT RUN |
-| S06 | V09 and V10, normal page and Maps                                    | Readable controls, sensible width policy; canvas uses intentional space without page overflow | NOT RUN |
-| S07 | Zoom / limited height / reduced motion                               | Controls remain reachable; nonessential motion respects preference                            | NOT RUN |
+| ID  | Scenario                                                           | Status / evidence scope                                                 |
+| --- | ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| S01 | Changed routes at narrow + desktop, uncontrolled document overflow | PASS; route matrix, 1px tolerance                                       |
+| S02 | Dense tables / generated code locally contained                    | PASS; task keyboard scroll, generated Promo fixture                     |
+| S03 | Navigation boundary resize + desktop collapsed state               | PASS; 1023/1024/1025                                                    |
+| S04 | Drawer navigation/same route/Escape, focus recovery                | PASS                                                                    |
+| S05 | Drawer Tab/Shift+Tab, background inert                             | PASS                                                                    |
+| S06 | QHD/4K normal content cap, Maps wide mode                          | PASS                                                                    |
+| S07 | Limited height / reduced motion                                    | PASS for tested landscape + reduced-motion context; native zoom NOT RUN |
 
-### Modals and forms
+### Modals/forms
 
-| ID  | Action / state                                              | Expected result                                                                                    | Status  |
-| --- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------- |
-| M01 | Open a long form at V01 and V14                             | Content scrolls; close and submit actions remain reachable                                         | NOT RUN |
-| M02 | Open and close using keyboard                               | Named dialog, sensible initial focus and focus restoration                                         | NOT RUN |
-| M03 | Drawer and modal / two modal owners                         | Escape affects topmost dismissible surface only; scroll lock released only after last owner closes | NOT RUN |
-| M04 | Type long text, URL, email, labels and validation errors    | Wrapping/containment works; no clipped essential content                                           | NOT RUN |
-| M05 | Focus fields with an on-screen keyboard where available     | Active field/actions reachable; record real-device or emulated coverage                            | NOT RUN |
-| M06 | Resize with unsaved form input                              | Values are preserved; no duplicate initialization erases input                                     | NOT RUN |
-| M07 | Loading, failed save and retry using safe fixtures/test API | Input retained; duplicate submit prevented; no false success or hidden error                       | NOT RUN |
+| ID  | Scenario                                                              | Status / evidence scope                                     |
+| --- | --------------------------------------------------------------------- | ----------------------------------------------------------- |
+| M01 | Long form at narrow/landscape, close reachable                        | PASS; task create fixture, internal scroll                  |
+| M02 | Named modal keyboard open/close, focus restore                        | PASS; task details and nested fixture                       |
+| M03 | Nested dialogs / drawer + dialog, topmost Escape, lock ownership      | PASS; isolated overlay fixture                              |
+| M04 | Long text/URL/labels/error containment                                | PASS for fixture content; full visual review still separate |
+| M05 | On-screen keyboard                                                    | BLOCKED; real-device/browser session unavailable            |
+| M06 | Resize preserves unsaved form input                                   | PASS; task create and Promo source                          |
+| M07 | Failed save retains input, prevents duplicate submit, retry available | PASS; synthetic failed task create, no real write           |
+| M08 | Native step + input hint and select/textarea error associations       | PASS; expanded overlay fixture                              |
 
-### Analytics and regression
+### Analytics/regression
 
-| ID  | Action / state                                          | Expected result                                                                                            | Status  |
-| --- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------- |
-| A01 | Wrap presets, Reset/Apply, filter grid                  | Usable controls at narrow widths; non-sticky filters do not obstruct the page                              | NOT RUN |
-| A02 | Table scroll with real-looking long fixture rows        | Header/body alignment and readable cells; keyboard actions remain available                                | NOT RUN |
-| A03 | Loading / empty / error / API disabled states           | Distinct and mutually exclusive messaging; errors are not zero results                                     | NOT RUN |
-| A04 | Weekly form create-preview-edit with safe data          | State preserved; local preview not labelled DB-saved; legacy/zero metric checks kept separate from styling | NOT RUN |
-| A05 | Open A then B / close during request                    | Stale response cannot replace the latest view; no orphaned loading state                                   | NOT RUN |
-| A06 | Navigate away/back with KeepAlive where used            | No stale overlays/locks/listeners; expected state and request lifecycle                                    | NOT RUN |
-| A07 | Copy/export/download and navigation regression          | Existing behavior unchanged; never trigger production generation/write merely for responsive testing       | NOT RUN |
-| A08 | Apply shared patterns in Tournament/Promo or Checklists | Second structurally different module works without copied layout hacks                                     | NOT RUN |
+| ID  | Scenario                                             | Status / evidence scope                                                            |
+| --- | ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| A01 | Filter wrap, apply/reset, invalid date range         | PASS                                                                               |
+| A02 | Task table local keyboard scroll                     | PASS; synthetic long row                                                           |
+| A03 | Empty/error and API-disabled UI                      | PASS; task modes + report flags off; all loading variants not exhaustively covered |
+| A04 | Weekly create/local preview                          | PASS; edit/legacy/persisted-zero domain scenarios NOT RUN                          |
+| A05 | Open A then B / close during request                 | NOT RUN as dedicated race assertion                                                |
+| A06 | KeepAlive shared overlay deactivation                | PASS; fixture; all feature timers/read lifecycles NOT RUN                          |
+| A07 | Copy / export / download regression                  | PASS for Promo copy and task CSV; Banner ZIP/manifest NOT RUN                      |
+| A08 | Second structurally different module reuses patterns | PASS; Promo/Tournament forms and Checklists/Maps shared components                 |
 
-Document-overflow aid (run in the browser, not as proof by itself): compare `document.documentElement.scrollWidth` with `document.documentElement.clientWidth`, allowing a 1px rounding tolerance. Visually inspect clipped content and local scrollers as well; hidden overflow can otherwise conceal a defect.
+### Не перевірено інтеграційно
 
-## 5. Record actual results here
+| Scenario                                 | Status  | Reason                                           |
+| ---------------------------------------- | ------- | ------------------------------------------------ |
+| Real Tasks API, auth/permissions         | NOT RUN | Only isolated fixtures                           |
+| Aggregate Analytics Report data          | BLOCKED | Dedicated API readiness/contract не підтверджено |
+| Saved Weekly Report persistence/edit     | BLOCKED | API readiness не підтверджено                    |
+| Real Banner export ZIP/Figma permissions | NOT RUN | No production writes                             |
+| Real Safari/iPhone                       | BLOCKED | No real-device/browser evidence                  |
+| Actual Retina hardware                   | NOT RUN | Only DPR 2 emulation                             |
+| Native 200% zoom                         | NOT RUN | Not substituted with viewport resizing           |
+| Confluence publication                   | NOT RUN | Owner chose to publish personally                |
 
-| Date / tester | Code revision + diff state | Route / scenario | CSS viewport / DPR / zoom | Browser / OS / real vs emulated | Data source  | Status  | Evidence / defect   |
-| ------------- | -------------------------- | ---------------- | ------------------------- | ------------------------------- | ------------ | ------- | ------------------- |
-| Not executed  | Not inspected              | No results yet   | Not recorded              | Not recorded                    | Not recorded | NOT RUN | No evidence created |
+## 6. Quality verification log
 
-## 6. Batch verification log template
+Batch: reusable responsive model verification, shared accessibility and containment hardening, documentation.
+
+- Baseline: `main` / `222d89e`; clean.
+- Formatting: installed Prettier on changed code/tests/script and new documentation; global `npm run format` avoided to prevent unrelated churn.
+- ESLint: installed `eslint .`, no `--fix` — PASS, exit 0.
+- Build: `npm run build` — PASS, exit 0; Vite chunk >500kB warning recorded.
+- Browser: `scripts/verify-responsive.mjs` — 209 PASS / 0 FAIL.
+- Historical failures preserved separately; no API flags enabled.
+- No new runtime dependencies, lockfile changes, backend edits, commits, pushes or deployment.
+- Next batch: real Safari/iPhone keyboard + native zoom, then safe API acceptance and Confluence URL recording.
+
+## 7. Reproduction and maintenance
+
+See [GUIDELINES §11](docs/responsive/GUIDELINES.md) for setup/commands.
+Use a new `RESPONSIVE_OUTPUT` directory per accepted run and inspect assertions plus screenshots.
+Never “fix” a failure by changing expected product behavior to match a bug.
+
+Document-overflow aid:
+compare `document.documentElement.scrollWidth` with `clientWidth` allowing 1px rounding.
+Also inspect local scrollers and clipped controls; bounds alone do not replace visual review.
+
+Future evidence record:
 
 ```text
-Batch name and scope:
-Baseline branch/commit and pre-existing edits:
-Changed files:
-Formatting command, scope and actual result:
-Lint command and actual result:
-Build command and actual result:
-Browser scenarios actually executed:
-Screenshots/logs actually created:
-Existing failures:
-New failures:
-Checks not run and reason:
-Remaining blockers:
-Next batch:
-Commit/push/deploy: not performed unless explicitly authorized
+Date/tester:
+Revision + relevant diff:
+Route/scenario:
+CSS viewport / DPR / zoom:
+Browser/version / OS / real vs emulated:
+Data source:
+PASS / FAIL / BLOCKED / NOT RUN:
+Evidence path / defect:
 ```
 
-Do not mark the responsive OKR complete until the implementation is tested, a second module demonstrates reuse, and the documented Confluence publication has been confirmed. If backend work remains blocked, report the responsive UI evidence independently rather than declaring full feature integration complete.
-
-## 7. Technical reference basis
-
-These sources explain the additional verification concepts, not Mihaoo's current behavior:
-
-- MDN: https://developer.mozilla.org/en-US/docs/Web/API/Window/devicePixelRatio
-- W3C modal interaction pattern: https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/
+Не оголошувати весь OKR завершеним без явно прийнятих remaining gaps та підтвердженої Confluence публікації.
