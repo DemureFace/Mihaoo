@@ -7,13 +7,19 @@
         <p class="text-xs font-semibold uppercase tracking-wide text-neutral-500">Development</p>
         <h1 class="mt-1 text-2xl font-bold">Roadmaps</h1>
         <p class="mt-2 text-sm text-neutral-600">
-          Your private roadmaps and the workspaces explicitly shared with you.
+          {{
+            DEVELOPMENT_IS_LOCAL
+              ? 'Roadmaps saved for your Mihaoo user in this browser. You can export them as files for backup or transfer.'
+              : 'Your private roadmaps and the workspaces explicitly shared with you.'
+          }}
         </p>
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <BaseButton variant="secondary" :to="{ name: 'development-templates' }">Templates</BaseButton>
-        <BaseButton variant="secondary" :to="{ name: 'development-imports' }">Import XLSX</BaseButton>
+        <BaseButton variant="secondary" :to="{ name: 'development-templates' }">
+          Templates
+        </BaseButton>
+        <BaseButton variant="secondary" :to="{ name: 'development-imports' }">Import</BaseButton>
         <BaseButton
           variant="primary"
           :disabled="!DEVELOPMENT_API_READY || pending"
@@ -29,10 +35,9 @@
       class="rounded-xl border border-amber-200 bg-amber-50 p-4"
       role="status"
     >
-      <h2 class="font-semibold">Development API is not connected yet</h2>
+      <h2 class="font-semibold">Development storage is unavailable</h2>
       <p class="mt-2 text-sm leading-6">
-        The frontend workspace is ready, but roadmaps must be stored and authorized by the backend.
-        Creating and sharing stay disabled until the API is verified. No roadmap data is persisted in this browser.
+        Creating and editing roadmaps is disabled until a Development storage mode is available.
       </p>
     </div>
 
@@ -80,7 +85,7 @@
       >
         <h2 class="font-semibold">No accessible roadmaps found</h2>
         <p class="mt-2 text-sm text-neutral-600">
-          Create a roadmap, import an XLSX file, adjust the filters, or ask its owner to share it with your account.
+          Create a roadmap, import a file, or adjust the filters.
         </p>
       </div>
 
@@ -91,7 +96,7 @@
           class="flex min-w-0 flex-col rounded-xl border border-black/10 bg-white p-5"
         >
           <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-neutral-600">
-            <span>Private</span>
+            <span>{{ DEVELOPMENT_IS_LOCAL ? 'Local' : 'Private' }}</span>
             <span aria-hidden="true">/</span>
             <span>{{ roadmap.myRole }}</span>
           </div>
@@ -111,11 +116,7 @@
           <p class="mt-2 text-xs font-semibold">{{ roadmap.status }}</p>
 
           <div class="mt-auto flex flex-wrap gap-2 pt-5">
-            <BaseButton
-              variant="secondary"
-              class="flex-1"
-              @click="openRoadmap(roadmap.id)"
-            >
+            <BaseButton variant="secondary" class="flex-1" @click="openRoadmap(roadmap.id)">
               Open workspace
             </BaseButton>
             <BaseButton
@@ -138,7 +139,9 @@
         <BaseButton variant="secondary" :disabled="page <= 1 || pending" @click="changePage(-1)">
           Previous
         </BaseButton>
-        <span class="text-sm">Page {{ page }} of {{ Math.ceil(result.total / result.pageSize) }}</span>
+        <span class="text-sm">
+          Page {{ page }} of {{ Math.ceil(result.total / result.pageSize) }}
+        </span>
         <BaseButton
           variant="secondary"
           :disabled="page * result.pageSize >= result.total || pending"
@@ -164,6 +167,7 @@
   import {
     DEVELOPMENT_API_READY,
     DEVELOPMENT_BUILDER_API_READY,
+    DEVELOPMENT_IS_LOCAL,
     developmentApi,
   } from '@/services/development.service.js'
   import { useDevelopmentRequest } from '@/composables/useDevelopmentRequest.js'
@@ -176,11 +180,16 @@
   const search = ref('')
   const scope = ref('all')
   const page = ref(1)
-  const scopeOptions = [
-    { value: 'all', label: 'All accessible roadmaps' },
-    { value: 'owned', label: 'Created by me' },
-    { value: 'shared', label: 'Shared with me' },
-  ]
+  const scopeOptions = DEVELOPMENT_IS_LOCAL
+    ? [
+        { value: 'all', label: 'All local roadmaps' },
+        { value: 'owned', label: 'Created by me' },
+      ]
+    : [
+        { value: 'all', label: 'All accessible roadmaps' },
+        { value: 'owned', label: 'Created by me' },
+        { value: 'shared', label: 'Shared with me' },
+      ]
 
   const { data: result, pending, error, run, clear } = useDevelopmentRequest()
 

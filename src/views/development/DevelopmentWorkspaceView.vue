@@ -8,6 +8,7 @@
       </BaseButton>
 
       <div v-if="roadmap" class="flex flex-wrap gap-2">
+        <BaseButton variant="secondary" @click="downloadRoadmap">Download file</BaseButton>
         <BaseButton
           v-if="roadmap.capabilities.canEditStructure"
           variant="secondary"
@@ -47,28 +48,45 @@
       class="rounded-xl border border-amber-200 bg-amber-50 p-4"
       role="status"
     >
-      The Development backend is not connected. No private workspace can be loaded or saved yet.
+      The Development workspace is not available in the current storage mode.
     </div>
 
     <p v-else-if="pending" role="status" class="text-sm text-neutral-600">
       Checking access and loading workspace...
     </p>
 
-    <div v-else-if="error" class="space-y-3 rounded-xl border border-red-200 bg-red-50 p-4" role="alert">
+    <div
+      v-else-if="error"
+      class="space-y-3 rounded-xl border border-red-200 bg-red-50 p-4"
+      role="alert"
+    >
       <p class="text-sm text-red-800">{{ error }}</p>
       <BaseButton variant="secondary" @click="refresh">Try again</BaseButton>
     </div>
 
+    <div
+      v-if="exportError"
+      class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+      role="alert"
+    >
+      {{ exportError }}
+    </div>
+
     <template v-else-if="roadmap">
-      <header class="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-black/10 bg-white p-5">
+      <header
+        class="flex flex-wrap items-start justify-between gap-4 rounded-xl border border-black/10 bg-white p-5"
+      >
         <div class="min-w-0 flex-1 [overflow-wrap:anywhere]">
-          <p class="text-xs font-semibold text-neutral-500">PRIVATE WORKSPACE / {{ roadmap.myRole }}</p>
+          <p class="text-xs font-semibold text-neutral-500">
+            PRIVATE WORKSPACE / {{ roadmap.myRole }}
+          </p>
           <h1 class="mt-2 break-words text-2xl font-bold">{{ roadmap.title }}</h1>
           <p v-if="roadmap.description" class="mt-3 whitespace-pre-wrap text-sm text-neutral-600">
             {{ roadmap.description }}
           </p>
           <p class="mt-3 text-xs text-neutral-500">
-            {{ roadmap.startDate || 'No start date' }} - {{ roadmap.endDate || 'No end date' }} / {{ roadmap.status }}
+            {{ roadmap.startDate || 'No start date' }} - {{ roadmap.endDate || 'No end date' }} /
+            {{ roadmap.status }}
           </p>
         </div>
       </header>
@@ -95,8 +113,14 @@
         </p>
       </div>
 
-      <section v-for="section in selectedPage?.sections || []" :key="section.id" class="min-w-0 space-y-3">
-        <h2 class="break-words text-lg font-semibold [overflow-wrap:anywhere]">{{ section.title }}</h2>
+      <section
+        v-for="section in selectedPage?.sections || []"
+        :key="section.id"
+        class="min-w-0 space-y-3"
+      >
+        <h2 class="break-words text-lg font-semibold [overflow-wrap:anywhere]">
+          {{ section.title }}
+        </h2>
         <div class="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-12">
           <DevelopmentBlockPreview
             v-for="block in section.blocks"
@@ -140,6 +164,8 @@
     DEVELOPMENT_TEMPLATES_API_READY,
     developmentApi,
   } from '@/services/development.service.js'
+  import { formatDevelopmentError } from '@/modules/development/development.model.js'
+  import { downloadDevelopmentRoadmapFile } from '@/modules/development/development.portable.js'
   import { useDevelopmentRequest } from '@/composables/useDevelopmentRequest.js'
   import { useDevelopmentLifecycle } from '@/composables/useDevelopmentLifecycle.js'
 
@@ -151,6 +177,7 @@
   const shareOpen = ref(false)
   const templateOpen = ref(false)
   const selectedPageId = ref('')
+  const exportError = ref('')
   const { data: roadmap, pending, error, run, clear } = useDevelopmentRequest()
 
   const selectedPage = computed(
@@ -173,6 +200,16 @@
 
     const result = await run((signal) => developmentApi.get(roadmapId, { signal }))
     if (result && !selectedPageId.value) selectedPageId.value = result.pages[0]?.id || ''
+  }
+
+  function downloadRoadmap() {
+    if (!roadmap.value) return
+    exportError.value = ''
+    try {
+      downloadDevelopmentRoadmapFile(roadmap.value)
+    } catch (cause) {
+      exportError.value = formatDevelopmentError(cause)
+    }
   }
 
   function accessDenied() {
@@ -207,6 +244,7 @@
     shareOpen.value = false
     templateOpen.value = false
     selectedPageId.value = ''
+    exportError.value = ''
     clear()
   })
 </script>

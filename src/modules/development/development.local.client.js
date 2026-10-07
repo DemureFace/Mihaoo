@@ -21,6 +21,7 @@ import {
   touchLocalRoadmap,
 } from './development.local.storage.js'
 import { parseLocalRoadmapSpreadsheet } from './development.local.xlsx.js'
+import { parseDevelopmentRoadmapFilePayload } from './development.portable.js'
 
 function findRoadmap(store, id) {
   const roadmap = store.roadmaps.find((item) => item.id === id)
@@ -100,6 +101,43 @@ function createRoadmapFromImport(job, payload) {
   }
 }
 
+
+function createRoadmapFromPortableFile(portable, { title, requestId }) {
+  const user = getLocalDevelopmentUser()
+  const now = nowIso()
+  const source = portable.roadmap
+
+  return {
+    id: localId('roadmap'),
+    title: String(title || source.title || 'Imported roadmap').trim().slice(0, 160),
+    description: source.description || '',
+    status: source.status || 'DRAFT',
+    myRole: 'OWNER',
+    version: 1,
+    startDate: source.startDate || null,
+    endDate: source.endDate || null,
+    updatedAt: now,
+    createdAt: now,
+    schemaVersion: source.schemaVersion || 1,
+    capabilities: {
+      canRead: true,
+      canEditStructure: true,
+      canContribute: true,
+      canManageAccess: false,
+      canArchive: true,
+    },
+    pages: permanentizePages(source.pages || []),
+    ownerUserId: user.id,
+    storageMode: 'local',
+    localRequestId: requestId || null,
+    importSource: {
+      kind: 'mihaoo-roadmap-file',
+      formatVersion: portable.formatVersion,
+      exportedAt: portable.exportedAt || null,
+    },
+  }
+}
+
 function localRoadmapApi() {
   return {
     async list({ search = '', scope = 'all', page = 1, pageSize = 12 } = {}) {
@@ -137,6 +175,33 @@ function localRoadmapApi() {
         const existing = store.roadmaps.find((item) => item.localRequestId === payload.requestId)
         if (existing) return parseRoadmapDetail(existing)
         const roadmap = createEmptyLocalRoadmap(payload)
+        store.roadmaps.unshift(roadmap)
+        return parseRoadmapDetail(roadmap)
+      })
+    },
+
+    async importPortable(payload, { title, requestId } = {}) {
+      const portable = parseDevelopmentRoadmapFilePayload(payload)
+      const resolvedTitle = String(title || portable.roadmap.title || '').trim()
+
+      if (!resolvedTitle || resolvedTitle.length > 160) {
+        throw new DevelopmentError('VALIDATION', 'Enter a valid roadmap title.')
+      }
+
+      if (requestId && !validId(requestId)) {
+        throw new DevelopmentError('VALIDATION', 'Invalid import request ID.')
+      }
+
+      return mutateLocalDevelopmentStore((store) => {
+        if (requestId) {
+          const existing = store.roadmaps.find((item) => item.localRequestId === requestId)
+          if (existing) return parseRoadmapDetail(existing)
+        }
+
+        const roadmap = createRoadmapFromPortableFile(portable, {
+          title: resolvedTitle,
+          requestId,
+        })
         store.roadmaps.unshift(roadmap)
         return parseRoadmapDetail(roadmap)
       })
