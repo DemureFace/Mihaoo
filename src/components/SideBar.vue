@@ -93,6 +93,7 @@
     PhotoIcon,
     MapIcon,
     ComputerDesktopIcon,
+    AcademicCapIcon,
   } from '@heroicons/vue/24/outline'
 
   import BaseButton from '@/components/base/BaseButton.vue'
@@ -184,6 +185,12 @@
           path: '/analytics/report',
         },
       ],
+    },
+    {
+      label: 'Development',
+      value: 'development',
+      icon: AcademicCapIcon,
+      path: '/development',
     },
     {
       label: 'Responsive',
