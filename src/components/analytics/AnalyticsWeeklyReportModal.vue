@@ -697,14 +697,19 @@
       vacationSp: round2(Math.max(0, toNumber(vacationSp.value))),
 
       brandMetrics: brandMetrics.value
+        .filter(
+          (metric) =>
+            metric.isPersisted ||
+            toInteger(metric.tasksAmount) > 0 ||
+            toNumber(metric.storyPoints) > 0,
+        )
         .map((metric) => ({
           brandCode: metric.brandCode,
 
           tasksAmount: Math.max(0, toInteger(metric.tasksAmount)),
 
           storyPoints: round2(Math.max(0, toNumber(metric.storyPoints))),
-        }))
-        .filter((metric) => metric.tasksAmount > 0 || metric.storyPoints > 0),
+        })),
     }
 
     emit('prepared', payload, {
