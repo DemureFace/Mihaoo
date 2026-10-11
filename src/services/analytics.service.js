@@ -11,14 +11,18 @@ function readItems(data) {
     return data.items
   }
 
+  if (Array.isArray(data?.data)) {
+    return data.data
+  }
+
   throw new Error('Unexpected Analytics API response')
 }
 
 function cleanParams(params) {
   return Object.fromEntries(
-    Object.entries(params).filter(
-      ([, value]) => value !== '' && value !== null && value !== undefined,
-    ),
+    Object.entries(params)
+      .map(([key, value]) => [key, Array.isArray(value) ? value.join(',') : value])
+      .filter(([, value]) => value !== '' && value !== null && value !== undefined),
   )
 }
 
@@ -140,7 +144,7 @@ export const analyticsService = {
       timeout: 20000,
     })
 
-    return Array.isArray(data) ? data : data?.items || []
+    return readItems(data)
   },
 
   async listWeeklyReports(query = {}, signal) {

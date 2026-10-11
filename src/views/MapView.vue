@@ -1,6 +1,6 @@
 <template>
-  <section v-if="map" class="flex flex-col gap-4 h-[calc(100vh-7rem)]">
-    <div class="flex items-center justify-between">
+  <section v-if="map" class="min-w-0 flex flex-col gap-4 min-h-[400px] h-[calc(100dvh-7rem)]">
+    <div class="flex flex-wrap items-center justify-between gap-3 [overflow-wrap:anywhere]">
       <div>
         <h1 class="text-2xl font-bold">
           {{ map.title }}

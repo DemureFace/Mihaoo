@@ -87,13 +87,15 @@
 
       secondary: 'border-black bg-white text-black hover:bg-neutral-100',
 
-      ghost: 'border-transparent bg-transparent text-black hover:bg-neutral-100',
+      ghost:
+        'border-transparent bg-transparent text-black hover:bg-neutral-100 hover:text-black hover:border-transparent',
 
       danger: 'border-red-700 bg-red-700 text-white hover:bg-red-800',
 
-      link: 'border-transparent bg-transparent p-0 text-black underline underline-offset-2 hover:no-underline',
+      link: 'border-transparent bg-transparent p-0 text-black underline underline-offset-2 hover:no-underline hover:bg-transparent hover:text-black hover:border-transparent',
 
-      plain: 'border-transparent bg-transparent text-inherit',
+      plain:
+        'border-transparent bg-transparent text-inherit hover:bg-transparent hover:text-inherit hover:border-transparent',
     }
 
     return variants[props.variant]
@@ -110,7 +112,7 @@
   })
 
   const buttonClasses = computed(() => [
-    'inline-flex items-center justify-center gap-2 rounded-lg border font-medium transition',
+    'min-h-11 max-w-full whitespace-normal [overflow-wrap:anywhere] inline-flex items-center justify-center gap-2 rounded-lg border font-medium transition',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/30',
     'disabled:cursor-not-allowed disabled:opacity-40',
     props.disabled || props.loading ? 'cursor-not-allowed opacity-40' : '',

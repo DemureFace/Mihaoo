@@ -68,14 +68,24 @@ export async function readMapImport(file) {
     throw new Error('Invalid JSON file.')
   }
 
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    throw new Error('Map data must be an object.')
+  }
+
   if (payload.schemaVersion && payload.schemaVersion !== MAP_SCHEMA_VERSION) {
     throw new Error(`Unsupported map schema version: ${payload.schemaVersion}`)
   }
 
   const source = payload.map || payload
 
-  if (!source || typeof source !== 'object') {
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
     throw new Error('Map data is missing.')
+  }
+
+  for (const key of ['title', 'description', 'type', 'status']) {
+    if (source[key] !== undefined && typeof source[key] !== 'string') {
+      throw new Error(`Map ${key} must be a string.`)
+    }
   }
 
   if (!Array.isArray(source.nodes)) {

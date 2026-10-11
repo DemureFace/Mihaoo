@@ -1,13 +1,18 @@
 <template>
-  <label class="flex w-full flex-col gap-1.5">
+  <label :class="$attrs.class" :style="$attrs.style" class="flex min-w-0 w-full flex-col gap-1.5">
     <span v-if="label" class="text-xs font-semibold text-neutral-500">
       {{ label }}
 
       <span v-if="required" class="text-red-600">*</span>
     </span>
 
-    <div class="relative">
+    <div class="relative min-w-0">
       <input
+        v-bind="
+          Object.fromEntries(
+            Object.entries($attrs).filter(([key]) => !['class', 'style'].includes(key)),
+          )
+        "
         :id="id"
         :name="name"
         :type="resolvedType"
@@ -19,9 +24,16 @@
         :min="min"
         :max="max"
         :aria-invalid="Boolean(error)"
-        :aria-describedby="error ? `${id}-error` : undefined"
-        class="w-full rounded-lg border bg-white px-3 py-2 text-sm text-black outline-none transition placeholder:text-neutral-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
-        :class="error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20'"
+        :aria-describedby="
+          [$attrs['aria-describedby'], error ? `${id}-error` : hint ? `${id}-hint` : null]
+            .filter(Boolean)
+            .join(' ') || undefined
+        "
+        class="min-w-0 max-w-full w-full rounded-lg border bg-white px-3 py-2 text-base sm:text-sm text-black outline-none transition placeholder:text-neutral-400 focus:ring-2 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:opacity-60"
+        :class="[
+          error ? 'border-red-600 focus:ring-red-200' : 'border-black focus:ring-black/20',
+          type === 'password' ? 'pr-20 min-h-12' : '',
+        ]"
         @input="onInput"
       />
 
@@ -30,14 +42,16 @@
         type="button"
         variant="ghost"
         size="sm"
-        class="absolute right-1 top-1/2 -translate-y-1/2"
+        class="absolute inset-y-0 right-1 my-auto h-11 min-w-16 px-2"
+        :aria-label="showPassword ? 'Hide password' : 'Show password'"
+        :aria-pressed="showPassword"
         @click="showPassword = !showPassword"
       >
         {{ showPassword ? 'Hide' : 'Show' }}
       </BaseButton>
     </div>
 
-    <span v-if="hint && !error" class="text-xs text-neutral-500">
+    <span v-if="hint && !error" :id="`${id}-hint`" class="text-xs text-neutral-500">
       {{ hint }}
     </span>
 
@@ -48,6 +62,7 @@
 </template>
 
 <script setup>
+  defineOptions({ inheritAttrs: false })
   import { computed, ref } from 'vue'
 
   import BaseButton from '@/components/base/BaseButton.vue'

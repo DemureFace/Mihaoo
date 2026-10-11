@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6 space-y-6">
+  <div class="mx-auto min-w-0 w-full max-w-4xl space-y-6 [overflow-wrap:anywhere]">
     <div>
       <h1 class="text-2xl font-semibold">Banner Export</h1>
       <p class="text-sm opacity-70">
@@ -8,7 +8,7 @@
     </div>
 
     <section class="grid gap-4 max-w-4xl rounded border p-4">
-      <label class="grid gap-1">
+      <label class="grid min-w-0 gap-1">
         <span class="text-sm font-medium">Campaign ID</span>
         <input
           v-model="form.campaignId"
@@ -17,7 +17,7 @@
         />
       </label>
 
-      <label class="grid gap-1">
+      <label class="grid min-w-0 gap-1">
         <span class="text-sm font-medium">Figma URL</span>
         <textarea
           v-model="form.figmaUrl"
@@ -30,7 +30,7 @@
       </label>
 
       <div class="flex flex-wrap gap-3">
-        <button
+        <BaseButton
           class="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
           :disabled="isInspecting || isRateLimited || !form.figmaUrl"
           @click="loadBanners"
@@ -42,25 +42,25 @@
                 ? `Try again in ${retryCountdownLabel}`
                 : 'Load banners'
           }}
-        </button>
+        </BaseButton>
 
-        <button
+        <BaseButton
           v-if="detectedBanners.length"
           class="rounded border px-4 py-2"
           type="button"
           @click="selectAllBanners"
         >
           Select all
-        </button>
+        </BaseButton>
 
-        <button
+        <BaseButton
           v-if="detectedBanners.length"
           class="rounded border px-4 py-2"
           type="button"
           @click="clearSelectedBanners"
         >
           Clear
-        </button>
+        </BaseButton>
       </div>
     </section>
 
@@ -93,8 +93,8 @@
           </p>
         </div>
 
-        <div class="flex gap-3 flex-wrap items-center">
-          <label class="grid gap-1">
+        <div class="flex min-w-0 gap-3 flex-wrap items-center [&>label]:w-full sm:[&>label]:w-auto">
+          <label class="grid min-w-0 gap-1">
             <span class="text-sm font-medium">Filter by type</span>
             <select v-model="bannerTypeFilter" class="rounded border px-3 py-2 bg-transparent">
               <option v-for="type in availableTypes" :key="type" :value="type">
@@ -103,7 +103,7 @@
             </select>
           </label>
 
-          <label class="grid gap-1">
+          <label class="grid min-w-0 gap-1">
             <span class="text-sm font-medium">Quality preset</span>
             <select v-model="selectedPreset" class="rounded border px-3 py-2 bg-transparent">
               <option v-for="(preset, key) in QUALITY_PRESETS" :key="key" :value="key">
@@ -111,7 +111,7 @@
               </option>
             </select>
           </label>
-          <label class="grid gap-1">
+          <label class="grid min-w-0 gap-1">
             <span class="text-sm font-medium">Scale for selected</span>
             <select v-model.number="bulkScale" class="rounded border px-3 py-2 bg-transparent">
               <option v-for="scale in SCALE_OPTIONS" :key="scale" :value="scale">
@@ -120,19 +120,19 @@
             </select>
           </label>
 
-          <button
+          <BaseButton
             class="rounded border px-4 py-2 disabled:opacity-50"
             type="button"
             :disabled="selectedCount === 0"
             @click="applyScaleToSelectedBanners"
           >
             Apply scale to selected
-          </button>
+          </BaseButton>
         </div>
       </div>
 
       <div class="grid">
-        <label class="grid gap-1">
+        <label class="grid min-w-0 gap-1">
           <span class="text-sm font-medium">Search banners</span>
           <input
             v-model="bannerSearch"
@@ -147,8 +147,8 @@
         Showing {{ filteredBanners.length }} of {{ detectedBanners.length }} elements
       </p>
 
-      <div class="overflow-auto rounded border">
-        <table class="w-full text-sm">
+      <BaseTableScroll label="Банери" class="rounded border">
+        <table class="w-full min-w-[640px] text-sm">
           <thead>
             <tr class="border-b text-left">
               <th class="p-3 w-12">Use</th>
@@ -199,7 +199,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
 
       <div class="grid gap-3 rounded border p-3">
         <div class="text-sm font-medium">Formats</div>
@@ -222,7 +222,7 @@
         </div>
       </div>
 
-      <button
+      <BaseButton
         class="w-full rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
         :disabled="
           isExporting || isRateLimited || selectedCount === 0 || selectedFormats.length === 0
@@ -236,7 +236,7 @@
               ? `Try again in ${retryCountdownLabel}`
               : 'Export selected banners'
         }}
-      </button>
+      </BaseButton>
     </section>
 
     <section v-if="job" class="max-w-4xl rounded border p-4">
@@ -253,13 +253,14 @@
         </div>
       </div>
 
-      <a
-        v-if="job.status === 'completed' && job.downloadUrl"
-        :href="job.downloadUrl"
-        class="mt-4 inline-flex rounded bg-green-600 px-4 py-2 text-white"
+      <BaseButton
+        v-if="job.status === 'completed'"
+        class="mt-4"
+        :loading="isDownloading"
+        @click="downloadZip"
       >
         Download ZIP
-      </a>
+      </BaseButton>
 
       <div v-if="job.status === 'failed'" class="mt-4 text-red-500">
         {{ job.error || 'Export failed' }}
@@ -274,8 +275,8 @@
         <p class="text-sm opacity-70">File size comparison for exported banners.</p>
       </div>
 
-      <div class="overflow-auto rounded border">
-        <table class="w-full text-sm">
+      <BaseTableScroll label="Банери" class="rounded border">
+        <table class="w-full min-w-[640px] text-sm">
           <thead>
             <tr class="border-b text-left">
               <th class="p-3">Banner</th>
@@ -318,7 +319,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
     </section>
 
     <div v-if="error" class="max-w-4xl rounded border border-red-500 p-4 text-red-500">
@@ -334,9 +335,15 @@
 </template>
 
 <script setup>
-  import { computed, onBeforeUnmount, reactive, ref } from 'vue'
+  import BaseButton from '@/components/base/BaseButton.vue'
+
+  import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
+
+  import { computed, onActivated, onDeactivated, onBeforeUnmount, reactive, ref } from 'vue'
+  import { saveBlob } from '@/services/apiError'
   import {
     createBannerExport,
+    downloadBannerExport,
     getBannerExport,
     getBannerExportManifest,
     inspectBannerExport,
@@ -416,6 +423,22 @@
   const manifest = ref(null)
   const isInspecting = ref(false)
   const isExporting = ref(false)
+  const isDownloading = ref(false)
+  let active = true
+  let pollingController = null
+
+  async function downloadZip() {
+    if (isDownloading.value || !job.value?.id) return
+    isDownloading.value = true
+    try {
+      const result = await downloadBannerExport(job.value.id)
+      saveBlob(result.blob, result.filename)
+    } catch (err) {
+      error.value = err.message || 'Failed to download ZIP'
+    } finally {
+      isDownloading.value = false
+    }
+  }
 
   const cooldownSeconds = ref(0)
 
@@ -482,6 +505,7 @@
   })
 
   async function loadBanners() {
+    clearPolling()
     error.value = ''
     job.value = null
     manifest.value = null
@@ -513,7 +537,9 @@
       const isFigmaRateLimit = err?.status === 429 || message.toLowerCase().includes('rate limit')
 
       if (isFigmaRateLimit) {
-        startCooldown(err?.data?.retryAfterSeconds || 15 * 60)
+        startCooldown(
+          err?.data?.error?.details?.retryAfterSeconds || err?.data?.retryAfterSeconds || 15 * 60,
+        )
       }
     } finally {
       isInspecting.value = false
@@ -572,6 +598,8 @@
   }
 
   async function startExport() {
+    if (isExporting.value) return
+    clearPolling()
     error.value = ''
     job.value = null
     manifest.value = null
@@ -589,45 +617,51 @@
 
   function startPolling(jobId) {
     clearPolling()
-
-    pollingTimer = window.setInterval(async () => {
+    if (!active) return
+    const controller = new AbortController()
+    pollingController = controller
+    async function poll() {
       try {
-        const updatedJob = await getBannerExport(jobId)
+        const updatedJob = await getBannerExport(jobId, controller.signal)
+        if (!active || controller.signal.aborted || pollingController !== controller) return
         job.value = updatedJob
-
         if (updatedJob.status === 'completed') {
           isExporting.value = false
-          await loadManifest(updatedJob.id)
+          await loadManifest(updatedJob.id, controller.signal)
+          if (pollingController === controller) clearPolling()
+          return
+        }
+        if (updatedJob.status === 'failed') {
+          isExporting.value = false
+          if (updatedJob.retryAfterSeconds) startCooldown(updatedJob.retryAfterSeconds)
           clearPolling()
           return
         }
-
-        if (updatedJob.status === 'failed') {
-          isExporting.value = false
-
-          if (updatedJob.retryAfterSeconds) {
-            startCooldown(updatedJob.retryAfterSeconds)
-          }
-
-          clearPolling()
-        }
+        pollingTimer = window.setTimeout(poll, 1500)
       } catch (err) {
+        if (controller.signal.aborted) return
         error.value = err.message || 'Failed to check export status'
         isExporting.value = false
         clearPolling()
       }
-    }, 1500)
+    }
+    poll()
   }
-  async function loadManifest(jobId) {
+  async function loadManifest(jobId, signal) {
     try {
-      manifest.value = await getBannerExportManifest(jobId)
+      const result = await getBannerExportManifest(jobId, signal)
+      if (!signal?.aborted && job.value?.id === jobId) manifest.value = result
     } catch (err) {
-      console.warn('Failed to load export manifest:', err)
+      if (!signal?.aborted && job.value?.id === jobId) {
+        error.value = err.message || 'Failed to load export manifest'
+      }
     }
   }
   function clearPolling() {
+    pollingController?.abort()
+    pollingController = null
     if (pollingTimer) {
-      window.clearInterval(pollingTimer)
+      window.clearTimeout(pollingTimer)
       pollingTimer = null
     }
   }
@@ -654,6 +688,17 @@
       cooldownTimer = null
     }
   }
+
+  onActivated(() => {
+    active = true
+    if (job.value && !['completed', 'failed'].includes(job.value.status)) {
+      startPolling(job.value.id)
+    }
+  })
+  onDeactivated(() => {
+    active = false
+    clearPolling()
+  })
 
   onBeforeUnmount(() => {
     clearPolling()

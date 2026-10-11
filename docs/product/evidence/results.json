@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-06T15:50:00.024Z",
+  "browser": "150.0.7871.115",
+  "source": "isolated local browser context and synthetic auth failure; no live backend",
+  "results": [
+    {
+      "name": "Dashboard content, links and responsive widths",
+      "status": "PASS"
+    },
+    {
+      "name": "Sidebar hover and active controls have readable contrast",
+      "status": "PASS"
+    },
+    {
+      "name": "Login password controls, link styles, validation and duplicate-submit guard",
+      "status": "PASS"
+    },
+    {
+      "name": "News search, category, empty/reset and details",
+      "status": "PASS"
+    },
+    {
+      "name": "Plain checklist mark-all/reset and cached Escape cleanup",
+      "status": "PASS"
+    },
+    {
+      "name": "Local Maps duplicate, search and delete",
+      "status": "PASS"
+    },
+    {
+      "name": "Map import validation, JSON roundtrip and undo/redo",
+      "status": "PASS"
+    },
+    {
+      "name": "Corrupt cached user does not crash application",
+      "status": "PASS"
+    },
+    {
+      "name": "No unexpected API requests or runtime errors",
+      "status": "PASS"
+    }
+  ],
+  "errors": [],
+  "unexpected": []
+}

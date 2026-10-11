@@ -1,7 +1,10 @@
 <template>
-  <li class="py-1">
+  <li class="min-w-0 [overflow-wrap:anywhere] py-1">
     <!-- leaf -->
-    <label v-if="node.type === 'check'" class="flex gap-3 items-center cursor-pointer">
+    <label
+      v-if="node.type === 'check'"
+      class="flex min-h-11 min-w-0 gap-3 items-center cursor-pointer"
+    >
       <input
         type="checkbox"
         :checked="isChecked(node.id)"
@@ -14,7 +17,7 @@
     <!-- group -->
     <div v-else-if="node.type === 'group'" class="space-y-2">
       <div class="font-medium">{{ node.text }}</div>
-      <ul class="pl-4 border-l">
+      <ul class="pl-2 sm:pl-4 border-l">
         <ChecklistNode
           v-for="child in node.children"
           :key="child.id"

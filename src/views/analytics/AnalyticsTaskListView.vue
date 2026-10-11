@@ -13,7 +13,7 @@
         </p>
       </div>
 
-      <div class="ml-auto flex items-center gap-2">
+      <BaseActionBar class="ml-auto">
         <BaseButton :loading="analytics.loading" @click="reload()">Оновити</BaseButton>
 
         <BaseButton
@@ -25,7 +25,7 @@
         </BaseButton>
 
         <BaseButton variant="primary" @click="openCreateTask">+ Нова задача</BaseButton>
-      </div>
+      </BaseActionBar>
     </header>
     <div
       v-if="exportError"
@@ -139,11 +139,7 @@
               v-for="row in analytics.rows"
               :key="row.id"
               class="cursor-pointer border-b border-neutral-100 transition hover:bg-neutral-100"
-              tabindex="0"
-              role="button"
               @click="openDetails(row.id)"
-              @keydown.enter="openDetails(row.id)"
-              @keydown.space.prevent="openDetails(row.id)"
             >
               <td
                 v-for="[key] in columns"
@@ -151,9 +147,18 @@
                 class="whitespace-nowrap px-3.5 py-2.5 text-black"
                 :class="getCellClass(key)"
               >
+                <BaseButton
+                  v-if="key === 'id'"
+                  variant="plain"
+                  class="underline underline-offset-2"
+                  :aria-label="`Відкрити задачу #${row.id}`"
+                  @click.stop="openDetails(row.id)"
+                >
+                  {{ row.id }}
+                </BaseButton>
                 <!-- Status -->
                 <span
-                  v-if="key === 'status'"
+                  v-else-if="key === 'status'"
                   class="inline-flex rounded-full border px-2.5 py-0.5 text-xs font-semibold"
                   :class="
                     row.status === 'DONE'
@@ -213,7 +218,7 @@
           </span>
         </template>
 
-        <div class="ml-auto flex items-center gap-2">
+        <BaseActionBar class="ml-auto">
           <BaseButton
             size="sm"
             :disabled="analytics.loading || analytics.page === 1"
@@ -236,7 +241,7 @@
           >
             ›
           </BaseButton>
-        </div>
+        </BaseActionBar>
       </footer>
     </template>
   </section>
@@ -255,6 +260,8 @@
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
   import { computed, ref, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
   import { useStore } from 'vuex'
   import { analyticsService } from '@/services/analytics.service'

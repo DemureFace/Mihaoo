@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-06T15:51:56.753Z",
+  "browser": "150.0.7871.115",
+  "results": [
+    {
+      "route": "/dashboard",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/news",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/responsive-showcase",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/maps",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/checklists",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/calendar",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/currency-converter",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/analytics/tasks",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/promo",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/tournaments",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    },
+    {
+      "route": "/banner-export",
+      "status": "PASS",
+      "scope": "unauthenticated built UI + asset + bounds"
+    }
+  ],
+  "errors": [],
+  "source": "local Vite production preview; external traffic blocked"
+}

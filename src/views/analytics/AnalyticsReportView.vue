@@ -103,7 +103,7 @@
         </p>
       </header>
 
-      <div class="overflow-x-auto">
+      <BaseTableScroll label="Аналітичний звіт">
         <table class="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr class="border-b border-neutral-200 bg-neutral-50">
@@ -184,7 +184,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
     </section>
 
     <!-- Executors -->
@@ -195,7 +195,7 @@
         <p class="mt-0.5 text-[13px] text-neutral-500">Розподіл задач та SP по членах команди</p>
       </header>
 
-      <div class="overflow-x-auto">
+      <BaseTableScroll label="Аналітичний звіт">
         <table class="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr class="border-b border-neutral-200 bg-neutral-50">
@@ -268,7 +268,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
     </section>
 
     <!-- Brands -->
@@ -279,7 +279,7 @@
         <p class="mt-0.5 text-[13px] text-neutral-500">Розподіл задач та SP між брендами</p>
       </header>
 
-      <div class="overflow-x-auto">
+      <BaseTableScroll label="Аналітичний звіт">
         <table class="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr class="border-b border-neutral-200 bg-neutral-50">
@@ -360,7 +360,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </BaseTableScroll>
     </section>
 
     <AnalyticsPeriodDynamics
@@ -483,7 +483,7 @@
           <h3 class="m-0 text-sm font-bold">Розподіл по брендах</h3>
         </div>
 
-        <div class="overflow-x-auto">
+        <BaseTableScroll label="Аналітичний звіт">
           <table class="w-full min-w-[520px] border-collapse text-sm">
             <thead>
               <tr class="border-y border-neutral-200 bg-neutral-50">
@@ -525,7 +525,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </BaseTableScroll>
       </div>
 
       <footer
@@ -568,6 +568,8 @@
 </template>
 
 <script setup>
+  import BaseTableScroll from '@/components/base/BaseTableScroll.vue'
+
   import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
   import { useStore } from 'vuex'
   import { useRouter } from 'vue-router'

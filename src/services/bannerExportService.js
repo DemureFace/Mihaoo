@@ -1,63 +1,50 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+import api from './api'
+import { downloadFilename } from './apiError'
 
-async function readJsonResponse(response, fallbackMessage = 'Request failed') {
-  const data = await response.json().catch(() => null)
-
-  if (!response.ok) {
-    const message =
-      typeof data?.message === 'string'
-        ? data.message
-        : Array.isArray(data?.message)
-          ? data.message.join(', ')
-          : data?.error || fallbackMessage
-
-    const error = new Error(message)
-
-    error.status = response.status
-    error.data = data
-
-    throw error
-  }
-
+export async function inspectBannerExport(figmaUrl, signal) {
+  const { data } = await api.post(
+    '/banner-exports/inspect',
+    { figmaUrl },
+    { signal, timeout: 45000 },
+  )
+  if (!data || !Array.isArray(data.banners))
+    throw new Error('Unexpected banner inspection response')
   return data
 }
 
-export async function inspectBannerExport(figmaUrl) {
-  const response = await fetch(`${API_URL}/banner-exports/inspect`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ figmaUrl }),
-  })
-
-  return readJsonResponse(response, 'Failed to inspect Figma banners')
-}
-
 export async function createBannerExport(payload) {
-  const response = await fetch(`${API_URL}/banner-exports`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+  const { data } = await api.post('/banner-exports', payload, { timeout: 45000 })
+  if (!data?.id) throw new Error('Unexpected banner export response')
+  return data
+}
+
+export async function getBannerExport(jobId, signal) {
+  const { data } = await api.get(`/banner-exports/${encodeURIComponent(jobId)}`, {
+    signal,
+    timeout: 20000,
   })
-
-  return readJsonResponse(response, 'Failed to create banner export')
+  if (!data?.id || !data.status) throw new Error('Unexpected banner job response')
+  return data
 }
 
-export async function getBannerExport(jobId) {
-  const response = await fetch(`${API_URL}/banner-exports/${jobId}`)
-
-  return readJsonResponse(response, 'Failed to get banner export')
+export async function getBannerExportManifest(jobId, signal) {
+  const { data } = await api.get(`/banner-exports/${encodeURIComponent(jobId)}/manifest`, {
+    signal,
+    timeout: 20000,
+  })
+  return data
 }
 
-export async function getBannerExportManifest(jobId) {
-  const response = await fetch(`${API_URL}/banner-exports/${jobId}/manifest`)
-
-  return readJsonResponse(response, 'Failed to get export manifest')
-}
-
-export function getBannerExportDownloadUrl(jobId) {
-  return `${API_URL}/banner-exports/${jobId}/download`
+export async function downloadBannerExport(jobId) {
+  const response = await api.get(`/banner-exports/${encodeURIComponent(jobId)}/download`, {
+    responseType: 'blob',
+    timeout: 45000,
+  })
+  return {
+    blob: response.data,
+    filename: downloadFilename(
+      response.headers['content-disposition'],
+      `banner-export-${jobId}.zip`,
+    ),
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="wrap min-w-0 rounded-2xl p-3 sm:p-5 [overflow-wrap:anywhere]">
     <header class="top">
       <h1>Currency Converter</h1>
 
@@ -12,6 +12,9 @@
         </label>
 
         <div class="tabs">
+          <button class="tab" :class="{ active: serverMode }" @click="serverMode = !serverMode">
+            {{ serverMode ? 'Backend mode' : 'Local mode' }}
+          </button>
           <button class="tab" :class="{ active: tab === 'content' }" @click="tab = 'content'">
             Content
           </button>
@@ -23,11 +26,24 @@
           </button>
         </div>
 
-        <button class="btn" @click="convert">Convert</button>
+        <button
+          class="btn"
+          :disabled="serverLoading"
+          @click="serverMode ? convertOnServer() : convert()"
+        >
+          {{ serverLoading ? 'Converting...' : 'Convert' }}
+        </button>
       </div>
     </header>
 
-    <main class="grid">
+    <p v-if="serverMode" class="mb-4 text-sm">
+      Backend mode: authenticated currency conversion and translations. Click Convert to send text.
+      Local Content / Data / Snippet settings are preserved separately.
+    </p>
+    <p v-if="serverError" role="alert" class="mb-4 break-words text-sm text-red-700">
+      {{ serverError }}
+    </p>
+    <BaseFormGrid>
       <section class="card">
         <div class="cardHdr">
           <h2>Input</h2>
@@ -49,21 +65,71 @@
       <section class="card">
         <div class="cardHdr">
           <h2>Output</h2>
-          <button class="btn" :disabled="!output.trim()" @click="copy(output)">Copy</button>
+          <button class="btn" :disabled="!displayOutput.trim()" @click="copy(displayOutput)">
+            Copy
+          </button>
         </div>
 
-        <textarea class="ta" rows="14" readonly :value="output" />
+        <textarea class="ta" rows="14" readonly :value="displayOutput" />
         <p class="hint">
           Site locales:
           <b>{{ (siteModes[site] || []).join(', ') }}</b>
         </p>
       </section>
-    </main>
+    </BaseFormGrid>
   </div>
 </template>
 
 <script setup>
-  import { computed, ref, watch } from 'vue'
+  import BaseFormGrid from '@/components/base/BaseFormGrid.vue'
+
+  import { computed, ref, watch, onDeactivated, onBeforeUnmount } from 'vue'
+  import { currencyService } from '@/services/currency.service'
+
+  const serverMode = ref(false)
+  const serverLoading = ref(false)
+  const serverError = ref('')
+  const serverOutput = ref('')
+  let serverController = null
+
+  async function convertOnServer() {
+    if (serverLoading.value) return
+    serverError.value = ''
+    serverOutput.value = ''
+    if (!localStorage.getItem('accessToken')) {
+      serverError.value = 'Login is required for backend conversion.'
+      return
+    }
+    if (!input.value.trim()) {
+      serverError.value = 'Enter text to convert.'
+      return
+    }
+    const controller = new AbortController()
+    serverController = controller
+    serverLoading.value = true
+    try {
+      const availableSites = await currencyService.listSites(controller.signal)
+      if (!availableSites.includes(site.value))
+        throw new Error('Selected site is not supported by the backend.')
+      const result = await currencyService.convert(input.value, site.value, controller.signal)
+      if (!controller.signal.aborted) serverOutput.value = JSON.stringify(result, null, 2)
+    } catch (error) {
+      if (!controller.signal.aborted) serverError.value = error.message || 'Conversion failed.'
+    } finally {
+      if (serverController === controller) {
+        serverController = null
+        serverLoading.value = false
+      }
+    }
+  }
+
+  function cancelServerRead() {
+    serverController?.abort()
+    serverController = null
+    serverLoading.value = false
+  }
+  onDeactivated(cancelServerRead)
+  onBeforeUnmount(cancelServerRead)
 
   /* ---------- storage ---------- */
   function useLocalStorageRef(key, initial) {
@@ -289,6 +355,12 @@
 
   const input = useLocalStorageRef('cc.input', '')
   const output = ref('')
+  const displayOutput = computed(() => (serverMode.value ? serverOutput.value : output.value))
+  watch([input, site, serverMode], () => {
+    cancelServerRead()
+    serverOutput.value = ''
+    serverError.value = ''
+  })
 
   function convert() {
     const locales = siteModes[site.value] || ['default']
@@ -336,11 +408,8 @@
   .wrap {
     min-height: 100vh;
     background: #f6f7fb;
-    padding: 20px;
   }
   .top {
-    position: sticky;
-    top: 0;
     background: #f6f7fb;
     padding-bottom: 14px;
     z-index: 5;
@@ -361,7 +430,7 @@
     gap: 6px;
   }
   select {
-    height: 38px;
+    min-height: 44px;
     border: 1px solid #d7dbe7;
     border-radius: 10px;
     padding: 0 10px;
@@ -369,11 +438,12 @@
   }
   .tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-left: auto;
   }
   .tab {
-    height: 38px;
+    min-height: 44px;
     border-radius: 10px;
     border: 1px solid #d7dbe7;
     background: #fff;
@@ -384,16 +454,6 @@
     background: #111827;
     color: #fff;
     border-color: #111827;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  @media (max-width: 980px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
   }
   .card {
     background: #fff;
@@ -421,7 +481,7 @@
       monospace;
   }
   .btn {
-    height: 34px;
+    min-height: 44px;
     border-radius: 10px;
     border: 1px solid #d7dbe7;
     background: #fff;

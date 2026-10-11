@@ -2,6 +2,9 @@ import { analyticsService } from '@/services/analytics.service'
 
 import { createDefaultAnalyticsFilters } from '@/constants/analytics'
 
+const referenceRequests = new WeakMap()
+const memberRequests = new WeakMap()
+
 function getErrorMessage(error) {
   if (error.code === 'AUTH_REQUIRED' || error.response?.status === 401) {
     return 'Увійди у Mihaoo через Login, потім натисни «Оновити».'
@@ -248,9 +251,8 @@ export default {
     },
 
     async loadMembers({ state, commit }) {
-      if (state.membersLoading || state.members.length) {
-        return
-      }
+      if (memberRequests.has(state)) return memberRequests.get(state)
+      if (state.members.length) return state.members
 
       if (!localStorage.getItem('accessToken')) {
         return
@@ -258,19 +260,23 @@ export default {
 
       commit('MEMBERS_BEGIN')
 
-      try {
-        const members = await analyticsService.listMembers()
-
-        commit('MEMBERS_SUCCESS', members)
-      } catch {
-        commit('MEMBERS_FAIL', 'Не вдалося завантажити список команди.')
-      }
+      const request = analyticsService
+        .listMembers()
+        .then((members) => {
+          commit('MEMBERS_SUCCESS', members)
+          return members
+        })
+        .catch(() => {
+          commit('MEMBERS_FAIL', 'Не вдалося завантажити список команди.')
+        })
+        .finally(() => memberRequests.delete(state))
+      memberRequests.set(state, request)
+      return request
     },
 
     async loadReferenceData({ state, commit }) {
-      if (state.referenceDataLoading || state.referenceData) {
-        return
-      }
+      if (referenceRequests.has(state)) return referenceRequests.get(state)
+      if (state.referenceData) return state.referenceData
 
       if (!localStorage.getItem('accessToken')) {
         return
@@ -278,13 +284,18 @@ export default {
 
       commit('REFERENCE_DATA_BEGIN')
 
-      try {
-        const data = await analyticsService.getReferenceData()
-
-        commit('REFERENCE_DATA_SUCCESS', data)
-      } catch {
-        commit('REFERENCE_DATA_FAIL', 'Не вдалося завантажити бренди, платформи та типи задач.')
-      }
+      const request = analyticsService
+        .getReferenceData()
+        .then((data) => {
+          commit('REFERENCE_DATA_SUCCESS', data)
+          return data
+        })
+        .catch(() => {
+          commit('REFERENCE_DATA_FAIL', 'Не вдалося завантажити бренди, платформи та типи задач.')
+        })
+        .finally(() => referenceRequests.delete(state))
+      referenceRequests.set(state, request)
+      return request
     },
   },
 }

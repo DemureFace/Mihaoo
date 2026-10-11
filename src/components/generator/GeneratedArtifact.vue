@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
+      <BaseActionBar>
         <BaseButton size="sm" variant="secondary" @click="copyContent">
           <CheckIcon v-if="copied" class="h-4 w-4" />
 
@@ -40,7 +40,7 @@
             {{ expanded ? 'Collapse' : 'Expand' }}
           </span>
         </BaseButton>
-      </div>
+      </BaseActionBar>
     </header>
 
     <div class="bg-neutral-950 p-1">
@@ -60,6 +60,8 @@
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
   import { computed, ref } from 'vue'
 
   import {

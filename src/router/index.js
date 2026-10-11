@@ -13,8 +13,11 @@ import BannerExport from '@/views/BannerExport.vue'
 import MapsView from '@/views/MapsView.vue'
 import MapView from '@/views/MapView.vue'
 import MapEditorView from '@/views/MapEditorView.vue'
+import { developmentRoutes } from './development.routes.js'
 
 const routes = [
+  ...developmentRoutes,
+
   {
     path: '/',
     redirect: '/home',
@@ -108,6 +111,12 @@ const routes = [
     name: 'map-edit',
     component: MapEditorView,
     props: true,
+  },
+
+  {
+    path: '/responsive-showcase',
+    name: 'responsive-showcase',
+    component: () => import('@/views/ResponsiveShowcaseView.vue'),
   },
 
   {

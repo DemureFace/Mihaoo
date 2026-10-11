@@ -5,7 +5,7 @@
     :show-results="Boolean(result)"
   >
     <form class="space-y-6" @submit.prevent="handleGenerate">
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <BaseFormGrid>
         <BaseSelect
           v-model="brand"
           id="promo-brand"
@@ -39,7 +39,7 @@
           placeholder="https://..."
           required
         />
-      </div>
+      </BaseFormGrid>
 
       <div>
         <BaseTextarea
@@ -145,6 +145,8 @@
 </template>
 
 <script setup>
+  import BaseFormGrid from '@/components/base/BaseFormGrid.vue'
+
   import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
   import { ExclamationCircleIcon, SparklesIcon } from '@heroicons/vue/24/outline'

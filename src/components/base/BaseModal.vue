@@ -2,28 +2,36 @@
   <Teleport to="body">
     <Transition name="modal-outer">
       <div
-        v-if="open"
-        class="fixed inset-0 z-[200] flex items-center justify-center bg-black/30 p-4 backdrop-blur-sm"
-        role="dialog"
-        aria-modal="true"
-        @click.self="close"
+        v-if="visible"
+        :style="{ zIndex }"
+        class="fixed inset-0 flex items-end justify-center bg-black/30 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+        @click.self="isTop && close()"
       >
         <Transition name="modal-inner" appear>
           <div
-            class="relative max-h-[90vh] w-full overflow-y-auto rounded-2xl border-2 border-black bg-white shadow-xl"
+            ref="dialog"
+            role="dialog"
+            aria-modal="true"
+            :aria-label="ariaLabel"
+            tabindex="-1"
+            class="relative max-h-[calc(100dvh-1rem)] min-w-0 w-full overflow-y-auto overscroll-contain [overflow-wrap:anywhere] rounded-t-2xl border-2 border-black bg-white shadow-xl sm:max-h-[calc(100dvh-2rem)] sm:rounded-2xl"
             :class="sizeClass"
           >
-            <BaseButton
-              variant="ghost"
-              size="sm"
-              class="absolute right-2 top-2 z-10"
-              aria-label="Close"
-              @click="close"
-            >
-              ✕
-            </BaseButton>
+            <div class="sticky top-0 z-10 flex justify-end bg-white/95 p-2">
+              <BaseButton
+                variant="ghost"
+                size="sm"
+                class="min-h-11 min-w-11"
+                aria-label="Close"
+                @click="close"
+              >
+                ✕
+              </BaseButton>
+            </div>
 
-            <div class="p-6">
+            <div
+              class="min-w-0 break-words px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-0 sm:px-6 sm:pb-6 [&_input]:min-w-0 [&_select]:min-w-0"
+            >
               <slot />
             </div>
           </div>
@@ -34,7 +42,8 @@
 </template>
 
 <script setup>
-  import { computed, onBeforeUnmount, onMounted, watch } from 'vue'
+  import { computed, ref } from 'vue'
+  import { useModalLayer } from '@/composables/useModalLayer'
 
   import BaseButton from '@/components/base/BaseButton.vue'
 
@@ -42,6 +51,11 @@
     modelValue: {
       type: Boolean,
       default: false,
+    },
+
+    ariaLabel: {
+      type: String,
+      default: 'Dialog',
     },
 
     size: {
@@ -54,6 +68,8 @@
   const emit = defineEmits(['update:modelValue'])
 
   const open = computed(() => props.modelValue)
+  const dialog = ref(null)
+  const { visible, zIndex, isTop } = useModalLayer({ open, surface: dialog, close })
 
   const sizeClass = computed(() => {
     const sizes = {
@@ -69,32 +85,6 @@
   function close() {
     emit('update:modelValue', false)
   }
-
-  function onEsc(event) {
-    if (event.key === 'Escape' && open.value) {
-      close()
-    }
-  }
-
-  watch(
-    open,
-    (value) => {
-      document.body.style.overflow = value ? 'hidden' : ''
-    },
-    {
-      immediate: true,
-    },
-  )
-
-  onMounted(() => {
-    window.addEventListener('keydown', onEsc)
-  })
-
-  onBeforeUnmount(() => {
-    document.body.style.overflow = ''
-
-    window.removeEventListener('keydown', onEsc)
-  })
 </script>
 
 <style scoped>

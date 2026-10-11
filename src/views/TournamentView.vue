@@ -5,7 +5,7 @@
     :show-results="Boolean(result)"
   >
     <form class="space-y-6" @submit.prevent="handleGenerate">
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <BaseFormGrid>
         <BaseSelect
           v-model="tournamentType"
           id="tournament-type"
@@ -21,7 +21,7 @@
           :options="brandOptions"
           required
         />
-      </div>
+      </BaseFormGrid>
 
       <div>
         <BaseTextarea
@@ -38,7 +38,7 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <BaseFormGrid>
         <BaseInput
           v-model="imageUrlDesktop"
           id="tournament-image-desktop"
@@ -54,7 +54,7 @@
           placeholder="https://..."
           hint="Optional"
         />
-      </div>
+      </BaseFormGrid>
 
       <div
         v-if="error"
@@ -152,6 +152,8 @@
 </template>
 
 <script setup>
+  import BaseFormGrid from '@/components/base/BaseFormGrid.vue'
+
   import { computed, onBeforeUnmount, ref, watch } from 'vue'
 
   import { ExclamationCircleIcon, SparklesIcon } from '@heroicons/vue/24/outline'

@@ -66,6 +66,7 @@ export default {
 
     try {
       const user = await authService.me()
+      if (localStorage.getItem('accessToken') !== accessToken) return null
 
       localStorage.setItem('user', JSON.stringify(user))
 
@@ -76,10 +77,13 @@ export default {
       })
 
       return user
-    } catch {
-      clearStoredAuth()
-      commit(CLEAR_AUTH_MUTATION)
-
+    } catch (error) {
+      if (localStorage.getItem('accessToken') !== accessToken) return null
+      if ([401, 403].includes(error.response?.status)) {
+        clearStoredAuth()
+        commit(CLEAR_AUTH_MUTATION)
+      }
+      // A network/upstream outage does not invalidate the stored JWT.
       return null
     }
   },

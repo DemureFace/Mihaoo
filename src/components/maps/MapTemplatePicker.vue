@@ -1,5 +1,5 @@
 <template>
-  <BaseModal v-model="open">
+  <BaseModal aria-label="Create Map" v-model="open">
     <div>
       <div>
         <h2 class="text-xl font-bold">Create Map</h2>
@@ -15,7 +15,7 @@
           class="text-left border border-black/10 rounded-2xl p-4 transition hover:border-black hover:bg-black/[0.02]"
           @click="selectTemplate(template.id)"
         >
-          <div class="flex items-start justify-between gap-4">
+          <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
               <h3 class="font-bold">
                 {{ template.name }}

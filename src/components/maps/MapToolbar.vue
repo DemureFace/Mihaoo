@@ -66,7 +66,7 @@
       @change="handleFile"
     />
 
-    <div class="ml-auto flex items-center gap-2">
+    <BaseActionBar class="ml-auto">
       <button type="button" class="secondary-button" @click="$emit('duplicate-map')">
         Duplicate Map
       </button>
@@ -78,11 +78,13 @@
       </button>
 
       <BaseButton class="px-4 py-2" @click="$emit('save')">Save</BaseButton>
-    </div>
+    </BaseActionBar>
   </div>
 </template>
 
 <script setup>
+  import BaseActionBar from '@/components/base/BaseActionBar.vue'
+
   import { ref } from 'vue'
 
   import {
@@ -156,8 +158,8 @@
     display: inline-grid;
     place-items: center;
 
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.75rem;
+    height: 2.75rem;
 
     border: 1px solid rgb(0 0 0 / 0.1);
 

@@ -1,17 +1,17 @@
 <template>
-  <section v-if="hasChecklist">
+  <section v-if="hasChecklist" class="min-w-0 [overflow-wrap:anywhere]">
     <header class="mb-4">
-      <div class="mb-4 flex justify-between items-center">
-        <button
+      <div class="mb-4 flex flex-wrap justify-between items-center gap-2">
+        <BaseButton
           type="button"
           @click="goBack"
           class="inline-flex items-center gap-2 border rounded-xl px-3 py-1.5 hover:bg-gray-50"
         >
           ← Назад до всіх чеклістів
-        </button>
-        <div class="flex gap-2">
-          <button class="border rounded px-3 py-1" @click="openEdit">Редагувати</button>
-          <button class="border rounded px-3 py-1" @click="onDelete">Видалити</button>
+        </BaseButton>
+        <div class="flex flex-wrap gap-2">
+          <BaseButton class="border rounded px-3 py-1" @click="openEdit">Редагувати</BaseButton>
+          <BaseButton class="border rounded px-3 py-1" @click="onDelete">Видалити</BaseButton>
         </div>
       </div>
 
@@ -22,13 +22,13 @@
       </p>
     </header>
 
-    <BaseModal v-model="showEditor">
+    <BaseModal v-model="showEditor" aria-label="Редактор чекліста">
       <ChecklistEditor v-model="showEditor" :value="checklist" @save="onSave" />
     </BaseModal>
 
     <ul class="space-y-2">
       <li v-for="item in checklist.items" :key="item.id" class="border rounded p-3">
-        <label class="flex gap-3 items-center cursor-pointer">
+        <label class="flex min-h-11 min-w-0 gap-3 items-center cursor-pointer">
           <input
             type="checkbox"
             :checked="isChecked(item.id)"
@@ -59,8 +59,8 @@
     </div>
 
     <div class="mt-5 flex gap-2">
-      <button class="border rounded px-3 py-1" @click="markAll">Позначити все</button>
-      <button class="border rounded px-3 py-1" @click="reset">Скинути</button>
+      <BaseButton class="border rounded px-3 py-1" @click="markAll">Позначити все</BaseButton>
+      <BaseButton class="border rounded px-3 py-1" @click="reset">Скинути</BaseButton>
     </div>
   </section>
 
@@ -68,7 +68,9 @@
 </template>
 
 <script setup>
-  import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+  import BaseButton from '@/components/base/BaseButton.vue'
+
+  import { ref, computed, watch, onMounted, onBeforeUnmount, onActivated, onDeactivated } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
   import BaseModal from '@/components/base/BaseModal.vue'
   import ChecklistEditor from '@/components/ChecklistEditor.vue'
@@ -94,7 +96,7 @@
   }
 
   function handleKey(e) {
-    if (showEditor.value) return
+    if (showEditor.value || e.defaultPrevented) return
     if (e.key === 'Escape') goBack()
   }
 
@@ -103,9 +105,15 @@
     load()
   })
 
-  onBeforeUnmount(() => {
-    window.removeEventListener('keydown', handleKey)
+  onActivated(() => {
+    window.addEventListener('keydown', handleKey)
+    load()
   })
+  function deactivate() {
+    window.removeEventListener('keydown', handleKey)
+  }
+  onDeactivated(deactivate)
+  onBeforeUnmount(deactivate)
   const showEditor = ref(false)
 
   function onSave(payload) {
@@ -179,7 +187,7 @@
 
   function collectLeafIds(items, out = []) {
     for (const it of items || []) {
-      if (it.type === 'check') out.push(it.id)
+      if (!it.type || it.type === 'check') out.push(it.id)
       if (it.type === 'group') collectLeafIds(it.children, out)
     }
     return out

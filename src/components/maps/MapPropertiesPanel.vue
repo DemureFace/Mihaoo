@@ -1,5 +1,7 @@
 <template>
-  <aside class="w-[300px] shrink-0 bg-white border border-black/10 rounded-2xl p-5 overflow-y-auto">
+  <aside
+    class="min-w-0 w-full xl:w-[300px] shrink-0 bg-white border border-black/10 rounded-2xl p-5 overflow-y-auto"
+  >
     <template v-if="node">
       <div class="flex items-center justify-between">
         <h2 class="font-bold text-lg">Properties</h2>

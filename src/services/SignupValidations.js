@@ -19,9 +19,7 @@ export default class SignupValidations {
       return errors
     }
 
-    const hasUppercase = /[A-Z]/.test(this.password)
-    const hasLowercase = /[a-z]/.test(this.password)
-    const hasNumber = /[0-9]/.test(this.password)
+    const hasLatinLetter = /[A-Za-z]/.test(this.password)
 
     const specialCharacters = `!@#$%^&*()_+-={}[]|;:'",.<>/?~\`\\`
 
@@ -31,12 +29,8 @@ export default class SignupValidations {
       (character) => /[A-Za-z0-9]/.test(character) || specialCharacters.includes(character),
     )
 
-    if (!hasUppercase) {
-      errors.password = 'Password must contain at least one uppercase letter'
-    } else if (!hasLowercase) {
-      errors.password = 'Password must contain at least one lowercase letter'
-    } else if (!hasNumber) {
-      errors.password = 'Password must contain at least one number'
+    if (!hasLatinLetter) {
+      errors.password = 'Password must contain at least one Latin letter'
     } else if (!hasSpecial) {
       errors.password = 'Password must contain at least one special character'
     } else if (!onlyAllowedCharacters) {

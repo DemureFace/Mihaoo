@@ -1,10 +1,10 @@
 <template>
-  <section class="mx-auto w-full max-w-6xl space-y-6">
+  <section class="mx-auto min-w-0 w-full max-w-6xl space-y-6 [overflow-wrap:anywhere]">
     <header
-      class="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+      class="flex flex-col gap-4 rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-6 sm:flex-row sm:items-center sm:justify-between"
     >
-      <div>
-        <div class="mb-2 flex items-center gap-2">
+      <div class="min-w-0">
+        <div class="mb-2 flex min-w-0 flex-wrap items-center gap-2">
           <span
             class="rounded-full border border-black/10 bg-neutral-50 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-neutral-500"
           >
@@ -12,7 +12,7 @@
           </span>
 
           <span class="flex items-center gap-1.5 text-xs font-medium text-neutral-500">
-            <span class="h-2 w-2 rounded-full bg-green-500" />
+            <span class="h-2 w-2 shrink-0 rounded-full bg-green-500" />
 
             Backend
           </span>
@@ -28,11 +28,11 @@
       </div>
     </header>
 
-    <div class="rounded-2xl border border-black/10 bg-white p-5 shadow-sm sm:p-6">
+    <div class="rounded-2xl border border-black/10 min-w-0 bg-white p-3 shadow-sm sm:p-6">
       <slot />
     </div>
 
-    <section v-if="showResults && $slots.result" class="space-y-4">
+    <section v-if="showResults && $slots.result" class="min-w-0 space-y-4">
       <div>
         <h2 class="text-lg font-bold text-black">Generated content</h2>
 

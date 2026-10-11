@@ -1,12 +1,14 @@
 <template>
-  <aside class="w-[190px] shrink-0 bg-white border border-black/10 rounded-2xl p-3 overflow-y-auto">
+  <aside
+    class="w-full max-h-52 xl:max-h-none xl:w-[190px] shrink-0 bg-white border border-black/10 rounded-2xl p-3 overflow-y-auto"
+  >
     <div class="mb-3">
       <h2 class="font-bold text-sm">Blocks</h2>
 
-      <p class="mt-1 text-xs text-black/40">Drag onto canvas</p>
+      <p class="mt-1 text-xs text-black/40">Tap a block to add, or drag onto canvas</p>
     </div>
 
-    <div class="flex flex-col gap-2">
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1">
       <button
         v-for="item in items"
         :key="item.type"
@@ -14,7 +16,7 @@
         draggable="true"
         class="flex items-center gap-3 w-full border border-black/10 rounded-xl px-3 py-2.5 text-left hover:border-black hover:bg-black/[0.02] transition cursor-grab active:cursor-grabbing"
         @dragstart="handleDragStart($event, item.type)"
-        @dblclick="$emit('add-node', item.type)"
+        @click="$emit('add-node', item.type)"
       >
         <span class="w-8 h-8 shrink-0 rounded-lg grid place-items-center" :class="item.class">
           <component :is="item.icon" class="w-4 h-4" />
