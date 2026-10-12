@@ -79,9 +79,9 @@
   import SideBar from '@/components/SideBar.vue'
   import TheHeader from '@/components/TheHeader.vue'
 
-  import { AUTH_EXPIRED_EVENT } from '@/services/api'
+  import { AUTH_EXPIRED_EVENT, AUTH_REFRESHED_EVENT } from '@/services/api'
 
-  import { FETCH_USER_ACTION, LOGOUT_ACTION } from '@/store/storeconstants'
+  import { FETCH_USER_ACTION, LOGOUT_ACTION, SET_USER_MUTATION } from '@/store/storeconstants'
 
   const store = useStore()
   const route = useRoute()
@@ -101,6 +101,22 @@
     close: closeMobileSidebar,
     extraElements: () => [document.querySelector('[aria-controls="app-sidebar"]')].filter(Boolean),
   })
+
+  function handleAuthRefreshed(event) {
+    const accessToken = event.detail?.accessToken
+    const refreshToken = event.detail?.refreshToken
+    const user = store.state.auth.user
+
+    if (!accessToken || !refreshToken || !user) {
+      return
+    }
+
+    store.commit(`auth/${SET_USER_MUTATION}`, {
+      user,
+      accessToken,
+      refreshToken,
+    })
+  }
 
   let mobileMediaQuery = null
   let handlingAuthExpired = false
@@ -200,6 +216,8 @@
 
     mobileMediaQuery.addEventListener('change', syncViewport)
 
+    window.addEventListener(AUTH_REFRESHED_EVENT, handleAuthRefreshed)
+
     window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
 
     await store.dispatch(`auth/${FETCH_USER_ACTION}`)
@@ -208,6 +226,7 @@
   onBeforeUnmount(() => {
     mobileMediaQuery?.removeEventListener('change', syncViewport)
 
+    window.removeEventListener(AUTH_REFRESHED_EVENT, handleAuthRefreshed)
     window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired)
   })
 </script>

@@ -11,17 +11,13 @@ import {
 
 function persistAuth(data) {
   localStorage.setItem('accessToken', data.accessToken)
-
-  localStorage.removeItem('refreshToken')
-
+  localStorage.setItem('refreshToken', data.refreshToken)
   localStorage.setItem('user', JSON.stringify(data.user))
 }
 
 function clearStoredAuth() {
   localStorage.removeItem('accessToken')
-
   localStorage.removeItem('refreshToken')
-
   localStorage.removeItem('user')
 }
 
@@ -34,7 +30,7 @@ export default {
     commit(SET_USER_MUTATION, {
       user: data.user,
       accessToken: data.accessToken,
-      refreshToken: null,
+      refreshToken: data.refreshToken,
     })
 
     return data
@@ -48,7 +44,7 @@ export default {
     commit(SET_USER_MUTATION, {
       user: data.user,
       accessToken: data.accessToken,
-      refreshToken: null,
+      refreshToken: data.refreshToken,
     })
 
     return data
@@ -56,8 +52,9 @@ export default {
 
   async [FETCH_USER_ACTION]({ commit }) {
     const accessToken = localStorage.getItem('accessToken')
+    const refreshToken = localStorage.getItem('refreshToken')
 
-    if (!accessToken) {
+    if (!accessToken && !refreshToken) {
       clearStoredAuth()
       commit(CLEAR_AUTH_MUTATION)
 
@@ -66,30 +63,51 @@ export default {
 
     try {
       const user = await authService.me()
-      if (localStorage.getItem('accessToken') !== accessToken) return null
+
+      // Token may have been automatically refreshed while /users/me was running.
+      const currentAccessToken = localStorage.getItem('accessToken')
+      const currentRefreshToken = localStorage.getItem('refreshToken')
+
+      // User may have logged out while the request was in progress.
+      if (!currentAccessToken || !currentRefreshToken) {
+        return null
+      }
 
       localStorage.setItem('user', JSON.stringify(user))
 
       commit(SET_USER_MUTATION, {
         user,
-        accessToken,
-        refreshToken: null,
+        accessToken: currentAccessToken,
+        refreshToken: currentRefreshToken,
       })
 
       return user
-    } catch (error) {
-      if (localStorage.getItem('accessToken') !== accessToken) return null
-      if ([401, 403].includes(error.response?.status)) {
+    } catch {
+      if (
+        !localStorage.getItem('accessToken') &&
+        !localStorage.getItem('refreshToken')
+      ) {
         clearStoredAuth()
         commit(CLEAR_AUTH_MUTATION)
       }
-      // A network/upstream outage does not invalidate the stored JWT.
+
       return null
     }
   },
 
   async [LOGOUT_ACTION]({ commit }) {
-    clearStoredAuth()
-    commit(CLEAR_AUTH_MUTATION)
+    try {
+      const accessToken = localStorage.getItem('accessToken')
+      const refreshToken = localStorage.getItem('refreshToken')
+
+      if (accessToken || refreshToken) {
+        await authService.logout()
+      }
+    } catch {
+      // Logout locally even if backend is unavailable.
+    } finally {
+      clearStoredAuth()
+      commit(CLEAR_AUTH_MUTATION)
+    }
   },
 }

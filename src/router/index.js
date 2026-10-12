@@ -212,10 +212,11 @@ router.beforeEach((to) => {
   }
 
   const accessToken = localStorage.getItem('accessToken')
+const refreshToken = localStorage.getItem('refreshToken')
 
-  if (accessToken) {
-    return true
-  }
+if (accessToken || refreshToken) {
+  return true
+}
 
   return {
     path: '/dashboard',

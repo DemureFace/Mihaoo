@@ -14,12 +14,21 @@ export const authService = {
   },
 
   async me() {
-    const { data } = await api.get('/auth/profile')
+    const { data } = await api.get('/users/me')
 
     return {
-      id: data.sub,
+      id: data.id,
       email: data.email,
-      roles: data.roles ?? [],
+      name: data.name ?? '',
+      role: data.role ?? 'USER',
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
     }
+  },
+
+  async logout() {
+    const { data } = await api.post('/auth/logout')
+
+    return data
   },
 }
