@@ -205,18 +205,20 @@ router.afterEach((to) => {
 })
 
 router.beforeEach((to) => {
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+  const requiresAuth = to.matched.some(
+    (record) => record.meta.requiresAuth,
+  )
 
   if (!requiresAuth) {
     return true
   }
 
   const accessToken = localStorage.getItem('accessToken')
-const refreshToken = localStorage.getItem('refreshToken')
+  const refreshToken = localStorage.getItem('refreshToken')
 
-if (accessToken || refreshToken) {
-  return true
-}
+  if (accessToken || refreshToken) {
+    return true
+  }
 
   return {
     path: '/dashboard',

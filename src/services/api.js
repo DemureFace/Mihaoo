@@ -84,10 +84,19 @@ async function refreshSession() {
       return data.accessToken
     })
     .catch((error) => {
-      expireSession()
+  const status = error.response?.status
 
-      throw error
-    })
+  const isInvalidSession =
+    status === 400 ||
+    status === 401 ||
+    status === 403
+
+  if (isInvalidSession) {
+    expireSession()
+  }
+
+  throw error
+})
     .finally(() => {
       refreshPromise = null
     })
