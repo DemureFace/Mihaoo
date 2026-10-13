@@ -123,7 +123,7 @@
 </template>
 
 <script setup>
-  import { computed, ref } from 'vue'
+  import { computed, onBeforeUnmount, ref } from 'vue'
 
   import { ArrowPathIcon, ServerStackIcon } from '@heroicons/vue/24/outline'
 
@@ -236,6 +236,28 @@
     lastCheckedAt.value = new Date()
   }
 
+  const wakeAudio = new Audio('/sounds/wake-backend.mp3')
+
+  wakeAudio.preload = 'auto'
+  wakeAudio.loop = true
+
+  function startWakeSound() {
+    wakeAudio.currentTime = 0
+
+    wakeAudio.play().catch(() => {
+      // Browser may block audio in some environments.
+    })
+  }
+
+  function stopWakeSound() {
+    wakeAudio.pause()
+    wakeAudio.currentTime = 0
+  }
+
+  onBeforeUnmount(() => {
+    stopWakeSound()
+  })
+
   async function openAndCheck() {
     modalOpen.value = true
 
@@ -269,8 +291,9 @@
       return
     }
 
-    waking.value = true
+    startWakeSound()
 
+    waking.value = true
     wakeFinished.value = false
 
     try {
@@ -282,8 +305,9 @@
         recordHealth(result.health)
       }
     } finally {
-      waking.value = false
+      stopWakeSound()
 
+      waking.value = false
       wakeFinished.value = true
     }
   }
